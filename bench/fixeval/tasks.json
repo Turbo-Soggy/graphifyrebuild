@@ -1,6 +1,68 @@
 [
   {
     "repo": "express",
+    "commit": "1e2951a832d1307ab40ef8c45202e02524991816",
+    "parent": "3a1f27fcde4a4399ab2afab74aeb1baad513cd08",
+    "subject": "Remove app.param(fn) signature",
+    "entry": "proto.param",
+    "key": "express/1e2951a8",
+    "test_files": [
+      "test/Router.js",
+      "test/app.param.js"
+    ],
+    "fail_to_pass": [
+      "Router .param should reject non-function",
+      "Router .param should require function"
+    ],
+    "pass_to_pass": [
+      "Router .all should support using .all to capture all http verbs",
+      "Router .handle should dispatch",
+      "Router .multiple callbacks should not throw if all callbacks are functions",
+      "Router .multiple callbacks should throw if a callback is not a function",
+      "Router .multiple callbacks should throw if a callback is null",
+      "Router .multiple callbacks should throw if a callback is undefined",
+      "Router .param should call param function when routing VERBS",
+      "Router .param should call param function when routing middleware",
+      "Router .param should call when values differ",
+      "Router .param should only call once per request",
+      "Router .use should accept array of middleware",
+      "Router .use should not accept non-functions",
+      "Router .use should require arguments",
+      "Router FQDN should adjust FQDN req.url",
+      "Router FQDN should adjust FQDN req.url with multiple handlers",
+      "Router FQDN should adjust FQDN req.url with multiple routed handlers",
+      "Router FQDN should ignore FQDN in path",
+      "Router FQDN should ignore FQDN in search",
+      "Router FQDN should not obscure FQDNs",
+      "Router error should handle throwing in handler after async param",
+      "Router error should handle throwing inside error handlers",
+      "Router error should handle throwing inside routes with params",
+      "Router error should skip non error middleware",
+      "Router parallel requests should not mix requests",
+      "Router should handle blank URL",
+      "Router should not stack overflow with many registered routes",
+      "Router should return a function with router methods",
+      "Router should support .use of other routers",
+      "Router should support dynamic routes",
+      "app .param(name, fn) should call when values differ",
+      "app .param(name, fn) should call when values differ when using \"next\"",
+      "app .param(name, fn) should catch thrown error",
+      "app .param(name, fn) should catch thrown secondary error",
+      "app .param(name, fn) should defer all the param routes",
+      "app .param(name, fn) should defer to next route",
+      "app .param(name, fn) should map logic for a single param",
+      "app .param(name, fn) should not call when values differ on error",
+      "app .param(name, fn) should not invoke without route handler",
+      "app .param(name, fn) should only call once per request",
+      "app .param(name, fn) should support altering req.params across routes",
+      "app .param(name, fn) should work with encoded values",
+      "app .param(names, fn) should map the array"
+    ],
+    "env_failures": [],
+    "message": "Remove app.param(fn) signature"
+  },
+  {
+    "repo": "express",
     "commit": "59e205a57a04fced6bb7b8ec0b5dec29461a9996",
     "parent": "b3004cb8c825321279efa48d6ad115d91a6c1b83",
     "subject": "Upgrade `content-disposition` (#7233)",
@@ -55,6 +117,99 @@
     ],
     "env_failures": [],
     "message": "Upgrade `content-disposition` (#7233)\n\n* Upgrade content-disposition\n\n* Better backward compat\n\n* chore: upgrade content-disposition to 2.0.1 and update History.md\n\n* test: add case for encoding latin1 file names with ASCII fallback in attachment\n\n* test: add cases for quoting invalid file names and handling empty file names in attachment\n\n---------\n\nCo-authored-by: Sebastian Beltran <bjohansebas@gmail.com>"
+  },
+  {
+    "repo": "express",
+    "commit": "715401478516c39ea9b2f855d4109d7d6e1131e0",
+    "parent": "628438d8d890f3707b8eecf57aeff7d0da348e8e",
+    "subject": "Add \"escape json\" setting for res.json and res.jsonp",
+    "entry": "res.json",
+    "key": "express/71540147",
+    "test_files": [
+      "test/res.json.js",
+      "test/res.jsonp.js"
+    ],
+    "fail_to_pass": [
+      "res .json(object) \"json escape\" setting should unicode escape HTML-sniffing characters",
+      "res .jsonp(object) \"json escape\" setting should unicode escape HTML-sniffing characters"
+    ],
+    "pass_to_pass": [
+      "res .json(object) \"json escape\" setting should be undefined by default",
+      "res .json(object) \"json replacer\" setting should be passed to JSON.stringify()",
+      "res .json(object) \"json spaces\" setting should be passed to JSON.stringify()",
+      "res .json(object) \"json spaces\" setting should be undefined by default",
+      "res .json(object) should not override previous Content-Types",
+      "res .json(object) should not support jsonp callbacks",
+      "res .json(object) when given an array should respond with json",
+      "res .json(object) when given an object should respond with json",
+      "res .json(object) when given primitives should respond with json for Number",
+      "res .json(object) when given primitives should respond with json for String",
+      "res .json(object) when given primitives should respond with json for null",
+      "res .json(object, status) should respond with json and set the .statusCode for backwards compat",
+      "res .json(object, status) should use status as second number for backwards compat",
+      "res .json(status, object) should respond with json and set the .statusCode",
+      "res .jsonp(object) \"json escape\" setting should be undefined by default",
+      "res .jsonp(object) \"json replacer\" setting should be passed to JSON.stringify()",
+      "res .jsonp(object) \"json spaces\" setting should be passed to JSON.stringify()",
+      "res .jsonp(object) \"json spaces\" setting should be undefined by default",
+      "res .jsonp(object) should allow []",
+      "res .jsonp(object) should allow renaming callback",
+      "res .jsonp(object) should disallow arbitrary js",
+      "res .jsonp(object) should escape utf whitespace",
+      "res .jsonp(object) should ignore object callback parameter with jsonp",
+      "res .jsonp(object) should include security header and prologue",
+      "res .jsonp(object) should not escape utf whitespace for json fallback",
+      "res .jsonp(object) should not override previous Content-Types with no callback",
+      "res .jsonp(object) should override previous Content-Types with callback",
+      "res .jsonp(object) should respond with jsonp",
+      "res .jsonp(object) should use first callback parameter with jsonp",
+      "res .jsonp(object) when given an array should respond with json",
+      "res .jsonp(object) when given an object should respond with json",
+      "res .jsonp(object) when given primitives should respond with json",
+      "res .jsonp(object) when given primitives should respond with json for Number",
+      "res .jsonp(object) when given primitives should respond with json for String",
+      "res .jsonp(object) when given primitives should respond with json for null",
+      "res .jsonp(object, status) should respond with json and set the .statusCode for backwards compat",
+      "res .jsonp(object, status) should use status as second number for backwards compat",
+      "res .jsonp(status, object) should respond with json and set the .statusCode",
+      "res should not override previous Content-Types"
+    ],
+    "env_failures": [],
+    "message": "Add \"escape json\" setting for res.json and res.jsonp\n\ncloses #3268\ncloses #3269"
+  },
+  {
+    "repo": "express",
+    "commit": "76eaa326ee8c4dda05568c6452286a16adb84c0b",
+    "parent": "c12cc8839277dcb3956558865f0cd241e8d08883",
+    "subject": "Encode URL in res.location/res.redirect if not already encoded",
+    "entry": "res.location",
+    "key": "express/76eaa326",
+    "test_files": [
+      "test/res.location.js",
+      "test/res.redirect.js"
+    ],
+    "fail_to_pass": [
+      "res .location(url) should encode \"url\"",
+      "res .redirect(url) should encode \"url\"",
+      "res when accepting html should escape the url",
+      "res when accepting text should encode the url"
+    ],
+    "pass_to_pass": [
+      "res .location(url) should not touch already-encoded sequences in \"url\"",
+      "res .location(url) should set the header",
+      "res .redirect(status, url) should set the response status",
+      "res .redirect(url) should default to a 302 redirect",
+      "res .redirect(url) should not touch already-encoded sequences in \"url\"",
+      "res .redirect(url, status) should set the response status",
+      "res when accepting html should include the redirect type",
+      "res when accepting html should respond with html",
+      "res when accepting neither text or html should respond with an empty body",
+      "res when accepting text should include the redirect type",
+      "res when accepting text should respond with text",
+      "res when the request method is HEAD should ignore the body"
+    ],
+    "env_failures": [],
+    "message": "Encode URL in res.location/res.redirect if not already encoded\n\nfixes #2897\nfixes #3003"
   },
   {
     "repo": "flask",
@@ -585,6 +740,7 @@
       "tests/test_requests.py::TestRequests::test_http_303_doesnt_change_head_to_get",
       "tests/test_requests.py::TestRequests::test_http_error",
       "tests/test_requests.py::TestRequests::test_http_with_certificate",
+      "tests/test_requests.py::TestRequests::test_https_warnings",
       "tests/test_requests.py::TestRequests::test_invalid_ca_certificate_path",
       "tests/test_requests.py::TestRequests::test_invalid_files_input",
       "tests/test_requests.py::TestRequests::test_invalid_ssl_certificate_files",
@@ -729,10 +885,42 @@
       "tests/test_requests.py::test_urllib3_retries"
     ],
     "env_failures": [
-      "tests/test_requests.py::TestPreparingURLs::test_redirecting_to_bad_url[http://localhost:-1-InvalidURL]",
-      "tests/test_requests.py::TestRequests::test_https_warnings"
+      "tests/test_requests.py::TestPreparingURLs::test_redirecting_to_bad_url[http://localhost:-1-InvalidURL]"
     ],
     "message": "Refactor rebuild_proxies to allow proxy resolution (#5924)\n\nwithout stripping Proxy-Authorization header"
+  },
+  {
+    "repo": "requests",
+    "commit": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+    "parent": "d91fe00983f1c66b9a428fe1ad15bf6ea8238972",
+    "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+    "entry": "Response.content",
+    "key": "requests/bd100472",
+    "test_files": [
+      "tests/test_lowlevel.py"
+    ],
+    "fail_to_pass": [
+      "tests/test_lowlevel.py::test_digestauth_401_count_reset_on_redirect",
+      "tests/test_lowlevel.py::test_digestauth_401_only_sent_once",
+      "tests/test_lowlevel.py::test_digestauth_only_on_4xx",
+      "tests/test_lowlevel.py::test_fragment_not_sent_with_request",
+      "tests/test_lowlevel.py::test_fragment_update_on_redirect",
+      "tests/test_lowlevel.py::test_redirect_rfc1808_to_non_ascii_location",
+      "tests/test_lowlevel.py::test_response_content_retains_error"
+    ],
+    "pass_to_pass": [
+      "tests/test_lowlevel.py::test_chunked_upload",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[ALL_PROXY-http]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[ALL_PROXY-https]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[HTTPS_PROXY-https]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[HTTP_PROXY-http]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[all_proxy-http]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[all_proxy-https]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[http_proxy-http]",
+      "tests/test_lowlevel.py::test_use_proxy_from_environment[https_proxy-https]"
+    ],
+    "env_failures": [],
+    "message": "#4965 fix: Accessing response.content twice removes forgets read error."
   },
   {
     "repo": "requests",
@@ -885,6 +1073,7 @@
       "tests/test_requests.py::TestRequests::test_http_303_doesnt_change_head_to_get",
       "tests/test_requests.py::TestRequests::test_http_error",
       "tests/test_requests.py::TestRequests::test_http_with_certificate",
+      "tests/test_requests.py::TestRequests::test_https_warnings",
       "tests/test_requests.py::TestRequests::test_invalid_ca_certificate_path",
       "tests/test_requests.py::TestRequests::test_invalid_files_input",
       "tests/test_requests.py::TestRequests::test_invalid_ssl_certificate_files",
@@ -1029,8 +1218,7 @@
       "tests/test_requests.py::test_urllib3_retries"
     ],
     "env_failures": [
-      "tests/test_requests.py::TestPreparingURLs::test_redirecting_to_bad_url[http://localhost:-1-InvalidURL]",
-      "tests/test_requests.py::TestRequests::test_https_warnings"
+      "tests/test_requests.py::TestPreparingURLs::test_redirecting_to_bad_url[http://localhost:-1-InvalidURL]"
     ],
     "message": "Fix inconsistent exception type in response.json() method (#5856)"
   }

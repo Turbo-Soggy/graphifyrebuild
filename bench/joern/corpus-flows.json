@@ -1,0 +1,264 @@
+{
+  "flows": [
+    {
+      "rule": "corpus-taint",
+      "path": [
+        {
+          "file": "handlers.py",
+          "line": 44,
+          "method": "handlers.py:<module>.tp_reflected_xss",
+          "code": "read_query_param(request)"
+        },
+        {
+          "file": "handlers.py",
+          "line": 44,
+          "method": "handlers.py:<module>.tp_reflected_xss",
+          "code": "raw"
+        },
+        {
+          "file": "handlers.py",
+          "line": 45,
+          "method": "handlers.py:<module>.tp_reflected_xss",
+          "code": "raw"
+        }
+      ]
+    },
+    {
+      "rule": "corpus-taint",
+      "path": [
+        {
+          "file": "handlers.py",
+          "line": 38,
+          "method": "handlers.py:<module>.tp_multihop_shell",
+          "code": "read_header(request, \"X-Path\")"
+        },
+        {
+          "file": "handlers.py",
+          "line": 38,
+          "method": "handlers.py:<module>.tp_multihop_shell",
+          "code": "value"
+        },
+        {
+          "file": "handlers.py",
+          "line": 39,
+          "method": "handlers.py:<module>.tp_multihop_shell",
+          "code": "value"
+        },
+        {
+          "file": "handlers.py",
+          "line": 21,
+          "method": "handlers.py:<module>._exec_path",
+          "code": "user_value"
+        },
+        {
+          "file": "handlers.py",
+          "line": 29,
+          "method": "handlers.py:<module>._exec_path",
+          "code": "\"ls \" + user_value"
+        }
+      ]
+    },
+    {
+      "rule": "corpus-taint",
+      "path": [
+        {
+          "file": "handlers.py",
+          "line": 55,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "read_query_param(request)"
+        },
+        {
+          "file": "handlers.py",
+          "line": 55,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "raw"
+        },
+        {
+          "file": "handlers.py",
+          "line": 56,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "raw"
+        },
+        {
+          "file": "sinks.py",
+          "line": 22,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "value"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "value"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "str(value)"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp2"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp2"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp2.__iter__()"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp2 = str(value)\ntmp2.__iter__()"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp1"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp1"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp1.__next__()"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "ch"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "ch"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "ch"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "ch"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp0"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp0 = <operator>.genExp\ntmp1 = tmp2 = str(value)\ntmp2.__iter__()\nwhile ... : ...\ntmp0"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp3"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "\"\".join(ch for ch in str(value) if ch.isalnum() or ch in \" _-\")"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "tmp3 = \"\"\n\"\".join(ch for ch in str(value) if ch.isalnum() or ch in \" _-\")"
+        },
+        {
+          "file": "sinks.py",
+          "line": 24,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "return \"\".join(ch for ch in str(value) if ch.isalnum() or ch in \" _-\")"
+        },
+        {
+          "file": "sinks.py",
+          "line": 22,
+          "method": "sinks.py:<module>.sanitize",
+          "code": "RET"
+        },
+        {
+          "file": "handlers.py",
+          "line": 56,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "sanitize(raw)"
+        },
+        {
+          "file": "handlers.py",
+          "line": 56,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "safe"
+        },
+        {
+          "file": "handlers.py",
+          "line": 57,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "safe"
+        },
+        {
+          "file": "handlers.py",
+          "line": 57,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "{safe}"
+        },
+        {
+          "file": "handlers.py",
+          "line": 57,
+          "method": "handlers.py:<module>.tn_sanitized_sql",
+          "code": "f\"SELECT * FROM users WHERE name = '{safe}'\""
+        }
+      ]
+    },
+    {
+      "rule": "corpus-taint",
+      "path": [
+        {
+          "file": "handlers.py",
+          "line": 17,
+          "method": "handlers.py:<module>.tp_direct_sqli",
+          "code": "read_query_param(request)"
+        },
+        {
+          "file": "handlers.py",
+          "line": 17,
+          "method": "handlers.py:<module>.tp_direct_sqli",
+          "code": "raw"
+        },
+        {
+          "file": "handlers.py",
+          "line": 18,
+          "method": "handlers.py:<module>.tp_direct_sqli",
+          "code": "\"SELECT * FROM users WHERE name = '\" + raw + \"'\""
+        }
+      ]
+    }
+  ]
+}

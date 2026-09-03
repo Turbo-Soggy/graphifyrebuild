@@ -27,7 +27,12 @@ source, not just names, and it tells you what it does not know.
    `graphify-ext blast-radius "<seed>" --relation calls --direction up` for
    callers only. `graphify-ext overrides "<method>"` before editing a base
    method: overrides need their own fix.
-4. **Snapshot, edit, refresh, verify.**
+4. **Work the checklist.** The pack ends with `BEFORE YOU FINISH`: every call
+   site of the seed and every sibling member of its owner. Visit each call site
+   and update or confirm it; decide for each sibling whether the same change
+   applies. The measured failure mode of agents using this graph is stopping one
+   symbol short of the fix, with the missing symbol already on screen.
+5. **Snapshot, edit, refresh, verify.**
    `graphify-ext edge-diff snapshot --node "<seed>"` → edit →
    `graphify-ext refresh` (incremental update of the edited files, re-applies
    the ext layer) → `graphify-ext edge-diff check` (exit 2 on an unexpected

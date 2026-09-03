@@ -211,3 +211,25 @@ def test_mention_first_promotes_symbols_the_seed_names(tmp_path):
         order="current")["included"]]
     assert shipped.index("deep") < shipped.index("near")
     assert current.index("near") < current.index("deep")
+
+
+def test_review_checklist_lists_call_sites_and_siblings_with_shown_flag(tmp_path):
+    """The two things "stopped one symbol short" means: callers of the seed and
+    members of its owner -- listed even when the pack did not show them."""
+    graph, lines, big_line = _chain_graph(tmp_path)
+    # f3 calls f0 (a call site); Big owns f0 and f4 (siblings), f4 never shown
+    graph["links"] += [
+        {"source": "f3", "target": "f0", "relation": "calls", "source_location": "L99"},
+        {"source": "big", "target": "f0", "relation": "method"},
+        {"source": "big", "target": "f4", "relation": "method"},
+    ]
+    pack = context.build_context(graph, "f0", tmp_path, depth=1, budget=700,
+                                 relations=_RELS, index_budget=0)
+    rc = pack["review_checklist"]
+    cs = {c["id"]: c for c in rc["call_sites_of_seed"]}
+    assert "f3" in cs and cs["f3"]["call_line"] == "L99"
+    sib = {m["id"]: m for m in rc["sibling_members"]}
+    assert set(sib) == {"f4"} and sib["f4"]["owner"] == "Big"
+    shown = {i["id"] for i in pack["included"]}
+    assert all(c["shown"] == (c["id"] in shown) for c in rc["call_sites_of_seed"])
+    assert "call site" in rc["note"]

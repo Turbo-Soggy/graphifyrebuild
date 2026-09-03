@@ -100,7 +100,10 @@ def build_server():
             "file:line and qualified names); context_tool for its source plus "
             "neighbourhood within a token budget -- read `unresolved`, "
             "`unmodelled`, `omitted` and `stale_files` before trusting the pack "
-            "is complete; blast_radius_tool for who is affected; "
+            "is complete, and work through `review_checklist` (every call site of "
+            "the seed, every sibling member) before declaring a fix done -- the "
+            "measured failure mode is stopping one symbol short; "
+            "blast_radius_tool for who is affected; "
             "overrides_tool before editing a base method; edge_diff_tool "
             "snapshot/check around the edit. Run supplement_tool once per "
             "repo if symbols bound by assignment (JS members) or shadowed by "
@@ -243,7 +246,9 @@ def build_server():
                        f"{len(pack['unresolved'])} unresolved, "
                        f"{len(pack['omitted'])} omitted, "
                        f"{len(pack['unmodelled'])} absent from graph, "
-                       f"{len(pack['related_tests'])} test link(s)")
+                       f"{len(pack['related_tests'])} test link(s); "
+                       f"review_checklist: {len(pack['review_checklist']['call_sites_of_seed'])} "
+                       f"call site(s), {len(pack['review_checklist']['sibling_members'])} sibling(s)")
             if pack["stale_files"]:
                 status_note = (f"GRAPH STALE for {len(pack['stale_files'])} file(s) "
                                "shown -- line numbers may be wrong, re-extract; ")

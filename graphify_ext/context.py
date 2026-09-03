@@ -552,6 +552,57 @@ def build_context(
                                       0 if r["relation"] == "tests" else 1,
                                       str(r["test_file"]), str(r["test_label"])))
 
+    # ---- review checklist: what a fix to the seed must not leave behind ------
+    # Measured in the end-to-end fix eval (bench/fixeval): on the task the
+    # graph arm lost, the pack SHOWED the call site (`Session.send` line 197
+    # was in the RELATED bodies) and the agent still declared itself done
+    # without touching it; on another it fixed the named member and not its two
+    # sibling decorators. Showing is not enough. This restates, as a list the
+    # agent can tick, every call site of the seed and every sibling member of
+    # its owner -- no new retrieval, just the two things "stopped one symbol
+    # short" means.
+    _CALL_RELS = ("calls", "indirect_call")
+    _MEMBER_RELS = ("method", "contains")
+    call_sites: list[dict] = []
+    owners: list[str] = []
+    for e in graphio.edges(data):
+        rel_name = str(e.get("relation", ""))
+        s_id, t_id = str(e.get("source")), str(e.get("target"))
+        if t_id == seed and rel_name in _CALL_RELS and s_id in by_id:
+            cn = by_id[s_id]
+            call_sites.append({
+                "id": s_id, "label": cn.get("label"), "file": cn.get("source_file"),
+                "location": cn.get("source_location"),
+                # the line the extractor saw the call on, when it recorded one
+                "call_line": e.get("source_location"),
+                "relation": rel_name, "confidence": e.get("confidence"),
+                "shown": s_id in {i["id"] for i in included},
+            })
+        elif t_id == seed and rel_name in _MEMBER_RELS and s_id in by_id:
+            owners.append(s_id)
+    siblings: list[dict] = []
+    for e in graphio.edges(data):
+        if (str(e.get("source")) in owners and str(e.get("relation", "")) in _MEMBER_RELS
+                and str(e.get("target")) != seed and str(e.get("target")) in by_id):
+            sn = by_id[str(e.get("target"))]
+            if not graphio.is_file_node(sn) and (sn.get("_callable") or str(sn.get("label", "")).endswith("()")):
+                siblings.append({"id": str(e.get("target")), "label": sn.get("label"),
+                                 "file": sn.get("source_file"), "location": sn.get("source_location"),
+                                 "owner": by_id.get(str(e.get("source")), {}).get("label"),
+                                 "shown": str(e.get("target")) in {i["id"] for i in included}})
+    seen_ids: set[str] = set()
+    call_sites = [c for c in call_sites if not (c["id"] in seen_ids or seen_ids.add(c["id"]))]
+    seen_ids = set()
+    siblings = [c for c in siblings if not (c["id"] in seen_ids or seen_ids.add(c["id"]))]
+    review_checklist = {
+        "call_sites_of_seed": call_sites,
+        "sibling_members": siblings,
+        "note": ("Before finishing a change to the seed: visit every call site listed "
+                 "(update it or confirm it still holds), and decide for each sibling "
+                 "member whether the same change applies. Items marked shown=false are "
+                 "in the graph but not in this pack; open them."),
+    }
+
     # ---- disclose files the graph is STALE for ---------------------------
     # graphify's manifest records an MD5 of each file at extraction. A file
     # whose current hash differs has been edited since: every line number the
@@ -620,6 +671,7 @@ def build_context(
         "index": index,
         "index_unsliceable": index_unsliceable,
         "related_tests": related_tests,
+        "review_checklist": review_checklist,
         "unmodelled": unmodelled,
         "unresolved": unresolved,
         "omitted": omitted,

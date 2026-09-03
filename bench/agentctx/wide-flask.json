@@ -1,0 +1,2226 @@
+[
+  {
+    "repo": "flask",
+    "commit": "a411a2434b09d9cbaa4074232b2c247d591bb655",
+    "parent": "daca74d93a0edc458e618136de7d14803f06bc28",
+    "subject": "add back opening session on context push",
+    "entry": "AppContext.session",
+    "ground_truth": [
+      "src/flask/ctx.py::AppContext.session",
+      "src/flask/ctx.py::AppContext.push"
+    ],
+    "discover": [
+      "src/flask/ctx.py::AppContext.push"
+    ],
+    "by_file": {
+      "src/flask/ctx.py": [
+        {
+          "name": "AppContext.session",
+          "kind": "function",
+          "def_line": 381,
+          "extent_start": 380,
+          "end": 397
+        },
+        {
+          "name": "AppContext.push",
+          "kind": "function",
+          "def_line": 410,
+          "extent_start": 410,
+          "end": 431
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "c77a5203438fe772d41f6a47303ad3f57a4efe6d",
+    "parent": "9b74a90dd3c47f792734823e8793ac36f38bc4dd",
+    "subject": "deprecate should_ignore_error",
+    "entry": "App.should_ignore_error",
+    "ground_truth": [
+      "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request",
+      "src/flask/sansio/app.py::App.should_ignore_error"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.wsgi_app",
+          "kind": "function",
+          "def_line": 1536,
+          "extent_start": 1536,
+          "end": 1582
+        },
+        {
+          "name": "Flask.full_dispatch_request",
+          "kind": "function",
+          "def_line": 991,
+          "extent_start": 991,
+          "end": 1007
+        }
+      ],
+      "src/flask/sansio/app.py": [
+        {
+          "name": "App.should_ignore_error",
+          "kind": "function",
+          "def_line": 925,
+          "extent_start": 925,
+          "end": 933
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "eca5fd1dfdc614c2df876cc32018a7d71f84ea82",
+    "parent": "eb58d862cc4a8f31a369b6e9ad1724e9e642f13f",
+    "subject": "redirect defaults to 303",
+    "entry": "redirect",
+    "ground_truth": [
+      "src/flask/helpers.py::redirect",
+      "src/flask/sansio/app.py::App.redirect"
+    ],
+    "discover": [
+      "src/flask/sansio/app.py::App.redirect"
+    ],
+    "by_file": {
+      "src/flask/helpers.py": [
+        {
+          "name": "redirect",
+          "kind": "function",
+          "def_line": 241,
+          "extent_start": 241,
+          "end": 262
+        }
+      ],
+      "src/flask/sansio/app.py": [
+        {
+          "name": "App.redirect",
+          "kind": "function",
+          "def_line": 935,
+          "extent_start": 935,
+          "end": 951
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "daf1510a4bda652ac2cfca03ec5567b03ddf8bf1",
+    "parent": "85c5d93cbd049c4bd0679c36fd1ddcae8c37b642",
+    "subject": "use template_filter without parens",
+    "entry": "App.template_filter",
+    "ground_truth": [
+      "src/flask/sansio/app.py::App.template_filter",
+      "src/flask/sansio/app.py::App.template_test",
+      "src/flask/sansio/app.py::App.template_global",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_filter",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_test",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_global"
+    ],
+    "discover": [
+      "src/flask/sansio/app.py::App.template_test",
+      "src/flask/sansio/app.py::App.template_global",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_filter",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_test",
+      "src/flask/sansio/blueprints.py::Blueprint.app_template_global"
+    ],
+    "by_file": {
+      "src/flask/sansio/app.py": [
+        {
+          "name": "App.template_filter",
+          "kind": "function",
+          "def_line": 664,
+          "extent_start": 663,
+          "end": 683
+        },
+        {
+          "name": "App.template_test",
+          "kind": "function",
+          "def_line": 698,
+          "extent_start": 697,
+          "end": 724
+        },
+        {
+          "name": "App.template_global",
+          "kind": "function",
+          "def_line": 741,
+          "extent_start": 740,
+          "end": 762
+        }
+      ],
+      "src/flask/sansio/blueprints.py": [
+        {
+          "name": "Blueprint.app_template_filter",
+          "kind": "function",
+          "def_line": 444,
+          "extent_start": 443,
+          "end": 458
+        },
+        {
+          "name": "Blueprint.app_template_test",
+          "kind": "function",
+          "def_line": 478,
+          "extent_start": 477,
+          "end": 494
+        },
+        {
+          "name": "Blueprint.app_template_global",
+          "kind": "function",
+          "def_line": 516,
+          "extent_start": 515,
+          "end": 532
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "9822a0351574790cb66c652fcc396ad7aa2b09d8",
+    "parent": "49b7e7bc8fb69d605719991d1c0a99fcee689053",
+    "subject": "refactor stream_with_context for async views",
+    "entry": "stream_with_context",
+    "ground_truth": [
+      "src/flask/helpers.py::stream_with_context",
+      "src/flask/helpers.py::stream_with_context.generator"
+    ],
+    "discover": [
+      "src/flask/helpers.py::stream_with_context.generator"
+    ],
+    "by_file": {
+      "src/flask/helpers.py": [
+        {
+          "name": "stream_with_context",
+          "kind": "function",
+          "def_line": 62,
+          "extent_start": 62,
+          "end": 136
+        },
+        {
+          "name": "stream_with_context.generator",
+          "kind": "function",
+          "def_line": 108,
+          "extent_start": 108,
+          "end": 128
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "d718ecf6d3dfc4656d262154c59672437c1ea075",
+    "parent": "0ce27278d234c13ce00019540ff8e9891542d1f2",
+    "subject": "Provide a configuration option to control automatic option responses",
+    "entry": "Flask",
+    "ground_truth": [
+      "src/flask/app.py::Flask",
+      "src/flask/sansio/app.py::App.add_url_rule"
+    ],
+    "discover": [
+      "src/flask/sansio/app.py::App.add_url_rule"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask",
+          "kind": "class",
+          "def_line": 79,
+          "extent_start": 79,
+          "end": 1498
+        }
+      ],
+      "src/flask/sansio/app.py": [
+        {
+          "name": "App.add_url_rule",
+          "kind": "function",
+          "def_line": 605,
+          "extent_start": 604,
+          "end": 661
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "72c85e80c8ef9e6d5b5644f7bb23cdc175ca3873",
+    "parent": "0ec7f713d679ceed2c605e62ac5d38d579f29fa0",
+    "subject": "Provide an extendable merge blueprint funcs method",
+    "entry": "Blueprint.register.extend",
+    "ground_truth": [
+      "src/flask/sansio/blueprints.py::Blueprint.register",
+      "src/flask/sansio/blueprints.py::Blueprint.register.extend"
+    ],
+    "discover": [
+      "src/flask/sansio/blueprints.py::Blueprint.register"
+    ],
+    "by_file": {
+      "src/flask/sansio/blueprints.py": [
+        {
+          "name": "Blueprint.register",
+          "kind": "function",
+          "def_line": 273,
+          "extent_start": 273,
+          "end": 407
+        },
+        {
+          "name": "Blueprint.register.extend",
+          "kind": "function",
+          "def_line": 333,
+          "extent_start": 333,
+          "end": 336
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "4256fc63044fa0d9c2135443461689b1adaf386d",
+    "parent": "c690f529f28a8fd7ecdac90939944475613760a5",
+    "subject": "deprecate locked_cached_property",
+    "entry": "locked_cached_property",
+    "ground_truth": [
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
+      "src/flask/helpers.py::locked_cached_property",
+      "src/flask/helpers.py::locked_cached_property.__init__",
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
+      "src/flask/helpers.py::locked_cached_property.__init__",
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.name",
+          "kind": "function",
+          "def_line": 535,
+          "extent_start": 534,
+          "end": 549
+        },
+        {
+          "name": "Flask.logger",
+          "kind": "function",
+          "def_line": 552,
+          "extent_start": 551,
+          "end": 576
+        },
+        {
+          "name": "Flask.jinja_env",
+          "kind": "function",
+          "def_line": 579,
+          "extent_start": 578,
+          "end": 586
+        }
+      ],
+      "src/flask/helpers.py": [
+        {
+          "name": "locked_cached_property",
+          "kind": "class",
+          "def_line": 611,
+          "extent_start": 611,
+          "end": 642
+        },
+        {
+          "name": "locked_cached_property.__init__",
+          "kind": "function",
+          "def_line": 620,
+          "extent_start": 620,
+          "end": 627
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.jinja_loader",
+          "kind": "function",
+          "def_line": 321,
+          "extent_start": 320,
+          "end": 331
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "2a33c1785412075c09f9f55b3e25f2bc995ca461",
+    "parent": "704b68948f7bb94a3a4fa15e99243d4ed82081c5",
+    "subject": "deprecate got_first_request property",
+    "entry": "Flask.got_first_request",
+    "ground_truth": [
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.got_first_request"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.__init__"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 368,
+          "extent_start": 368,
+          "end": 522
+        },
+        {
+          "name": "Flask.got_first_request",
+          "kind": "function",
+          "def_line": 591,
+          "extent_start": 590,
+          "end": 597
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "5d8e35653fca0d7ee01519d556c7851089de82ea",
+    "parent": "095651be9eec58ddb0c2eb6158318b1c703c67c5",
+    "subject": "refactor lazy loading",
+    "entry": "DispatchingApp",
+    "ground_truth": [
+      "src/flask/app.py::Flask.run",
+      "src/flask/cli.py::DispatchingApp",
+      "src/flask/cli.py::DispatchingApp.__init__",
+      "src/flask/cli.py::DispatchingApp._load_in_background",
+      "src/flask/cli.py::DispatchingApp._load_in_background._load_app",
+      "src/flask/cli.py::DispatchingApp._flush_bg_loading_exception",
+      "src/flask/cli.py::DispatchingApp._load_unlocked",
+      "src/flask/cli.py::DispatchingApp.__call__",
+      "src/flask/cli.py::show_server_banner",
+      "src/flask/cli.py::run_command"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.run",
+      "src/flask/cli.py::DispatchingApp.__init__",
+      "src/flask/cli.py::DispatchingApp._load_in_background",
+      "src/flask/cli.py::DispatchingApp._load_in_background._load_app",
+      "src/flask/cli.py::DispatchingApp._flush_bg_loading_exception",
+      "src/flask/cli.py::DispatchingApp._load_unlocked",
+      "src/flask/cli.py::DispatchingApp.__call__",
+      "src/flask/cli.py::show_server_banner",
+      "src/flask/cli.py::run_command"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.run",
+          "kind": "function",
+          "def_line": 885,
+          "extent_start": 885,
+          "end": 1011
+        }
+      ],
+      "src/flask/cli.py": [
+        {
+          "name": "DispatchingApp",
+          "kind": "class",
+          "def_line": 270,
+          "extent_start": 270,
+          "end": 335
+        },
+        {
+          "name": "DispatchingApp.__init__",
+          "kind": "function",
+          "def_line": 277,
+          "extent_start": 277,
+          "end": 289
+        },
+        {
+          "name": "DispatchingApp._load_in_background",
+          "kind": "function",
+          "def_line": 291,
+          "extent_start": 291,
+          "end": 309
+        },
+        {
+          "name": "DispatchingApp._load_in_background._load_app",
+          "kind": "function",
+          "def_line": 296,
+          "extent_start": 296,
+          "end": 306
+        },
+        {
+          "name": "DispatchingApp._flush_bg_loading_exception",
+          "kind": "function",
+          "def_line": 311,
+          "extent_start": 311,
+          "end": 317
+        },
+        {
+          "name": "DispatchingApp._load_unlocked",
+          "kind": "function",
+          "def_line": 319,
+          "extent_start": 319,
+          "end": 323
+        },
+        {
+          "name": "DispatchingApp.__call__",
+          "kind": "function",
+          "def_line": 325,
+          "extent_start": 325,
+          "end": 335
+        },
+        {
+          "name": "show_server_banner",
+          "kind": "function",
+          "def_line": 814,
+          "extent_start": 814,
+          "end": 840
+        },
+        {
+          "name": "run_command",
+          "kind": "function",
+          "def_line": 997,
+          "extent_start": 938,
+          "end": 1040
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "095651be9eec58ddb0c2eb6158318b1c703c67c5",
+    "parent": "02a08512527f997e43d1c01d03d4d473cab3b239",
+    "subject": "fix has_app_context and has_request_context",
+    "entry": "has_app_context",
+    "ground_truth": [
+      "src/flask/ctx.py::has_request_context",
+      "src/flask/ctx.py::has_app_context"
+    ],
+    "discover": [
+      "src/flask/ctx.py::has_request_context"
+    ],
+    "by_file": {
+      "src/flask/ctx.py": [
+        {
+          "name": "has_request_context",
+          "kind": "function",
+          "def_line": 187,
+          "extent_start": 187,
+          "end": 216
+        },
+        {
+          "name": "has_app_context",
+          "kind": "function",
+          "def_line": 219,
+          "extent_start": 219,
+          "end": 226
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "58f3536a8f5dfc18e559c518ae38cba52bec90a9",
+    "parent": "7096b2c4b13660998ad9a7bc845c3e6c5779afaa",
+    "subject": "error for render_template outside app context",
+    "entry": "render_template",
+    "ground_truth": [
+      "src/flask/templating.py::render_template",
+      "src/flask/templating.py::render_template_string"
+    ],
+    "discover": [
+      "src/flask/templating.py::render_template_string"
+    ],
+    "by_file": {
+      "src/flask/templating.py": [
+        {
+          "name": "render_template",
+          "kind": "function",
+          "def_line": 133,
+          "extent_start": 133,
+          "end": 152
+        },
+        {
+          "name": "render_template_string",
+          "kind": "function",
+          "def_line": 155,
+          "extent_start": 155,
+          "end": 166
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "c2810ffdd2f2becbc37d35f63b69034b8b9ed5b8",
+    "parent": "9e686d93b69f0e73f801cc11a57839f4dfe2ca1a",
+    "subject": "remove deprecated send_file argument names",
+    "entry": "send_file",
+    "ground_truth": [
+      "src/flask/helpers.py::_prepare_send_file_kwargs",
+      "src/flask/helpers.py::send_file",
+      "src/flask/helpers.py::send_from_directory"
+    ],
+    "discover": [
+      "src/flask/helpers.py::_prepare_send_file_kwargs",
+      "src/flask/helpers.py::send_from_directory"
+    ],
+    "by_file": {
+      "src/flask/helpers.py": [
+        {
+          "name": "_prepare_send_file_kwargs",
+          "kind": "function",
+          "def_line": 393,
+          "extent_start": 393,
+          "end": 444
+        },
+        {
+          "name": "send_file",
+          "kind": "function",
+          "def_line": 447,
+          "extent_start": 447,
+          "end": 578
+        },
+        {
+          "name": "send_from_directory",
+          "kind": "function",
+          "def_line": 581,
+          "extent_start": 581,
+          "end": 631
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "9e686d93b69f0e73f801cc11a57839f4dfe2ca1a",
+    "parent": "96d39c87a803e3a92152787a12d09bbc149556ec",
+    "subject": "remove deprecated RequestContext.g",
+    "entry": "RequestContext.g",
+    "ground_truth": [
+      "src/flask/ctx.py::RequestContext.g",
+      "src/flask/ctx.py::RequestContext"
+    ],
+    "discover": [
+      "src/flask/ctx.py::RequestContext"
+    ],
+    "by_file": {
+      "src/flask/ctx.py": [
+        {
+          "name": "RequestContext.g",
+          "kind": "function",
+          "def_line": 331,
+          "extent_start": 330,
+          "end": 341
+        },
+        {
+          "name": "RequestContext",
+          "kind": "class",
+          "def_line": 278,
+          "extent_start": 278,
+          "end": 482
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "5544d09477af3221d988ec18b086930c2d9e67cd",
+    "parent": "ab36542260c61f178b6e8f61312b706ac4c5f73e",
+    "subject": "re-add flag to skip unguarded app.run from CLI",
+    "entry": "Flask.run",
+    "ground_truth": [
+      "src/flask/app.py::Flask.run",
+      "src/flask/cli.py::FlaskGroup.make_context"
+    ],
+    "discover": [
+      "src/flask/cli.py::FlaskGroup.make_context"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.run",
+          "kind": "function",
+          "def_line": 849,
+          "extent_start": 849,
+          "end": 975
+        }
+      ],
+      "src/flask/cli.py": [
+        {
+          "name": "FlaskGroup.make_context",
+          "kind": "function",
+          "def_line": 711,
+          "extent_start": 711,
+          "end": 728
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "c9e000b9cea2e117218d460874d86301fbb43c43",
+    "parent": "ae547270e935b08d4deada9e28b049ff53debefe",
+    "subject": "with_appcontext lasts for the lifetime of the click context",
+    "entry": "with_appcontext",
+    "ground_truth": [
+      "src/flask/cli.py::with_appcontext",
+      "src/flask/cli.py::with_appcontext.decorator",
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
+    ],
+    "discover": [
+      "src/flask/cli.py::with_appcontext.decorator",
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
+    ],
+    "by_file": {
+      "src/flask/cli.py": [
+        {
+          "name": "with_appcontext",
+          "kind": "function",
+          "def_line": 411,
+          "extent_start": 411,
+          "end": 423
+        },
+        {
+          "name": "with_appcontext.decorator",
+          "kind": "function",
+          "def_line": 419,
+          "extent_start": 418,
+          "end": 421
+        },
+        {
+          "name": "FlaskGroup.get_command",
+          "kind": "function",
+          "def_line": 649,
+          "extent_start": 649,
+          "end": 665
+        },
+        {
+          "name": "FlaskGroup",
+          "kind": "class",
+          "def_line": 568,
+          "extent_start": 568,
+          "end": 715
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "45174bf9a1e96e51ce589c7aa2c151249d1fdf11",
+    "parent": "bab5a65e6eaee20ac1706fc9439ee538f59e652f",
+    "subject": "use __init_subclass__ instead of metaclass for MethodView",
+    "entry": "MethodView",
+    "ground_truth": [
+      "src/flask/views.py::View",
+      "src/flask/views.py::MethodViewType",
+      "src/flask/views.py::MethodViewType.__init__",
+      "src/flask/views.py::MethodView"
+    ],
+    "discover": [
+      "src/flask/views.py::View",
+      "src/flask/views.py::MethodViewType",
+      "src/flask/views.py::MethodViewType.__init__"
+    ],
+    "by_file": {
+      "src/flask/views.py": [
+        {
+          "name": "View",
+          "kind": "class",
+          "def_line": 13,
+          "extent_start": 13,
+          "end": 132
+        },
+        {
+          "name": "MethodViewType",
+          "kind": "class",
+          "def_line": 135,
+          "extent_start": 135,
+          "end": 159
+        },
+        {
+          "name": "MethodViewType.__init__",
+          "kind": "function",
+          "def_line": 140,
+          "extent_start": 140,
+          "end": 159
+        },
+        {
+          "name": "MethodView",
+          "kind": "class",
+          "def_line": 162,
+          "extent_start": 162,
+          "end": 198
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "96c97dec095f204b8a557c5ea804afdd329e3c43",
+    "parent": "7a2d5fb6df1f2c066b94dd88686137353ada9cc6",
+    "subject": "deprecate before_first_request",
+    "entry": "Flask.before_first_request",
+    "ground_truth": [
+      "src/flask/app.py::Flask.full_dispatch_request",
+      "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.before_first_request",
+      "src/flask/blueprints.py::Blueprint.before_app_first_request"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.full_dispatch_request",
+      "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/blueprints.py::Blueprint.before_app_first_request"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.full_dispatch_request",
+          "kind": "function",
+          "def_line": 1548,
+          "extent_start": 1548,
+          "end": 1563
+        },
+        {
+          "name": "Flask.try_trigger_before_first_request_functions",
+          "kind": "function",
+          "def_line": 1594,
+          "extent_start": 1594,
+          "end": 1608
+        },
+        {
+          "name": "Flask",
+          "kind": "class",
+          "def_line": 95,
+          "extent_start": 95,
+          "end": 2283
+        },
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 391,
+          "extent_start": 391,
+          "end": 536
+        },
+        {
+          "name": "Flask.before_first_request",
+          "kind": "function",
+          "def_line": 1249,
+          "extent_start": 1248,
+          "end": 1261
+        }
+      ],
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint.before_app_first_request",
+          "kind": "function",
+          "def_line": 541,
+          "extent_start": 540,
+          "end": 548
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "3351a8677e5bd1e1b8cfe2860b73b3422cde4f31",
+    "parent": "81be290ec8889c157c84bc7ce857f883396c5daf",
+    "subject": "add errorhandler type check tests",
+    "entry": "Scaffold.errorhandler",
+    "ground_truth": [
+      "src/flask/blueprints.py::Blueprint.app_errorhandler",
+      "src/flask/blueprints.py::Blueprint.app_errorhandler.decorator",
+      "src/flask/scaffold.py::Scaffold.errorhandler",
+      "src/flask/scaffold.py::Scaffold.errorhandler.decorator"
+    ],
+    "discover": [
+      "src/flask/blueprints.py::Blueprint.app_errorhandler",
+      "src/flask/blueprints.py::Blueprint.app_errorhandler.decorator",
+      "src/flask/scaffold.py::Scaffold.errorhandler.decorator"
+    ],
+    "by_file": {
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint.app_errorhandler",
+          "kind": "function",
+          "def_line": 564,
+          "extent_start": 564,
+          "end": 573
+        },
+        {
+          "name": "Blueprint.app_errorhandler.decorator",
+          "kind": "function",
+          "def_line": 569,
+          "extent_start": 569,
+          "end": 571
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.errorhandler",
+          "kind": "function",
+          "def_line": 655,
+          "extent_start": 654,
+          "end": 691
+        },
+        {
+          "name": "Scaffold.errorhandler.decorator",
+          "kind": "function",
+          "def_line": 687,
+          "extent_start": 687,
+          "end": 689
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "a406c297aafa28074d11ec6fd27c246c70418cb4",
+    "parent": "eb36135cfe6a17350617e47b70b9ad383206eded",
+    "subject": "apply setupmethod consistently",
+    "entry": "setupmethod",
+    "ground_truth": [
+      "src/flask/app.py::Flask._is_setup_finished",
+      "src/flask/blueprints.py::Blueprint._is_setup_finished",
+      "src/flask/blueprints.py::Blueprint.record",
+      "src/flask/scaffold.py::setupmethod",
+      "src/flask/scaffold.py::setupmethod.wrapper_func",
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask._is_setup_finished",
+      "src/flask/blueprints.py::Blueprint._is_setup_finished",
+      "src/flask/blueprints.py::Blueprint.record",
+      "src/flask/scaffold.py::setupmethod.wrapper_func",
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask._is_setup_finished",
+          "kind": "function",
+          "def_line": 544,
+          "extent_start": 544,
+          "end": 545
+        }
+      ],
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint._is_setup_finished",
+          "kind": "function",
+          "def_line": 210,
+          "extent_start": 210,
+          "end": 211
+        },
+        {
+          "name": "Blueprint.record",
+          "kind": "function",
+          "def_line": 213,
+          "extent_start": 213,
+          "end": 230
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "setupmethod",
+          "kind": "function",
+          "def_line": 39,
+          "extent_start": 39,
+          "end": 58
+        },
+        {
+          "name": "setupmethod.wrapper_func",
+          "kind": "function",
+          "def_line": 44,
+          "extent_start": 44,
+          "end": 56
+        },
+        {
+          "name": "Scaffold._is_setup_finished",
+          "kind": "function",
+          "def_line": 242,
+          "extent_start": 242,
+          "end": 243
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "39f93632964ecabfcb9c1980e2add922098aad80",
+    "parent": "92acd05d9bd33419ab885e4472b28a1d5cc15d2e",
+    "subject": "finish moving url_for to app",
+    "entry": "url_for",
+    "ground_truth": [
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.url_for",
+      "src/flask/app.py::Flask.handle_url_build_error",
+      "src/flask/helpers.py::url_for"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.url_for",
+      "src/flask/app.py::Flask.handle_url_build_error"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 397,
+          "extent_start": 397,
+          "end": 540
+        },
+        {
+          "name": "Flask.url_for",
+          "kind": "function",
+          "def_line": 1665,
+          "extent_start": 1665,
+          "end": 1707
+        },
+        {
+          "name": "Flask.handle_url_build_error",
+          "kind": "function",
+          "def_line": 1907,
+          "extent_start": 1907,
+          "end": 1928
+        }
+      ],
+      "src/flask/helpers.py": [
+        {
+          "name": "url_for",
+          "kind": "function",
+          "def_line": 194,
+          "extent_start": 194,
+          "end": 308
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "1e5dd430223369d13ea94ffffe22bca53a98e730",
+    "parent": "f976d5bb88216e921a96998f767df31d7039e4ef",
+    "subject": "refactor error checks in register_error_handler",
+    "entry": "Scaffold.register_error_handler",
+    "ground_truth": [
+      "src/flask/scaffold.py::Scaffold.register_error_handler",
+      "src/flask/scaffold.py::Scaffold._get_exc_class_and_code"
+    ],
+    "discover": [
+      "src/flask/scaffold.py::Scaffold._get_exc_class_and_code"
+    ],
+    "by_file": {
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.register_error_handler",
+          "kind": "function",
+          "def_line": 689,
+          "extent_start": 688,
+          "end": 716
+        },
+        {
+          "name": "Scaffold._get_exc_class_and_code",
+          "kind": "function",
+          "def_line": 719,
+          "extent_start": 718,
+          "end": 742
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "4eb5e9455b2a8f15f3dc5065a47f8e43ac47e539",
+    "parent": "08a283af5efc999d4f1e29275317a5c0c05c6f7b",
+    "subject": "more from_prefixed_env features",
+    "entry": "Config.from_prefixed_env",
+    "ground_truth": [
+      "src/flask/config.py::Config.__init__",
+      "src/flask/config.py::Config.from_prefixed_env"
+    ],
+    "discover": [
+      "src/flask/config.py::Config.__init__"
+    ],
+    "by_file": {
+      "src/flask/config.py": [
+        {
+          "name": "Config.__init__",
+          "kind": "function",
+          "def_line": 80,
+          "extent_start": 80,
+          "end": 82
+        },
+        {
+          "name": "Config.from_prefixed_env",
+          "kind": "function",
+          "def_line": 108,
+          "extent_start": 108,
+          "end": 144
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "1be65b1b699b0512e3b38e3e05d42d083cfd12f1",
+    "parent": "7c5f17a55e8cd233db17f4944a482cc497a6e7c6",
+    "subject": "overriding FlaskClient.open works with redirects",
+    "entry": "FlaskClient.open",
+    "ground_truth": [
+      "src/flask/testing.py::FlaskClient.open",
+      "src/flask/testing.py::FlaskClient.open.copy_environ"
+    ],
+    "discover": [
+      "src/flask/testing.py::FlaskClient.open.copy_environ"
+    ],
+    "by_file": {
+      "src/flask/testing.py": [
+        {
+          "name": "FlaskClient.open",
+          "kind": "function",
+          "def_line": 175,
+          "extent_start": 175,
+          "end": 220
+        },
+        {
+          "name": "FlaskClient.open.copy_environ",
+          "kind": "function",
+          "def_line": 185,
+          "extent_start": 185,
+          "end": 190
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "b1a00ebc4c6f15055ddf15ecb17243a089f52a60",
+    "parent": "633449a36c959d25577799eb3da76005a803d5cd",
+    "subject": "update error message for after_this_request and copy_current_request_context",
+    "entry": "after_this_request",
+    "ground_truth": [
+      "src/flask/ctx.py::after_this_request",
+      "src/flask/ctx.py::copy_current_request_context"
+    ],
+    "discover": [
+      "src/flask/ctx.py::copy_current_request_context"
+    ],
+    "by_file": {
+      "src/flask/ctx.py": [
+        {
+          "name": "after_this_request",
+          "kind": "function",
+          "def_line": 112,
+          "extent_start": 112,
+          "end": 142
+        },
+        {
+          "name": "copy_current_request_context",
+          "kind": "function",
+          "def_line": 145,
+          "extent_start": 145,
+          "end": 182
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "2bd7aed1a4e257b00df4282b96e7e96edc4567f6",
+    "parent": "e21e003f62b57c35e1832c0bf14e9cd27f4e5bea",
+    "subject": "remove deprecated config.from_json",
+    "entry": "Config.from_json",
+    "ground_truth": [
+      "src/flask/config.py::Config.from_json",
+      "src/flask/config.py::Config",
+      "src/flask/config.py::Config.from_file"
+    ],
+    "discover": [
+      "src/flask/config.py::Config",
+      "src/flask/config.py::Config.from_file"
+    ],
+    "by_file": {
+      "src/flask/config.py": [
+        {
+          "name": "Config.from_json",
+          "kind": "function",
+          "def_line": 207,
+          "extent_start": 207,
+          "end": 231
+        },
+        {
+          "name": "Config",
+          "kind": "class",
+          "def_line": 28,
+          "extent_start": 28,
+          "end": 295
+        },
+        {
+          "name": "Config.from_file",
+          "kind": "function",
+          "def_line": 167,
+          "extent_start": 167,
+          "end": 205
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "892ae955093cc3b7925230ff7bc346a6afb14f5d",
+    "parent": "06cf349bb8b69d9946c3a6a64d32eb552cc7c28b",
+    "subject": "jsonify encodes decimal to str",
+    "entry": "jsonify",
+    "ground_truth": [
+      "src/flask/json/__init__.py::JSONEncoder.default",
+      "src/flask/json/__init__.py::dumps",
+      "src/flask/json/__init__.py::jsonify"
+    ],
+    "discover": [
+      "src/flask/json/__init__.py::JSONEncoder.default",
+      "src/flask/json/__init__.py::dumps"
+    ],
+    "by_file": {
+      "src/flask/json/__init__.py": [
+        {
+          "name": "JSONEncoder.default",
+          "kind": "function",
+          "def_line": 42,
+          "extent_start": 42,
+          "end": 56
+        },
+        {
+          "name": "dumps",
+          "kind": "function",
+          "def_line": 109,
+          "extent_start": 109,
+          "end": 141
+        },
+        {
+          "name": "jsonify",
+          "kind": "function",
+          "def_line": 284,
+          "extent_start": 284,
+          "end": 350
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "9a2adfba4d4310b005c222fcdfb85e96e3e6661d",
+    "parent": "187f6ce4096222119b8490d7e3c671e4e41f64b6",
+    "subject": "static_folder can be a pathlib.Path",
+    "entry": "Scaffold.static_folder",
+    "ground_truth": [
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/blueprints.py::Blueprint.__init__",
+      "src/flask/scaffold.py::Scaffold.__init__",
+      "src/flask/scaffold.py::Scaffold.static_folder"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/blueprints.py::Blueprint.__init__",
+      "src/flask/scaffold.py::Scaffold.__init__"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 388,
+          "extent_start": 388,
+          "end": 524
+        }
+      ],
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint.__init__",
+          "kind": "function",
+          "def_line": 174,
+          "extent_start": 174,
+          "end": 208
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.__init__",
+          "kind": "function",
+          "def_line": 92,
+          "extent_start": 92,
+          "end": 241
+        },
+        {
+          "name": "Scaffold.static_folder",
+          "kind": "function",
+          "def_line": 260,
+          "extent_start": 259,
+          "end": 264
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "67b0b7e30d2304f628e966896748032022ac0257",
+    "parent": "c2920e2bd98cdb3dcccc2868c25b695d4780c620",
+    "subject": "cache blueprint path calculation",
+    "entry": "Request.blueprint",
+    "ground_truth": [
+      "src/flask/app.py::Flask.inject_url_defaults",
+      "src/flask/wrappers.py::Request.endpoint",
+      "src/flask/wrappers.py::Request.blueprint",
+      "src/flask/wrappers.py::Request.blueprints"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.inject_url_defaults",
+      "src/flask/wrappers.py::Request.endpoint",
+      "src/flask/wrappers.py::Request.blueprints"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.inject_url_defaults",
+          "kind": "function",
+          "def_line": 1783,
+          "extent_start": 1783,
+          "end": 1802
+        }
+      ],
+      "src/flask/wrappers.py": [
+        {
+          "name": "Request.endpoint",
+          "kind": "function",
+          "def_line": 62,
+          "extent_start": 61,
+          "end": 71
+        },
+        {
+          "name": "Request.blueprint",
+          "kind": "function",
+          "def_line": 74,
+          "extent_start": 73,
+          "end": 79
+        },
+        {
+          "name": "Request.blueprints",
+          "kind": "function",
+          "def_line": 82,
+          "extent_start": 81,
+          "end": 94
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "2889da67cb15ac6d5d882781d54014286d9ae010",
+    "parent": "7f87f3dd93baf45d5f69f02a2dcf4493dfc4a1be",
+    "subject": "Remove the async helper method",
+    "entry": "Flask.ensure_sync",
+    "ground_truth": [
+      "src/flask/app.py::Flask.ensure_sync",
+      "src/flask/helpers.py::async_to_sync"
+    ],
+    "discover": [
+      "src/flask/helpers.py::async_to_sync"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.ensure_sync",
+          "kind": "function",
+          "def_line": 1572,
+          "extent_start": 1572,
+          "end": 1584
+        }
+      ],
+      "src/flask/helpers.py": [
+        {
+          "name": "async_to_sync",
+          "kind": "function",
+          "def_line": 805,
+          "extent_start": 805,
+          "end": 825
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "cb13128cf03b2f1b3c5b48eab518e57e7b5f6516",
+    "parent": "188f4785adc4eddd0b185f33b400c2812915624f",
+    "subject": "Remove context copying from run_async function",
+    "entry": "run_async",
+    "ground_truth": [
+      "src/flask/helpers.py::run_async.outer",
+      "src/flask/helpers.py::run_async.outer.inner",
+      "src/flask/helpers.py::run_async"
+    ],
+    "discover": [
+      "src/flask/helpers.py::run_async.outer",
+      "src/flask/helpers.py::run_async.outer.inner"
+    ],
+    "by_file": {
+      "src/flask/helpers.py": [
+        {
+          "name": "run_async.outer",
+          "kind": "function",
+          "def_line": 822,
+          "extent_start": 821,
+          "end": 848
+        },
+        {
+          "name": "run_async.outer.inner",
+          "kind": "function",
+          "def_line": 834,
+          "extent_start": 833,
+          "end": 846
+        },
+        {
+          "name": "run_async",
+          "kind": "function",
+          "def_line": 806,
+          "extent_start": 806,
+          "end": 851
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "85b430a3669191ee0d092393f98c0dae47218cab",
+    "parent": "f3ed1322a6d28470c259d6948906acd93bddb78b",
+    "subject": "deprecate total_seconds",
+    "entry": "total_seconds",
+    "ground_truth": [
+      "src/flask/helpers.py::total_seconds",
+      "src/flask/sessions.py::SecureCookieSessionInterface.open_session"
+    ],
+    "discover": [
+      "src/flask/sessions.py::SecureCookieSessionInterface.open_session"
+    ],
+    "by_file": {
+      "src/flask/helpers.py": [
+        {
+          "name": "total_seconds",
+          "kind": "function",
+          "def_line": 705,
+          "extent_start": 705,
+          "end": 713
+        }
+      ],
+      "src/flask/sessions.py": [
+        {
+          "name": "SecureCookieSessionInterface.open_session",
+          "kind": "function",
+          "def_line": 336,
+          "extent_start": 336,
+          "end": 348
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "f92e820b4bf357e9792d08ce398802715a63eafe",
+    "parent": "85dce2c836fe03aefc07b7f4e0aec575e170f1cd",
+    "subject": "Nested blueprints",
+    "entry": "Flask.register_blueprint",
+    "ground_truth": [
+      "src/flask/app.py::Flask.update_template_context",
+      "src/flask/app.py::Flask.register_blueprint",
+      "src/flask/app.py::Flask._find_error_handler",
+      "src/flask/app.py::Flask.preprocess_request",
+      "src/flask/app.py::Flask.process_response",
+      "src/flask/app.py::Flask.do_teardown_request",
+      "src/flask/blueprints.py::BlueprintSetupState.add_url_rule",
+      "src/flask/blueprints.py::Blueprint.register",
+      "src/flask/blueprints.py::BlueprintSetupState.__init__"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask.update_template_context",
+      "src/flask/app.py::Flask._find_error_handler",
+      "src/flask/app.py::Flask.preprocess_request",
+      "src/flask/app.py::Flask.process_response",
+      "src/flask/app.py::Flask.do_teardown_request",
+      "src/flask/blueprints.py::BlueprintSetupState.add_url_rule",
+      "src/flask/blueprints.py::Blueprint.register",
+      "src/flask/blueprints.py::BlueprintSetupState.__init__"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.update_template_context",
+          "kind": "function",
+          "def_line": 712,
+          "extent_start": 712,
+          "end": 735
+        },
+        {
+          "name": "Flask.register_blueprint",
+          "kind": "function",
+          "def_line": 971,
+          "extent_start": 970,
+          "end": 1004
+        },
+        {
+          "name": "Flask._find_error_handler",
+          "kind": "function",
+          "def_line": 1230,
+          "extent_start": 1230,
+          "end": 1253
+        },
+        {
+          "name": "Flask.preprocess_request",
+          "kind": "function",
+          "def_line": 1741,
+          "extent_start": 1741,
+          "end": 1766
+        },
+        {
+          "name": "Flask.process_response",
+          "kind": "function",
+          "def_line": 1768,
+          "extent_start": 1768,
+          "end": 1792
+        },
+        {
+          "name": "Flask.do_teardown_request",
+          "kind": "function",
+          "def_line": 1794,
+          "extent_start": 1794,
+          "end": 1823
+        }
+      ],
+      "src/flask/blueprints.py": [
+        {
+          "name": "BlueprintSetupState.add_url_rule",
+          "kind": "function",
+          "def_line": 53,
+          "extent_start": 53,
+          "end": 75
+        },
+        {
+          "name": "Blueprint.register",
+          "kind": "function",
+          "def_line": 213,
+          "extent_start": 213,
+          "end": 293
+        },
+        {
+          "name": "BlueprintSetupState.__init__",
+          "kind": "function",
+          "def_line": 16,
+          "extent_start": 16,
+          "end": 51
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "00f5a3e55ca3b6dd4e98044ab76f055dc74997ac",
+    "parent": "c6c6408c3fb96245a2e2afc4b754cdf065fdad47",
+    "subject": "Alter ensure_sync implementation to support extensions",
+    "entry": "Scaffold.ensure_sync",
+    "ground_truth": [
+      "src/flask/blueprints.py::Blueprint.register.extend",
+      "src/flask/blueprints.py::Blueprint.register.update",
+      "src/flask/blueprints.py::Blueprint.register",
+      "src/flask/blueprints.py::Blueprint.before_app_request",
+      "src/flask/blueprints.py::Blueprint.before_app_first_request",
+      "src/flask/blueprints.py::Blueprint.after_app_request",
+      "src/flask/helpers.py::run_async.outer",
+      "src/flask/scaffold.py::Scaffold.ensure_sync"
+    ],
+    "discover": [
+      "src/flask/blueprints.py::Blueprint.register.extend",
+      "src/flask/blueprints.py::Blueprint.register.update",
+      "src/flask/blueprints.py::Blueprint.register",
+      "src/flask/blueprints.py::Blueprint.before_app_request",
+      "src/flask/blueprints.py::Blueprint.before_app_first_request",
+      "src/flask/blueprints.py::Blueprint.after_app_request",
+      "src/flask/helpers.py::run_async.outer"
+    ],
+    "by_file": {
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint.register.extend",
+          "kind": "function",
+          "def_line": 238,
+          "extent_start": 238,
+          "end": 241
+        },
+        {
+          "name": "Blueprint.register.update",
+          "kind": "function",
+          "def_line": 243,
+          "extent_start": 243,
+          "end": 246
+        },
+        {
+          "name": "Blueprint.register",
+          "kind": "function",
+          "def_line": 212,
+          "extent_start": 212,
+          "end": 272
+        },
+        {
+          "name": "Blueprint.before_app_request",
+          "kind": "function",
+          "def_line": 378,
+          "extent_start": 378,
+          "end": 385
+        },
+        {
+          "name": "Blueprint.before_app_first_request",
+          "kind": "function",
+          "def_line": 387,
+          "extent_start": 387,
+          "end": 392
+        },
+        {
+          "name": "Blueprint.after_app_request",
+          "kind": "function",
+          "def_line": 394,
+          "extent_start": 394,
+          "end": 401
+        }
+      ],
+      "src/flask/helpers.py": [
+        {
+          "name": "run_async.outer",
+          "kind": "function",
+          "def_line": 751,
+          "extent_start": 750,
+          "end": 776
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.ensure_sync",
+          "kind": "function",
+          "def_line": 689,
+          "extent_start": 689,
+          "end": 700
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "ef52e3e4a379b16a8b906ff101c6edae71d80dc9",
+    "parent": "25ab05e6a2ae248ab76002807d47c23952492f17",
+    "subject": "remove redundant _register_error_handler",
+    "entry": "Scaffold._register_error_handler",
+    "ground_truth": [
+      "src/flask/scaffold.py::Scaffold.errorhandler.decorator",
+      "src/flask/scaffold.py::Scaffold.register_error_handler",
+      "src/flask/scaffold.py::Scaffold",
+      "src/flask/scaffold.py::Scaffold._register_error_handler"
+    ],
+    "discover": [
+      "src/flask/scaffold.py::Scaffold.errorhandler.decorator",
+      "src/flask/scaffold.py::Scaffold.register_error_handler",
+      "src/flask/scaffold.py::Scaffold"
+    ],
+    "by_file": {
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold.errorhandler.decorator",
+          "kind": "function",
+          "def_line": 632,
+          "extent_start": 632,
+          "end": 634
+        },
+        {
+          "name": "Scaffold.register_error_handler",
+          "kind": "function",
+          "def_line": 639,
+          "extent_start": 638,
+          "end": 646
+        },
+        {
+          "name": "Scaffold",
+          "kind": "class",
+          "def_line": 44,
+          "extent_start": 44,
+          "end": 694
+        },
+        {
+          "name": "Scaffold._register_error_handler",
+          "kind": "function",
+          "def_line": 649,
+          "extent_start": 648,
+          "end": 671
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "7029674775023c076a1dc03367214d178423809a",
+    "parent": "9f7c602a84faa8371be4ece23e4405282d1283d2",
+    "subject": "rewrite Scaffold docs",
+    "entry": "Scaffold",
+    "ground_truth": [
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.add_url_rule",
+      "src/flask/app.py::Flask.__call__",
+      "src/flask/blueprints.py::Blueprint",
+      "src/flask/scaffold.py::Scaffold",
+      "src/flask/scaffold.py::Scaffold.__init__",
+      "src/flask/scaffold.py::Scaffold.route",
+      "src/flask/scaffold.py::Scaffold.endpoint",
+      "src/flask/scaffold.py::Scaffold.before_request",
+      "src/flask/scaffold.py::Scaffold.after_request",
+      "src/flask/scaffold.py::Scaffold.teardown_request",
+      "src/flask/scaffold.py::Scaffold.add_url_rule"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.add_url_rule",
+      "src/flask/app.py::Flask.__call__",
+      "src/flask/blueprints.py::Blueprint",
+      "src/flask/scaffold.py::Scaffold.__init__",
+      "src/flask/scaffold.py::Scaffold.route",
+      "src/flask/scaffold.py::Scaffold.endpoint",
+      "src/flask/scaffold.py::Scaffold.before_request",
+      "src/flask/scaffold.py::Scaffold.after_request",
+      "src/flask/scaffold.py::Scaffold.teardown_request",
+      "src/flask/scaffold.py::Scaffold.add_url_rule"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask",
+          "kind": "class",
+          "def_line": 64,
+          "extent_start": 64,
+          "end": 2028
+        },
+        {
+          "name": "Flask.add_url_rule",
+          "kind": "function",
+          "def_line": 1012,
+          "extent_start": 1011,
+          "end": 1120
+        },
+        {
+          "name": "Flask.__call__",
+          "kind": "function",
+          "def_line": 2024,
+          "extent_start": 2024,
+          "end": 2028
+        }
+      ],
+      "src/flask/blueprints.py": [
+        {
+          "name": "Blueprint",
+          "kind": "class",
+          "def_line": 77,
+          "extent_start": 77,
+          "end": 465
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "Scaffold",
+          "kind": "class",
+          "def_line": 43,
+          "extent_start": 43,
+          "end": 574
+        },
+        {
+          "name": "Scaffold.__init__",
+          "kind": "function",
+          "def_line": 60,
+          "extent_start": 60,
+          "end": 166
+        },
+        {
+          "name": "Scaffold.route",
+          "kind": "function",
+          "def_line": 330,
+          "extent_start": 330,
+          "end": 352
+        },
+        {
+          "name": "Scaffold.endpoint",
+          "kind": "function",
+          "def_line": 365,
+          "extent_start": 365,
+          "end": 380
+        },
+        {
+          "name": "Scaffold.before_request",
+          "kind": "function",
+          "def_line": 383,
+          "extent_start": 382,
+          "end": 394
+        },
+        {
+          "name": "Scaffold.after_request",
+          "kind": "function",
+          "def_line": 397,
+          "extent_start": 396,
+          "end": 408
+        },
+        {
+          "name": "Scaffold.teardown_request",
+          "kind": "function",
+          "def_line": 411,
+          "extent_start": 410,
+          "end": 447
+        },
+        {
+          "name": "Scaffold.add_url_rule",
+          "kind": "function",
+          "def_line": 355,
+          "extent_start": 354,
+          "end": 363
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "9f7c602a84faa8371be4ece23e4405282d1283d2",
+    "parent": "3316604822644889a373018490f2534a1dafd9aa",
+    "subject": "move _PackageBoundObject into Scaffold",
+    "entry": "_PackageBoundObject",
+    "ground_truth": [
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__repr__",
+      "src/flask/helpers.py::get_root_path",
+      "src/flask/helpers.py::_matching_loader_thinks_module_is_package",
+      "src/flask/helpers.py::_find_package_path",
+      "src/flask/helpers.py::find_package",
+      "src/flask/helpers.py::_PackageBoundObject",
+      "src/flask/helpers.py::_PackageBoundObject.__init__",
+      "src/flask/helpers.py::_PackageBoundObject.static_folder",
+      "src/flask/helpers.py::_PackageBoundObject.static_url_path",
+      "src/flask/helpers.py::_PackageBoundObject.has_static_folder",
+      "src/flask/helpers.py::_PackageBoundObject.jinja_loader",
+      "src/flask/helpers.py::_PackageBoundObject.get_send_file_max_age",
+      "src/flask/helpers.py::_PackageBoundObject.send_static_file",
+      "src/flask/helpers.py::_PackageBoundObject.open_resource",
+      "src/flask/scaffold.py::setupmethod.wrapper_func",
+      "src/flask/scaffold.py::Scaffold",
+      "src/flask/scaffold.py::Scaffold.__init__",
+      "src/flask/scaffold.py::Scaffold.route"
+    ],
+    "discover": [
+      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__repr__",
+      "src/flask/helpers.py::get_root_path",
+      "src/flask/helpers.py::_matching_loader_thinks_module_is_package",
+      "src/flask/helpers.py::_find_package_path",
+      "src/flask/helpers.py::find_package",
+      "src/flask/helpers.py::_PackageBoundObject.__init__",
+      "src/flask/helpers.py::_PackageBoundObject.static_folder",
+      "src/flask/helpers.py::_PackageBoundObject.static_url_path",
+      "src/flask/helpers.py::_PackageBoundObject.has_static_folder",
+      "src/flask/helpers.py::_PackageBoundObject.jinja_loader",
+      "src/flask/helpers.py::_PackageBoundObject.get_send_file_max_age",
+      "src/flask/helpers.py::_PackageBoundObject.send_static_file",
+      "src/flask/helpers.py::_PackageBoundObject.open_resource",
+      "src/flask/scaffold.py::setupmethod.wrapper_func",
+      "src/flask/scaffold.py::Scaffold",
+      "src/flask/scaffold.py::Scaffold.__init__",
+      "src/flask/scaffold.py::Scaffold.route"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask",
+          "kind": "class",
+          "def_line": 64,
+          "extent_start": 64,
+          "end": 2031
+        },
+        {
+          "name": "Flask.__repr__",
+          "kind": "function",
+          "def_line": 2030,
+          "extent_start": 2030,
+          "end": 2031
+        }
+      ],
+      "src/flask/helpers.py": [
+        {
+          "name": "get_root_path",
+          "kind": "function",
+          "def_line": 680,
+          "extent_start": 680,
+          "end": 722
+        },
+        {
+          "name": "_matching_loader_thinks_module_is_package",
+          "kind": "function",
+          "def_line": 725,
+          "extent_start": 725,
+          "end": 744
+        },
+        {
+          "name": "_find_package_path",
+          "kind": "function",
+          "def_line": 747,
+          "extent_start": 747,
+          "end": 800
+        },
+        {
+          "name": "find_package",
+          "kind": "function",
+          "def_line": 803,
+          "extent_start": 803,
+          "end": 828
+        },
+        {
+          "name": "_PackageBoundObject",
+          "kind": "class",
+          "def_line": 857,
+          "extent_start": 857,
+          "end": 1003
+        },
+        {
+          "name": "_PackageBoundObject.__init__",
+          "kind": "function",
+          "def_line": 870,
+          "extent_start": 870,
+          "end": 888
+        },
+        {
+          "name": "_PackageBoundObject.static_folder",
+          "kind": "function",
+          "def_line": 891,
+          "extent_start": 890,
+          "end": 894
+        },
+        {
+          "name": "_PackageBoundObject.static_url_path",
+          "kind": "function",
+          "def_line": 903,
+          "extent_start": 902,
+          "end": 914
+        },
+        {
+          "name": "_PackageBoundObject.has_static_folder",
+          "kind": "function",
+          "def_line": 924,
+          "extent_start": 923,
+          "end": 930
+        },
+        {
+          "name": "_PackageBoundObject.jinja_loader",
+          "kind": "function",
+          "def_line": 933,
+          "extent_start": 932,
+          "end": 939
+        },
+        {
+          "name": "_PackageBoundObject.get_send_file_max_age",
+          "kind": "function",
+          "def_line": 941,
+          "extent_start": 941,
+          "end": 960
+        },
+        {
+          "name": "_PackageBoundObject.send_static_file",
+          "kind": "function",
+          "def_line": 962,
+          "extent_start": 962,
+          "end": 974
+        },
+        {
+          "name": "_PackageBoundObject.open_resource",
+          "kind": "function",
+          "def_line": 976,
+          "extent_start": 976,
+          "end": 1003
+        }
+      ],
+      "src/flask/scaffold.py": [
+        {
+          "name": "setupmethod.wrapper_func",
+          "kind": "function",
+          "def_line": 19,
+          "extent_start": 19,
+          "end": 30
+        },
+        {
+          "name": "Scaffold",
+          "kind": "class",
+          "def_line": 35,
+          "extent_start": 35,
+          "end": 445
+        },
+        {
+          "name": "Scaffold.__init__",
+          "kind": "function",
+          "def_line": 58,
+          "extent_start": 58,
+          "end": 147
+        },
+        {
+          "name": "Scaffold.route",
+          "kind": "function",
+          "def_line": 193,
+          "extent_start": 193,
+          "end": 223
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "fdba0d2526347786c05c15027e183a5ba4d81114",
+    "parent": "d887d32f4d0effedb6bf40f3d2ad790036934387",
+    "subject": "remove JSONMixin",
+    "entry": "JSONMixin",
+    "ground_truth": [
+      "src/flask/wrappers.py::JSONMixin",
+      "src/flask/wrappers.py::JSONMixin.on_json_loading_failed",
+      "src/flask/wrappers.py::Request",
+      "src/flask/wrappers.py::Response",
+      "src/flask/wrappers.py::Response._get_data_for_json"
+    ],
+    "discover": [
+      "src/flask/wrappers.py::JSONMixin.on_json_loading_failed",
+      "src/flask/wrappers.py::Request",
+      "src/flask/wrappers.py::Response",
+      "src/flask/wrappers.py::Response._get_data_for_json"
+    ],
+    "by_file": {
+      "src/flask/wrappers.py": [
+        {
+          "name": "JSONMixin",
+          "kind": "class",
+          "def_line": 10,
+          "extent_start": 10,
+          "end": 17
+        },
+        {
+          "name": "JSONMixin.on_json_loading_failed",
+          "kind": "function",
+          "def_line": 13,
+          "extent_start": 13,
+          "end": 17
+        },
+        {
+          "name": "Request",
+          "kind": "class",
+          "def_line": 20,
+          "extent_start": 20,
+          "end": 90
+        },
+        {
+          "name": "Response",
+          "kind": "class",
+          "def_line": 93,
+          "extent_start": 93,
+          "end": 127
+        },
+        {
+          "name": "Response._get_data_for_json",
+          "kind": "function",
+          "def_line": 113,
+          "extent_start": 113,
+          "end": 114
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "c43edfc7c08b8dbe883761bec14fa75ee7db1bf3",
+    "parent": "024f0d384cf5bb65c76ac59f8ddce464b2dc2ca1",
+    "subject": "remove simplejson",
+    "entry": "loads",
+    "ground_truth": [
+      "src/flask/json/__init__.py::JSONDecoder",
+      "src/flask/json/__init__.py::detect_encoding",
+      "src/flask/json/__init__.py::dumps",
+      "src/flask/json/__init__.py::loads",
+      "src/flask/json/__init__.py::load",
+      "src/flask/json/__init__.py::htmlsafe_dumps",
+      "src/flask/json/__init__.py::dump"
+    ],
+    "discover": [
+      "src/flask/json/__init__.py::JSONDecoder",
+      "src/flask/json/__init__.py::detect_encoding",
+      "src/flask/json/__init__.py::dumps",
+      "src/flask/json/__init__.py::load",
+      "src/flask/json/__init__.py::htmlsafe_dumps",
+      "src/flask/json/__init__.py::dump"
+    ],
+    "by_file": {
+      "src/flask/json/__init__.py": [
+        {
+          "name": "JSONDecoder",
+          "kind": "class",
+          "def_line": 94,
+          "extent_start": 94,
+          "end": 99
+        },
+        {
+          "name": "detect_encoding",
+          "kind": "function",
+          "def_line": 136,
+          "extent_start": 136,
+          "end": 176
+        },
+        {
+          "name": "dumps",
+          "kind": "function",
+          "def_line": 179,
+          "extent_start": 179,
+          "end": 205
+        },
+        {
+          "name": "loads",
+          "kind": "function",
+          "def_line": 217,
+          "extent_start": 217,
+          "end": 244
+        },
+        {
+          "name": "load",
+          "kind": "function",
+          "def_line": 247,
+          "extent_start": 247,
+          "end": 251
+        },
+        {
+          "name": "htmlsafe_dumps",
+          "kind": "function",
+          "def_line": 254,
+          "extent_start": 254,
+          "end": 288
+        },
+        {
+          "name": "dump",
+          "kind": "function",
+          "def_line": 208,
+          "extent_start": 208,
+          "end": 214
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "aac0f585b944cc65a1b570c1cc26d840f03e2f72",
+    "parent": "829aa65e642baf2f90bc29f940c8cbf180848dbc",
+    "subject": "clean up config.from_file docs",
+    "entry": "Config.from_file",
+    "ground_truth": [
+      "src/flask/config.py::Config.from_file",
+      "src/flask/config.py::Config.from_json"
+    ],
+    "discover": [
+      "src/flask/config.py::Config.from_json"
+    ],
+    "by_file": {
+      "src/flask/config.py": [
+        {
+          "name": "Config.from_file",
+          "kind": "function",
+          "def_line": 180,
+          "extent_start": 180,
+          "end": 206
+        },
+        {
+          "name": "Config.from_json",
+          "kind": "function",
+          "def_line": 208,
+          "extent_start": 208,
+          "end": 227
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "df470aecb96efbcb17ca76e73196c25c38ce6d17",
+    "parent": "465da9f610a04d379bb39a0ff03fb6c0b0ea1c45",
+    "subject": "use app.name as app.logger name",
+    "entry": "Flask.logger",
+    "ground_truth": [
+      "src/flask/app.py::Flask.logger",
+      "src/flask/logging.py::create_logger"
+    ],
+    "discover": [
+      "src/flask/logging.py::create_logger"
+    ],
+    "by_file": {
+      "src/flask/app.py": [
+        {
+          "name": "Flask.logger",
+          "kind": "function",
+          "def_line": 655,
+          "extent_start": 654,
+          "end": 675
+        }
+      ],
+      "src/flask/logging.py": [
+        {
+          "name": "create_logger",
+          "kind": "function",
+          "def_line": 59,
+          "extent_start": 59,
+          "end": 77
+        }
+      ]
+    }
+  },
+  {
+    "repo": "flask",
+    "commit": "1ff98a2d21f6800b7b97195e0f9c90776ffb8f9b",
+    "parent": "29111a32594806cc217aba047de609dc913ef255",
+    "subject": "wait until app ctx is ready before matching url",
+    "entry": "RequestContext.__init__",
+    "ground_truth": [
+      "src/flask/ctx.py::RequestContext.__init__",
+      "src/flask/ctx.py::RequestContext",
+      "src/flask/ctx.py::RequestContext.push"
+    ],
+    "discover": [
+      "src/flask/ctx.py::RequestContext",
+      "src/flask/ctx.py::RequestContext.push"
+    ],
+    "by_file": {
+      "src/flask/ctx.py": [
+        {
+          "name": "RequestContext.__init__",
+          "kind": "function",
+          "def_line": 285,
+          "extent_start": 285,
+          "end": 318
+        },
+        {
+          "name": "RequestContext",
+          "kind": "class",
+          "def_line": 255,
+          "extent_start": 255,
+          "end": 475
+        },
+        {
+          "name": "RequestContext.push",
+          "kind": "function",
+          "def_line": 358,
+          "extent_start": 358,
+          "end": 396
+        }
+      ]
+    }
+  }
+]

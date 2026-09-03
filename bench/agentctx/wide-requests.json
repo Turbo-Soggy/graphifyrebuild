@@ -1,0 +1,2006 @@
+[
+  {
+    "repo": "requests",
+    "commit": "3816cfa1abd42dca21b9e837f26c59b246016aaf",
+    "parent": "b684dcb9bbf3aa557d1238e72062c4a29737dd1c",
+    "subject": "Parameterize SupportsItems to handle Mapping key invariance (#7426)",
+    "entry": "SupportsItems",
+    "ground_truth": [
+      "src/requests/_types.py::SupportsItems",
+      "src/requests/_types.py::SupportsItems.items",
+      "src/requests/utils.py::dict_to_sequence",
+      "src/requests/utils.py::to_key_val_list"
+    ],
+    "discover": [
+      "src/requests/_types.py::SupportsItems.items",
+      "src/requests/utils.py::dict_to_sequence",
+      "src/requests/utils.py::to_key_val_list"
+    ],
+    "by_file": {
+      "src/requests/_types.py": [
+        {
+          "name": "SupportsItems",
+          "kind": "class",
+          "def_line": 31,
+          "extent_start": 30,
+          "end": 32
+        },
+        {
+          "name": "SupportsItems.items",
+          "kind": "function",
+          "def_line": 32,
+          "extent_start": 32,
+          "end": 32
+        }
+      ],
+      "src/requests/utils.py": [
+        {
+          "name": "dict_to_sequence",
+          "kind": "function",
+          "def_line": 149,
+          "extent_start": 149,
+          "end": 157
+        },
+        {
+          "name": "to_key_val_list",
+          "kind": "function",
+          "def_line": 373,
+          "extent_start": 372,
+          "end": 375
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "aa1461b68aa73e2f6ec0e78c8853b635c76fd099",
+    "parent": "970e8cec988421bd43da57350723b05c8ce8dc7e",
+    "subject": "Move _get_connection to get_connection_with_tls_context",
+    "entry": "HTTPAdapter._get_connection",
+    "ground_truth": [
+      "src/requests/adapters.py::HTTPAdapter._get_connection",
+      "src/requests/adapters.py::HTTPAdapter.get_connection",
+      "src/requests/adapters.py::HTTPAdapter.send"
+    ],
+    "discover": [
+      "src/requests/adapters.py::HTTPAdapter.get_connection",
+      "src/requests/adapters.py::HTTPAdapter.send"
+    ],
+    "by_file": {
+      "src/requests/adapters.py": [
+        {
+          "name": "HTTPAdapter._get_connection",
+          "kind": "function",
+          "def_line": 377,
+          "extent_start": 377,
+          "end": 404
+        },
+        {
+          "name": "HTTPAdapter.get_connection",
+          "kind": "function",
+          "def_line": 406,
+          "extent_start": 406,
+          "end": 433
+        },
+        {
+          "name": "HTTPAdapter.send",
+          "kind": "function",
+          "def_line": 512,
+          "extent_start": 512,
+          "end": 616
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "99b3b492418d0751ca960178d274f89805095e4c",
+    "parent": "590350f8d094c216051510ed1dd18fe871b53b72",
+    "subject": "Refactor rebuild_proxies to allow proxy resolution (#5924)",
+    "entry": "SessionRedirectMixin.rebuild_proxies",
+    "ground_truth": [
+      "requests/sessions.py::SessionRedirectMixin",
+      "requests/sessions.py::SessionRedirectMixin.rebuild_proxies",
+      "requests/sessions.py::Session.send"
+    ],
+    "discover": [
+      "requests/sessions.py::SessionRedirectMixin",
+      "requests/sessions.py::Session.send"
+    ],
+    "by_file": {
+      "requests/sessions.py": [
+        {
+          "name": "SessionRedirectMixin",
+          "kind": "class",
+          "def_line": 96,
+          "extent_start": 96,
+          "end": 334
+        },
+        {
+          "name": "SessionRedirectMixin.rebuild_proxies",
+          "kind": "function",
+          "def_line": 273,
+          "extent_start": 273,
+          "end": 312
+        },
+        {
+          "name": "Session.send",
+          "kind": "function",
+          "def_line": 626,
+          "extent_start": 626,
+          "end": 699
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "db575eeedcfdb03bf31285afd3033e301df8b685",
+    "parent": "941a77f2b86a801aff9bda17c65b9f7e56f2c68a",
+    "subject": "Fix inconsistent exception type in response.json() method (#5856)",
+    "entry": "Response.json",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/models.py::Response.json"
+    ],
+    "discover": [
+      "requests/models.py::PreparedRequest.prepare_body"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "def_line": 455,
+          "extent_start": 455,
+          "end": 527
+        },
+        {
+          "name": "Response.json",
+          "kind": "function",
+          "def_line": 881,
+          "extent_start": 881,
+          "end": 910
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+    "parent": "d91fe00983f1c66b9a428fe1ad15bf6ea8238972",
+    "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+    "entry": "Response.content",
+    "ground_truth": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response.iter_content.generate",
+      "requests/models.py::Response.content"
+    ],
+    "discover": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response.iter_content.generate"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.__init__",
+          "kind": "function",
+          "def_line": 596,
+          "extent_start": 596,
+          "end": 643
+        },
+        {
+          "name": "Response.iter_content.generate",
+          "kind": "function",
+          "def_line": 748,
+          "extent_start": 748,
+          "end": 771
+        },
+        {
+          "name": "Response.content",
+          "kind": "function",
+          "def_line": 821,
+          "extent_start": 820,
+          "end": 841
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "bf4a813304cc17b4ed4c4e4178024303c530fb0d",
+    "parent": "6d082ea9724a6dc75d14c08ebe3d4f4ac7b6610f",
+    "subject": "rename information/info",
+    "entry": "information",
+    "ground_truth": [
+      "requests/help.py::information",
+      "requests/help.py::main"
+    ],
+    "discover": [
+      "requests/help.py::main"
+    ],
+    "by_file": {
+      "requests/help.py": [
+        {
+          "name": "information",
+          "kind": "function",
+          "def_line": 58,
+          "extent_start": 58,
+          "end": 102
+        },
+        {
+          "name": "main",
+          "kind": "function",
+          "def_line": 104,
+          "extent_start": 104,
+          "end": 106
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "c3367d1854208c37855622659ae0a621d9352af2",
+    "parent": "a7239aab84b59534fb5e6eb7b83a97dcf913f8de",
+    "subject": "remove Request.send(session)",
+    "entry": "PreparedRequest.send",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.send",
+      "requests/models.py::Response.next"
+    ],
+    "discover": [
+      "requests/models.py::Response.next"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.send",
+          "kind": "function",
+          "def_line": 580,
+          "extent_start": 580,
+          "end": 582
+        },
+        {
+          "name": "Response.next",
+          "kind": "function",
+          "def_line": 717,
+          "extent_start": 717,
+          "end": 720
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "f002b73026bdc136654ba545296898af9a88007a",
+    "parent": "2af059797a33a1ee2132ed13e456413c18bc7aa2",
+    "subject": "Move to_native_string to _internal_utils.py to avoid circular dependency",
+    "entry": "to_native_string",
+    "ground_truth": [
+      "requests/cookies.py::MockRequest.get_full_url",
+      "requests/utils.py::to_native_string"
+    ],
+    "discover": [
+      "requests/cookies.py::MockRequest.get_full_url"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "MockRequest.get_full_url",
+          "kind": "function",
+          "def_line": 54,
+          "extent_start": 54,
+          "end": 66
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "to_native_string",
+          "kind": "function",
+          "def_line": 773,
+          "extent_start": 773,
+          "end": 786
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "31b35ab838dfab92ea199a2688fefb74215aa7e9",
+    "parent": "ddf7df9b00f0a17ed067fee77a5d70b4f427ca91",
+    "subject": "removing redundant logic from prepare_content_length",
+    "entry": "PreparedRequest.prepare_content_length",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/models.py::PreparedRequest.prepare_content_length"
+    ],
+    "discover": [
+      "requests/models.py::PreparedRequest.prepare_body"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "def_line": 418,
+          "extent_start": 418,
+          "end": 475
+        },
+        {
+          "name": "PreparedRequest.prepare_content_length",
+          "kind": "function",
+          "def_line": 477,
+          "extent_start": 477,
+          "end": 489
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "9e9d2c6521e37e1c4f35e04f95a910ad47e28958",
+    "parent": "49b69c4751689df7aca4435ef1223a58871a64e2",
+    "subject": "Make BaseAdapter describe the mandatory adapter interface (#3216)",
+    "entry": "BaseAdapter.send",
+    "ground_truth": [
+      "requests/adapters.py::BaseAdapter.send",
+      "requests/adapters.py::BaseAdapter.close"
+    ],
+    "discover": [
+      "requests/adapters.py::BaseAdapter.close"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "BaseAdapter.send",
+          "kind": "function",
+          "def_line": 57,
+          "extent_start": 57,
+          "end": 58
+        },
+        {
+          "name": "BaseAdapter.close",
+          "kind": "function",
+          "def_line": 60,
+          "extent_start": 60,
+          "end": 61
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "3e3fc7683cab2d401981fdf01ae8cdc40c8d6222",
+    "parent": "3d339ed7e61261832347190185113b890b55009e",
+    "subject": "Remove VendorAlias meta_path hook",
+    "entry": "VendorAlias",
+    "ground_truth": [
+      "requests/packages/__init__.py::VendorAlias",
+      "requests/packages/__init__.py::VendorAlias.__init__",
+      "requests/packages/__init__.py::VendorAlias.find_module",
+      "requests/packages/__init__.py::VendorAlias.load_module"
+    ],
+    "discover": [
+      "requests/packages/__init__.py::VendorAlias.__init__",
+      "requests/packages/__init__.py::VendorAlias.find_module",
+      "requests/packages/__init__.py::VendorAlias.load_module"
+    ],
+    "by_file": {
+      "requests/packages/__init__.py": [
+        {
+          "name": "VendorAlias",
+          "kind": "class",
+          "def_line": 28,
+          "extent_start": 28,
+          "end": 104
+        },
+        {
+          "name": "VendorAlias.__init__",
+          "kind": "function",
+          "def_line": 30,
+          "extent_start": 30,
+          "end": 36
+        },
+        {
+          "name": "VendorAlias.find_module",
+          "kind": "function",
+          "def_line": 38,
+          "extent_start": 38,
+          "end": 40
+        },
+        {
+          "name": "VendorAlias.load_module",
+          "kind": "function",
+          "def_line": 42,
+          "extent_start": 42,
+          "end": 104
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "36093e69c70b9b24dd1e007befa35ad891313f51",
+    "parent": "18e678c1f897d5bcc934f0b1d5788afee9c37ada",
+    "subject": "Copy a PreparedRequest's CookieJar reliably",
+    "entry": "PreparedRequest.copy",
+    "ground_truth": [
+      "requests/cookies.py::RequestsCookieJar.update",
+      "requests/models.py::PreparedRequest.copy"
+    ],
+    "discover": [
+      "requests/cookies.py::RequestsCookieJar.update"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "RequestsCookieJar.update",
+          "kind": "function",
+          "def_line": 301,
+          "extent_start": 301,
+          "end": 307
+        }
+      ],
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.copy",
+          "kind": "function",
+          "def_line": 318,
+          "extent_start": 318,
+          "end": 326
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "8ed941fa6991355753e698f6b253096d57f6c7e4",
+    "parent": "0713e09526d3ed2d2fe2516fa6d35727c557024f",
+    "subject": "Fix a couple of issues I noticed",
+    "entry": "PreparedRequest.prepare_body",
+    "ground_truth": [
+      "requests/models.py::Request",
+      "requests/models.py::Request.__init__",
+      "requests/models.py::PreparedRequest.prepare",
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/models.py::Request",
+      "requests/models.py::Request.__init__",
+      "requests/models.py::PreparedRequest.prepare",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request",
+          "kind": "class",
+          "def_line": 183,
+          "extent_start": 183,
+          "end": 259
+        },
+        {
+          "name": "Request.__init__",
+          "kind": "function",
+          "def_line": 207,
+          "extent_start": 207,
+          "end": 239
+        },
+        {
+          "name": "PreparedRequest.prepare",
+          "kind": "function",
+          "def_line": 296,
+          "extent_start": 296,
+          "end": 310
+        },
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "def_line": 405,
+          "extent_start": 405,
+          "end": 458
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 377,
+          "extent_start": 377,
+          "end": 455
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "dfa41afd43a15222eb7a2db35feadd36dba4b445",
+    "parent": "5f483369aaa25cae14d9974d4a1b0a154b27423a",
+    "subject": "Document Timeout behaviour",
+    "entry": "Timeout",
+    "ground_truth": [
+      "requests/adapters.py::HTTPAdapter.send",
+      "requests/api.py::request",
+      "requests/exceptions.py::Timeout",
+      "requests/exceptions.py::ConnectTimeout",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/adapters.py::HTTPAdapter.send",
+      "requests/api.py::request",
+      "requests/exceptions.py::ConnectTimeout",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "HTTPAdapter.send",
+          "kind": "function",
+          "def_line": 314,
+          "extent_start": 314,
+          "end": 423
+        }
+      ],
+      "requests/api.py": [
+        {
+          "name": "request",
+          "kind": "function",
+          "def_line": 17,
+          "extent_start": 17,
+          "end": 44
+        }
+      ],
+      "requests/exceptions.py": [
+        {
+          "name": "Timeout",
+          "kind": "class",
+          "def_line": 46,
+          "extent_start": 46,
+          "end": 51
+        },
+        {
+          "name": "ConnectTimeout",
+          "kind": "class",
+          "def_line": 54,
+          "extent_start": 54,
+          "end": 58
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 376,
+          "extent_start": 376,
+          "end": 450
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "7815953cb41450992e487aa300080064999c4e99",
+    "parent": "a7c218480d7acf1e866e07fde0627d05fb77fbc1",
+    "subject": "remove unused IteratorProxy",
+    "entry": "IteratorProxy",
+    "ground_truth": [
+      "requests/structures.py::IteratorProxy",
+      "requests/structures.py::IteratorProxy.__init__",
+      "requests/structures.py::IteratorProxy.__iter__",
+      "requests/structures.py::IteratorProxy.__len__",
+      "requests/structures.py::IteratorProxy.read"
+    ],
+    "discover": [
+      "requests/structures.py::IteratorProxy.__init__",
+      "requests/structures.py::IteratorProxy.__iter__",
+      "requests/structures.py::IteratorProxy.__len__",
+      "requests/structures.py::IteratorProxy.read"
+    ],
+    "by_file": {
+      "requests/structures.py": [
+        {
+          "name": "IteratorProxy",
+          "kind": "class",
+          "def_line": 16,
+          "extent_start": 16,
+          "end": 34
+        },
+        {
+          "name": "IteratorProxy.__init__",
+          "kind": "function",
+          "def_line": 18,
+          "extent_start": 18,
+          "end": 20
+        },
+        {
+          "name": "IteratorProxy.__iter__",
+          "kind": "function",
+          "def_line": 22,
+          "extent_start": 22,
+          "end": 23
+        },
+        {
+          "name": "IteratorProxy.__len__",
+          "kind": "function",
+          "def_line": 25,
+          "extent_start": 25,
+          "end": 31
+        },
+        {
+          "name": "IteratorProxy.read",
+          "kind": "function",
+          "def_line": 33,
+          "extent_start": 33,
+          "end": 34
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "59c8d813818110aac29fd104c2fa012387c2004c",
+    "parent": "c2a1f28a2ebd9448be7b4c8f9207d16c894717c3",
+    "subject": "Read content in Session.send instead of Adapter.send.",
+    "entry": "Session.send",
+    "ground_truth": [
+      "requests/adapters.py::HTTPAdapter.send",
+      "requests/sessions.py::Session.send"
+    ],
+    "discover": [
+      "requests/adapters.py::HTTPAdapter.send"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "HTTPAdapter.send",
+          "kind": "function",
+          "def_line": 294,
+          "extent_start": 294,
+          "end": 393
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.send",
+          "kind": "function",
+          "def_line": 529,
+          "extent_start": 529,
+          "end": 595
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "c15a8f8a3d8fbe943dcae2603c4ceca7f99ff2bf",
+    "parent": "5893cfcd90249a16d70bb829c23a78b690033c74",
+    "subject": "CaseInsensitiveDict now looks like a normal dict",
+    "entry": "CaseInsensitiveDict",
+    "ground_truth": [
+      "requests/structures.py::CaseInsensitiveDict.__repr__",
+      "requests/structures.py::CaseInsensitiveDict",
+      "requests/structures.py::CaseInsensitiveDict.__str__"
+    ],
+    "discover": [
+      "requests/structures.py::CaseInsensitiveDict.__repr__",
+      "requests/structures.py::CaseInsensitiveDict.__str__"
+    ],
+    "by_file": {
+      "requests/structures.py": [
+        {
+          "name": "CaseInsensitiveDict.__repr__",
+          "kind": "function",
+          "def_line": 108,
+          "extent_start": 108,
+          "end": 109
+        },
+        {
+          "name": "CaseInsensitiveDict",
+          "kind": "class",
+          "def_line": 37,
+          "extent_start": 37,
+          "end": 112
+        },
+        {
+          "name": "CaseInsensitiveDict.__str__",
+          "kind": "function",
+          "def_line": 111,
+          "extent_start": 111,
+          "end": 112
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "1d42d9d2741d36c469fca38bc7e7a5383e3b7bd9",
+    "parent": "f3bc8b6e1f470298467738f1a33c759eeb0474f4",
+    "subject": "function is_ipv4_network renamed more detailed check of cidr format",
+    "entry": "is_ipv4_network",
+    "ground_truth": [
+      "requests/utils.py::is_ipv4_network",
+      "requests/utils.py::get_environ_proxies"
+    ],
+    "discover": [
+      "requests/utils.py::get_environ_proxies"
+    ],
+    "by_file": {
+      "requests/utils.py": [
+        {
+          "name": "is_ipv4_network",
+          "kind": "function",
+          "def_line": 440,
+          "extent_start": 440,
+          "end": 449
+        },
+        {
+          "name": "get_environ_proxies",
+          "kind": "function",
+          "def_line": 452,
+          "extent_start": 452,
+          "end": 488
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "1adba3c9e94a7408584d0d819da6aa47b34ed0bd",
+    "parent": "30018e604c0f89a0dad7d8b7e6f2a227916ee8c9",
+    "subject": "modified 'merge_cookies' and update tests. made sessions.py to use that method when merging cookies.",
+    "entry": "merge_cookies",
+    "ground_truth": [
+      "requests/cookies.py::merge_cookies",
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "merge_cookies",
+          "kind": "function",
+          "def_line": 426,
+          "extent_start": 426,
+          "end": 441
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.prepare_request",
+          "kind": "function",
+          "def_line": 233,
+          "extent_start": 233,
+          "end": 271
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "012f0334ce43fe23044fc58e4246a804db88650d",
+    "parent": "d22eaf96e2a1c64bc29579a072f67d2a9c758ef8",
+    "subject": "added param to cookiejar_from_dict instead of creating new method.",
+    "entry": "cookiejar_from_dict",
+    "ground_truth": [
+      "requests/cookies.py::cookiejar_from_dict",
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "cookiejar_from_dict",
+          "kind": "function",
+          "def_line": 395,
+          "extent_start": 395,
+          "end": 406
+        },
+        {
+          "name": "merge_session_cookies",
+          "kind": "function",
+          "def_line": 409,
+          "extent_start": 409,
+          "end": 422
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 268,
+          "extent_start": 268,
+          "end": 362
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "0ab7a52f7c04998ae68ed7da442fce32293e0fb5",
+    "parent": "0eccb547a29eda9c04d5e1cef586557846b19e92",
+    "subject": "Merge settings when creating PreparedRequest, don't copy Request.",
+    "entry": "Request.copy",
+    "ground_truth": [
+      "requests/models.py::Request.copy",
+      "requests/models.py::Request",
+      "requests/models.py::Request.prepare",
+      "requests/sessions.py::Session.update_request",
+      "requests/sessions.py::Session.prepare_request",
+      "requests/sessions.py::Session.request",
+      "requests/sessions.py::Session.send"
+    ],
+    "discover": [
+      "requests/models.py::Request",
+      "requests/models.py::Request.prepare",
+      "requests/sessions.py::Session.update_request",
+      "requests/sessions.py::Session.prepare_request",
+      "requests/sessions.py::Session.request",
+      "requests/sessions.py::Session.send"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.copy",
+          "kind": "function",
+          "def_line": 219,
+          "extent_start": 219,
+          "end": 234
+        },
+        {
+          "name": "Request",
+          "kind": "class",
+          "def_line": 161,
+          "extent_start": 161,
+          "end": 252
+        },
+        {
+          "name": "Request.prepare",
+          "kind": "function",
+          "def_line": 236,
+          "extent_start": 236,
+          "end": 252
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.update_request",
+          "kind": "function",
+          "def_line": 231,
+          "extent_start": 231,
+          "end": 260
+        },
+        {
+          "name": "Session.prepare_request",
+          "kind": "function",
+          "def_line": 262,
+          "extent_start": 262,
+          "end": 265
+        },
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 267,
+          "extent_start": 267,
+          "end": 359
+        },
+        {
+          "name": "Session.send",
+          "kind": "function",
+          "def_line": 430,
+          "extent_start": 430,
+          "end": 486
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "9edba838b3c7891c955b49d680c49b4ee8e64dd4",
+    "parent": "b5c136152f4184387017ce570d2a499f21b6de14",
+    "subject": "Skip unneccessary Request.copy in Session.request",
+    "entry": "Session.request",
+    "ground_truth": [
+      "requests/sessions.py::Session.update_request",
+      "requests/sessions.py::Session",
+      "requests/sessions.py::Session.prepare_request",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.update_request",
+      "requests/sessions.py::Session",
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "by_file": {
+      "requests/sessions.py": [
+        {
+          "name": "Session.update_request",
+          "kind": "function",
+          "def_line": 231,
+          "extent_start": 231,
+          "end": 260
+        },
+        {
+          "name": "Session",
+          "kind": "class",
+          "def_line": 156,
+          "extent_start": 156,
+          "end": 515
+        },
+        {
+          "name": "Session.prepare_request",
+          "kind": "function",
+          "def_line": 262,
+          "extent_start": 262,
+          "end": 264
+        },
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 266,
+          "extent_start": 266,
+          "end": 357
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "98114245c686ef7cd62c9932071fd972ad3efedb",
+    "parent": "8eb4243f1217d888c8355351015d7b07841ead9c",
+    "subject": "Refactor merge_kwargs for clarity and to fix a few bugs",
+    "entry": "merge_kwargs",
+    "ground_truth": [
+      "requests/sessions.py::merge_kwargs",
+      "requests/sessions.py::merge_kwargs.get_original_key",
+      "requests/sessions.py::Session.request",
+      "requests/utils.py::to_key_val_list"
+    ],
+    "discover": [
+      "requests/sessions.py::merge_kwargs.get_original_key",
+      "requests/sessions.py::Session.request",
+      "requests/utils.py::to_key_val_list"
+    ],
+    "by_file": {
+      "requests/sessions.py": [
+        {
+          "name": "merge_kwargs",
+          "kind": "function",
+          "def_line": 35,
+          "extent_start": 35,
+          "end": 77
+        },
+        {
+          "name": "merge_kwargs.get_original_key",
+          "kind": "function",
+          "def_line": 58,
+          "extent_start": 58,
+          "end": 65
+        },
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 237,
+          "extent_start": 237,
+          "end": 349
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "to_key_val_list",
+          "kind": "function",
+          "def_line": 119,
+          "extent_start": 119,
+          "end": 141
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "36dcce1a06fe0a82d8522c7d4287fb3623722c6c",
+    "parent": "eda4b55f7a3be4ccf85d0435a1d3ba5aa5dbce22",
+    "subject": "Changed HTTPAdapter to allow max retries to be specified when initializing.",
+    "entry": "HTTPAdapter",
+    "ground_truth": [
+      "requests/adapters.py::HTTPAdapter.__init__",
+      "requests/adapters.py::HTTPAdapter"
+    ],
+    "discover": [
+      "requests/adapters.py::HTTPAdapter.__init__"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "HTTPAdapter.__init__",
+          "kind": "function",
+          "def_line": 65,
+          "extent_start": 65,
+          "end": 74
+        },
+        {
+          "name": "HTTPAdapter",
+          "kind": "class",
+          "def_line": 45,
+          "extent_start": 45,
+          "end": 331
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "6963b8490ca4624f4e46e971b6261861bcfd0902",
+    "parent": "12ef43e407de2690361fb22261d0eef6a008b000",
+    "subject": "Clarify streaming behavior in iter_lines doc",
+    "entry": "Response.iter_lines",
+    "ground_truth": [
+      "requests/models.py::Response.iter_content",
+      "requests/models.py::Response.iter_lines"
+    ],
+    "discover": [
+      "requests/models.py::Response.iter_content"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.iter_content",
+          "kind": "function",
+          "def_line": 513,
+          "extent_start": 513,
+          "end": 536
+        },
+        {
+          "name": "Response.iter_lines",
+          "kind": "function",
+          "def_line": 538,
+          "extent_start": 538,
+          "end": 562
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "120a2f385a4d1b652451e6a6d8dc618437f72529",
+    "parent": "5bb2be9a2300ccc3c1901d2f85afb79cfb9e02f1",
+    "subject": "Do not pass cookies to resolve_redirects",
+    "entry": "SessionRedirectMixin.resolve_redirects",
+    "ground_truth": [
+      "requests/sessions.py::SessionRedirectMixin.resolve_redirects",
+      "requests/sessions.py::Session.send"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.send"
+    ],
+    "by_file": {
+      "requests/sessions.py": [
+        {
+          "name": "SessionRedirectMixin.resolve_redirects",
+          "kind": "function",
+          "def_line": 82,
+          "extent_start": 82,
+          "end": 166
+        },
+        {
+          "name": "Session.send",
+          "kind": "function",
+          "def_line": 397,
+          "extent_start": 397,
+          "end": 445
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "c41932e18468caf8990611aa62b25e867e8ad4bb",
+    "parent": "e706d18cf893198a26ca3f41dd5014dabd87ae89",
+    "subject": "Fixed some pickeling issues with HTTPAdapter and Session",
+    "entry": "Session",
+    "ground_truth": [
+      "requests/adapters.py::HTTPAdapter.__setstate__",
+      "requests/adapters.py::HTTPAdapter.__init__",
+      "requests/sessions.py::Session"
+    ],
+    "discover": [
+      "requests/adapters.py::HTTPAdapter.__setstate__",
+      "requests/adapters.py::HTTPAdapter.__init__"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "HTTPAdapter.__setstate__",
+          "kind": "function",
+          "def_line": 61,
+          "extent_start": 61,
+          "end": 67
+        },
+        {
+          "name": "HTTPAdapter.__init__",
+          "kind": "function",
+          "def_line": 49,
+          "extent_start": 49,
+          "end": 55
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session",
+          "kind": "class",
+          "def_line": 166,
+          "extent_start": 166,
+          "end": 466
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "c4f9340fb4df41d7a8be66ee41c40bfed64ec6d6",
+    "parent": "d372a5b10b7707a666bec2c6554431e200e74573",
+    "subject": "Add ability to pass `response` to `HTTPError()`",
+    "entry": "HTTPError",
+    "ground_truth": [
+      "requests/exceptions.py::HTTPError",
+      "requests/models.py::Response.raise_for_status"
+    ],
+    "discover": [
+      "requests/models.py::Response.raise_for_status"
+    ],
+    "by_file": {
+      "requests/exceptions.py": [
+        {
+          "name": "HTTPError",
+          "kind": "class",
+          "def_line": 17,
+          "extent_start": 17,
+          "end": 19
+        }
+      ],
+      "requests/models.py": [
+        {
+          "name": "Response.raise_for_status",
+          "kind": "function",
+          "def_line": 648,
+          "extent_start": 648,
+          "end": 662
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "3f86e22a07fb1bd91c70d3c487efbadb55f6b36a",
+    "parent": "d0390d4f27ed25d5409f899b7c1d298a8fb07c87",
+    "subject": "Make sure session cookies do not overwrite explicit request cookies Implement RequestsCookieJar.copy Use RequestsCookieJar.update when merging cookiejars",
+    "entry": "RequestsCookieJar.copy",
+    "ground_truth": [
+      "requests/cookies.py::RequestsCookieJar.copy",
+      "requests/sessions.py::Session.request",
+      "requests/utils.py::add_dict_to_cookiejar"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.request",
+      "requests/utils.py::add_dict_to_cookiejar"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "RequestsCookieJar.copy",
+          "kind": "function",
+          "def_line": 309,
+          "extent_start": 309,
+          "end": 311
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 232,
+          "extent_start": 232,
+          "end": 318
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "add_dict_to_cookiejar",
+          "kind": "function",
+          "def_line": 247,
+          "extent_start": 247,
+          "end": 257
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "f3393fb24cc74e9e9aff643e16e0480fcced6ba3",
+    "parent": "87d9d9643c73d6fc7f701263e5c4e93217db022f",
+    "subject": "Remove ability to from RequestCookieJar __getitem__, __setitem__ to use cookies as keys",
+    "entry": "RequestsCookieJar.__getitem__",
+    "ground_truth": [
+      "requests/cookies.py::RequestsCookieJar.__getitem__",
+      "requests/cookies.py::RequestsCookieJar.__setitem__"
+    ],
+    "discover": [
+      "requests/cookies.py::RequestsCookieJar.__setitem__"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "RequestsCookieJar.__getitem__",
+          "kind": "function",
+          "def_line": 239,
+          "extent_start": 239,
+          "end": 246
+        },
+        {
+          "name": "RequestsCookieJar.__setitem__",
+          "kind": "function",
+          "def_line": 248,
+          "extent_start": 248,
+          "end": 255
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "def20cdb0cf1d4fcc3aa4cd3164602d6c4029ac3",
+    "parent": "92355ada54a3a19341f7fbc65a8bc50816858c63",
+    "subject": "remove iter_json, don't want to commit to it",
+    "entry": "Response.iter_json",
+    "ground_truth": [
+      "requests/models.py::Response.iter_json",
+      "requests/models.py::Response",
+      "requests/sessions.py::Session.close",
+      "requests/sessions.py::Session"
+    ],
+    "discover": [
+      "requests/models.py::Response",
+      "requests/sessions.py::Session.close",
+      "requests/sessions.py::Session"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.iter_json",
+          "kind": "function",
+          "def_line": 561,
+          "extent_start": 561,
+          "end": 564
+        },
+        {
+          "name": "Response",
+          "kind": "class",
+          "def_line": 367,
+          "extent_start": 367,
+          "end": 601
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.close",
+          "kind": "function",
+          "def_line": 185,
+          "extent_start": 185,
+          "end": 186
+        },
+        {
+          "name": "Session",
+          "kind": "class",
+          "def_line": 130,
+          "extent_start": 130,
+          "end": 326
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "f25827c5b66450482fad8209f38ca77664f504dd",
+    "parent": "355003b400e18be508e530400c2c232f9ce0041c",
+    "subject": "replace utils.randombytes with os.urandom",
+    "entry": "randombytes",
+    "ground_truth": [
+      "requests/auth.py::HTTPDigestAuth.handle_401",
+      "requests/utils.py::randombytes"
+    ],
+    "discover": [
+      "requests/auth.py::HTTPDigestAuth.handle_401"
+    ],
+    "by_file": {
+      "requests/auth.py": [
+        {
+          "name": "HTTPDigestAuth.handle_401",
+          "kind": "function",
+          "def_line": 134,
+          "extent_start": 134,
+          "end": 224
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "randombytes",
+          "kind": "function",
+          "def_line": 251,
+          "extent_start": 251,
+          "end": 257
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "324336e7f6e45ef3d97a2e64be95b5e604b393d3",
+    "parent": "d240b1fe15d373b37c5939db52835816d88f0aab",
+    "subject": "Lazily encode data, params, files",
+    "entry": "Request.__init__",
+    "ground_truth": [
+      "requests/models.py::Request.__init__",
+      "requests/models.py::Request._encode_params",
+      "requests/models.py::Request._encode_files",
+      "requests/models.py::Request.full_url",
+      "requests/models.py::Request.send"
+    ],
+    "discover": [
+      "requests/models.py::Request._encode_params",
+      "requests/models.py::Request._encode_files",
+      "requests/models.py::Request.full_url",
+      "requests/models.py::Request.send"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.__init__",
+          "kind": "function",
+          "def_line": 50,
+          "extent_start": 50,
+          "end": 168
+        },
+        {
+          "name": "Request._encode_params",
+          "kind": "function",
+          "def_line": 311,
+          "extent_start": 310,
+          "end": 345
+        },
+        {
+          "name": "Request._encode_files",
+          "kind": "function",
+          "def_line": 347,
+          "extent_start": 347,
+          "end": 368
+        },
+        {
+          "name": "Request.full_url",
+          "kind": "function",
+          "def_line": 371,
+          "extent_start": 370,
+          "end": 418
+        },
+        {
+          "name": "Request.send",
+          "kind": "function",
+          "def_line": 461,
+          "extent_start": 461,
+          "end": 649
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "d232948188f922c137dd709b53f77c49d1442c84",
+    "parent": "35d5ac6e8f5f4357f945b8c4890388207f7f1c00",
+    "subject": "Cache the value of the `Response.text` property",
+    "entry": "Response.text",
+    "ground_truth": [
+      "requests/models.py::Response",
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response.text"
+    ],
+    "discover": [
+      "requests/models.py::Response",
+      "requests/models.py::Response.__init__"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response",
+          "kind": "class",
+          "def_line": 647,
+          "extent_start": 647,
+          "end": 847
+        },
+        {
+          "name": "Response.__init__",
+          "kind": "function",
+          "def_line": 654,
+          "extent_start": 654,
+          "end": 691
+        },
+        {
+          "name": "Response.text",
+          "kind": "function",
+          "def_line": 798,
+          "extent_start": 797,
+          "end": 825
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "b8298b071032e90dd9de3af0a96cbb9ec9cb2e13",
+    "parent": "3bd5406c0628b4e917d5dc47eb0fbf0697e8ea3d",
+    "subject": "Rename utils.requote_path to requote_uri.",
+    "entry": "requote_path",
+    "ground_truth": [
+      "requests/models.py::Request.full_url",
+      "requests/utils.py::requote_path"
+    ],
+    "discover": [
+      "requests/models.py::Request.full_url"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.full_url",
+          "kind": "function",
+          "def_line": 303,
+          "extent_start": 302,
+          "end": 347
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "requote_path",
+          "kind": "function",
+          "def_line": 422,
+          "extent_start": 422,
+          "end": 432
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "cf54f60367199042d56334c9a1e2a75546025933",
+    "parent": "329efcae6e93e992582f0f3e01f4a7ed31b54979",
+    "subject": "Fixed URI re-encoding on Python 3 (Issue #369).",
+    "entry": "Request.full_url",
+    "ground_truth": [
+      "requests/models.py::Request.full_url",
+      "requests/models.py::Request.path_url",
+      "requests/utils.py::requote_path"
+    ],
+    "discover": [
+      "requests/models.py::Request.path_url",
+      "requests/utils.py::requote_path"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.full_url",
+          "kind": "function",
+          "def_line": 303,
+          "extent_start": 302,
+          "end": 337
+        },
+        {
+          "name": "Request.path_url",
+          "kind": "function",
+          "def_line": 340,
+          "extent_start": 339,
+          "end": 365
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "requote_path",
+          "kind": "function",
+          "def_line": 400,
+          "extent_start": 400,
+          "end": 408
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "495646bb6a89802a60208c2ab09749edba1f8e51",
+    "parent": "730c0e2e2bef77968a86962f9d5f2bebba4d19ec",
+    "subject": "async: force prefetch=True on send",
+    "entry": "send",
+    "ground_truth": [
+      "requests/async.py::send",
+      "requests/async.py::map"
+    ],
+    "discover": [
+      "requests/async.py::map"
+    ],
+    "by_file": {
+      "requests/async.py": [
+        {
+          "name": "send",
+          "kind": "function",
+          "def_line": 49,
+          "extent_start": 49,
+          "end": 57
+        },
+        {
+          "name": "map",
+          "kind": "function",
+          "def_line": 71,
+          "extent_start": 71,
+          "end": 88
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "9c6ffc530319d3b6d75bb160267d76f0224b0743",
+    "parent": "f80984f37701003f0f06d86902a60cfd82fa85ef",
+    "subject": "Refactor stream_decode_gzip and _deflate into one function, stream_decompress. stream_decompress will now iterate over the raw data if there is a problem with decompression Remove gzip decoding from Response.content, as urllib3 was doing it anyway.",
+    "entry": "stream_decode_gzip",
+    "ground_truth": [
+      "requests/models.py::Request.send",
+      "requests/models.py::Response.iter_content",
+      "requests/models.py::Response.content",
+      "requests/utils.py::stream_decode_gzip",
+      "requests/utils.py::stream_decode_deflate"
+    ],
+    "discover": [
+      "requests/models.py::Request.send",
+      "requests/models.py::Response.iter_content",
+      "requests/models.py::Response.content",
+      "requests/utils.py::stream_decode_deflate"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.send",
+          "kind": "function",
+          "def_line": 347,
+          "extent_start": 347,
+          "end": 529
+        },
+        {
+          "name": "Response.iter_content",
+          "kind": "function",
+          "def_line": 595,
+          "extent_start": 595,
+          "end": 627
+        },
+        {
+          "name": "Response.content",
+          "kind": "function",
+          "def_line": 660,
+          "extent_start": 659,
+          "end": 703
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "stream_decode_gzip",
+          "kind": "function",
+          "def_line": 357,
+          "extent_start": 357,
+          "end": 370
+        },
+        {
+          "name": "stream_decode_deflate",
+          "kind": "function",
+          "def_line": 373,
+          "extent_start": 373,
+          "end": 386
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "f80984f37701003f0f06d86902a60cfd82fa85ef",
+    "parent": "9c0a0fbd01ce0a07cebc26f0203e17bfccf7e481",
+    "subject": "Implement automatic deflating when using response.iter_content. refs #327 Refactor response.iter_lines to use responset.iter_content.",
+    "entry": "Response.iter_content",
+    "ground_truth": [
+      "requests/models.py::Response.iter_lines",
+      "requests/models.py::Response.iter_lines.generate",
+      "requests/models.py::Response.iter_content"
+    ],
+    "discover": [
+      "requests/models.py::Response.iter_lines",
+      "requests/models.py::Response.iter_lines.generate"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.iter_lines",
+          "kind": "function",
+          "def_line": 628,
+          "extent_start": 628,
+          "end": 677
+        },
+        {
+          "name": "Response.iter_lines.generate",
+          "kind": "function",
+          "def_line": 644,
+          "extent_start": 644,
+          "end": 664
+        },
+        {
+          "name": "Response.iter_content",
+          "kind": "function",
+          "def_line": 595,
+          "extent_start": 595,
+          "end": 625
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "4504953212816c4de0cd8177faf1270e42cb31f9",
+    "parent": "2ccc68c4b48bc6266a4ab04a68235cea7bb87cda",
+    "subject": "Only send URL path to servers",
+    "entry": "Request.send",
+    "ground_truth": [
+      "requests/models.py::Request._build_response.build",
+      "requests/models.py::Request",
+      "requests/models.py::Request._build_url",
+      "requests/models.py::Request.send"
+    ],
+    "discover": [
+      "requests/models.py::Request._build_response.build",
+      "requests/models.py::Request",
+      "requests/models.py::Request._build_url"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request._build_response.build",
+          "kind": "function",
+          "def_line": 147,
+          "extent_start": 147,
+          "end": 186
+        },
+        {
+          "name": "Request",
+          "kind": "class",
+          "def_line": 37,
+          "extent_start": 37,
+          "end": 447
+        },
+        {
+          "name": "Request._build_url",
+          "kind": "function",
+          "def_line": 285,
+          "extent_start": 285,
+          "end": 311
+        },
+        {
+          "name": "Request.send",
+          "kind": "function",
+          "def_line": 314,
+          "extent_start": 314,
+          "end": 447
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "20e0ee4968298815ed8a3cd7de01a17e8451cd6c",
+    "parent": "4892a305d9cd658287b3320d18c60886b14b5b48",
+    "subject": "Remove AuthObject entirely.",
+    "entry": "AuthObject",
+    "ground_truth": [
+      "requests/models.py::Request.__init__",
+      "requests/models.py::Request._get_opener",
+      "requests/models.py::AuthObject",
+      "requests/models.py::AuthObject.__init__"
+    ],
+    "discover": [
+      "requests/models.py::Request.__init__",
+      "requests/models.py::Request._get_opener",
+      "requests/models.py::AuthObject.__init__"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request.__init__",
+          "kind": "function",
+          "def_line": 40,
+          "extent_start": 40,
+          "end": 128
+        },
+        {
+          "name": "Request._get_opener",
+          "kind": "function",
+          "def_line": 135,
+          "extent_start": 135,
+          "end": 181
+        },
+        {
+          "name": "AuthObject",
+          "kind": "class",
+          "def_line": 534,
+          "extent_start": 534,
+          "end": 562
+        },
+        {
+          "name": "AuthObject.__init__",
+          "kind": "function",
+          "def_line": 554,
+          "extent_start": 554,
+          "end": 562
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "aa04cc9b427432358398aac713c2574193ecc691",
+    "parent": "8b640979ee06a03a57e72ba3ed73fcb73efc4c74",
+    "subject": "Make get and head requests respect allow_redirects=False.",
+    "entry": "head",
+    "ground_truth": [
+      "requests/api.py::get",
+      "requests/api.py::head",
+      "requests/models.py::Request._build_response"
+    ],
+    "discover": [
+      "requests/api.py::get",
+      "requests/models.py::Request._build_response"
+    ],
+    "by_file": {
+      "requests/api.py": [
+        {
+          "name": "get",
+          "kind": "function",
+          "def_line": 83,
+          "extent_start": 83,
+          "end": 96
+        },
+        {
+          "name": "head",
+          "kind": "function",
+          "def_line": 99,
+          "extent_start": 99,
+          "end": 112
+        }
+      ],
+      "requests/models.py": [
+        {
+          "name": "Request._build_response",
+          "kind": "function",
+          "def_line": 168,
+          "extent_start": 168,
+          "end": 247
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "6a96652396515631bb72ba7c363e96c27edd769a",
+    "parent": "d4bdd84364b602624096b1407c5d10936c6c9068",
+    "subject": "Refactor response.content into a property. This makes content attribute discoverable through dir(response) and also guards from errors like forgetting to raise AttributeError in __getattr__. Also you don't have to create fake self.content to fool Sphinx any more.",
+    "entry": "Response.__getattr__",
+    "ground_truth": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response",
+      "requests/models.py::Response.__getattr__"
+    ],
+    "discover": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.__init__",
+          "kind": "function",
+          "def_line": 395,
+          "extent_start": 395,
+          "end": 433
+        },
+        {
+          "name": "Response",
+          "kind": "class",
+          "def_line": 388,
+          "extent_start": 388,
+          "end": 478
+        },
+        {
+          "name": "Response.__getattr__",
+          "kind": "function",
+          "def_line": 446,
+          "extent_start": 446,
+          "end": 472
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "86cc274cf01e38fd482c9e8be2e4c7f621340468",
+    "parent": "c19b2c517256ef2a8cd5915d9d5f44612731881d",
+    "subject": "remote read/close methods from response",
+    "entry": "Response.close",
+    "ground_truth": [
+      "requests/models.py::Request._build_response.build",
+      "requests/models.py::Response.__getattr__",
+      "requests/models.py::Response",
+      "requests/models.py::Response.close"
+    ],
+    "discover": [
+      "requests/models.py::Request._build_response.build",
+      "requests/models.py::Response.__getattr__",
+      "requests/models.py::Response"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request._build_response.build",
+          "kind": "function",
+          "def_line": 182,
+          "extent_start": 182,
+          "end": 206
+        },
+        {
+          "name": "Response.__getattr__",
+          "kind": "function",
+          "def_line": 436,
+          "extent_start": 436,
+          "end": 462
+        },
+        {
+          "name": "Response",
+          "kind": "class",
+          "def_line": 392,
+          "extent_start": 392,
+          "end": 475
+        },
+        {
+          "name": "Response.close",
+          "kind": "function",
+          "def_line": 472,
+          "extent_start": 472,
+          "end": 475
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "3d1444b829f63582b0acb6aa53b82b2693c19213",
+    "parent": "4d3a9defd25bebae524c15647b897a3459365410",
+    "subject": "Update documentation of the \"data\" parameter for requests.post() to indicate that it allows bytes.  Update documentation of requests.put() to refer to the \"data\" parameter rather than the (hidden, but functional) \"params\" parameter, and note that that also allows both bytes and dictionaries.",
+    "entry": "post",
+    "ground_truth": [
+      "requests/api.py::post",
+      "requests/api.py::put"
+    ],
+    "discover": [
+      "requests/api.py::put"
+    ],
+    "by_file": {
+      "requests/api.py": [
+        {
+          "name": "post",
+          "kind": "function",
+          "def_line": 84,
+          "extent_start": 84,
+          "end": 98
+        },
+        {
+          "name": "put",
+          "kind": "function",
+          "def_line": 101,
+          "extent_start": 101,
+          "end": 115
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "bbd58b922bb1e5268206aa266cddfb1293c6f959",
+    "parent": "21e51b504e6d53c6a1aafabffdb328536cbf18de",
+    "subject": "Migrate settings to new module",
+    "entry": "settings",
+    "ground_truth": [
+      "requests/__init__.py::settings",
+      "requests/__init__.py::settings.__init__",
+      "requests/__init__.py::settings.__enter__",
+      "requests/__init__.py::settings.__exit__",
+      "requests/__init__.py::settings._cache_settings",
+      "requests/__init__.py::settings._alter_settings",
+      "requests/__init__.py::settings._restore_settings",
+      "requests/api.py::request"
+    ],
+    "discover": [
+      "requests/__init__.py::settings.__init__",
+      "requests/__init__.py::settings.__enter__",
+      "requests/__init__.py::settings.__exit__",
+      "requests/__init__.py::settings._cache_settings",
+      "requests/__init__.py::settings._alter_settings",
+      "requests/__init__.py::settings._restore_settings",
+      "requests/api.py::request"
+    ],
+    "by_file": {
+      "requests/__init__.py": [
+        {
+          "name": "settings",
+          "kind": "class",
+          "def_line": 12,
+          "extent_start": 12,
+          "end": 35
+        },
+        {
+          "name": "settings.__init__",
+          "kind": "function",
+          "def_line": 14,
+          "extent_start": 14,
+          "end": 16
+        },
+        {
+          "name": "settings.__enter__",
+          "kind": "function",
+          "def_line": 18,
+          "extent_start": 18,
+          "end": 19
+        },
+        {
+          "name": "settings.__exit__",
+          "kind": "function",
+          "def_line": 21,
+          "extent_start": 21,
+          "end": 22
+        },
+        {
+          "name": "settings._cache_settings",
+          "kind": "function",
+          "def_line": 24,
+          "extent_start": 24,
+          "end": 27
+        },
+        {
+          "name": "settings._alter_settings",
+          "kind": "function",
+          "def_line": 29,
+          "extent_start": 29,
+          "end": 31
+        },
+        {
+          "name": "settings._restore_settings",
+          "kind": "function",
+          "def_line": 33,
+          "extent_start": 33,
+          "end": 35
+        }
+      ],
+      "requests/api.py": [
+        {
+          "name": "request",
+          "kind": "function",
+          "def_line": 22,
+          "extent_start": 22,
+          "end": 43
+        }
+      ]
+    }
+  }
+]

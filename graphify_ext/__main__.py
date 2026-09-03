@@ -327,7 +327,20 @@ def main(argv: list[str] | None = None) -> int:
                       f"--{t['relation']}{conf}--> {t['touches_label']}")
             if len(pack["related_tests"]) > 12:
                 print(f"      ... and {len(pack['related_tests']) - 12} more")
-        else:
+        rc = pack["review_checklist"]
+        if rc["call_sites_of_seed"] or rc["sibling_members"]:
+            print("--- BEFORE YOU FINISH: revisit every call site of the seed and decide "
+                  "whether each sibling member needs the same change")
+            for c in rc["call_sites_of_seed"][:15]:
+                where = f"{c['file']}:{c['call_line'] or c['location']}"
+                print(f"      call site  {c['label']!s:<30} {where}"
+                      + ("" if c["shown"] else "   (NOT shown above -- open it)"))
+            for m in rc["sibling_members"][:15]:
+                print(f"      sibling    {m['label']!s:<30} {m['file']}:{m['location']}  (of {m['owner']})"
+                      + ("" if m["shown"] else "   (NOT shown above)"))
+        if pack["related_tests"]:
+            pass
+        if not pack["related_tests"]:
             print("--- no test file in the graph links to anything shown; "
                   "run `graphify-ext test-link` with coverage, or search tests by name")
         if pack["unmodelled"]:
