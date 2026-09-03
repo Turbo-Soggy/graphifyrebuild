@@ -1,0 +1,82 @@
+﻿== setup: slot-managed main, add probe + config files, sync ==
+    [crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+    [crg-branch-cache] done in 2.4s
+    crg update --quiet: (no output)
+
+== precondition: CRG emits no code->config edges of its own ==
+  PASS: CRG native code->config edge count is 0
+
+== scan ==
+scanned 31 candidate link(s)
+applied 25 config edge(s)
+  PASS: scan applied edges
+  PASS: API_KEY linked (.env.example + terraform definitions)
+  PASS: DATABASE_URL linked (.env.example)
+  PASS: AWS_REGION linked (Dockerfile ENV)
+  PASS: undefined var produces NO edge
+  PASS: env var defined but never read is NOT linked
+  PASS: API_KEY links to BOTH .env.example and infra.tf
+  PASS: SQL table 'user' linked from code to flask's own schema.sql
+  PASS: SQL table 'post' linked (INSERT INTO)
+  PASS: schema links point at flask's pre-existing schema.sql
+  PASS: schema links carry a REAL CRG target node
+  PASS: code side always resolves to a real graph node
+  PASS: code side resolves to the enclosing function, not just the file
+  PASS: env-var edges have no target node (.env/Dockerfile aren't parsed)
+
+== idempotency + survival ==
+  PASS: re-scan is idempotent (same row count)
+    crg update --quiet: (no output)
+  PASS: config_edges survive an incremental update
+
+== reapply after full rebuild ==
+    crg build --quiet: (no output)
+  PASS: config_edges empty before reapply
+  PASS: reapply restores edges against the rebuilt graph
+
+== triage surfaces config dependencies ==
+  PASS: config/schema section present in triage output
+  PASS: triage reports env-var and schema link counts
+  PASS: triage names a linked config key
+
+== branch scoping ==
+    [crg-branch-cache] CACHE INVALID, REBUILDING (base commit 5a6eaf61cf is not an ancestor of HEAD (history rewritten?); slot cfg-free, link mode)
+    [crg-branch-cache] done in 12.3s
+  PASS: fresh branch slot has no config rows
+  PASS: probe files ARE present on the other branch (so zero rows is scoping, not absence)
+    [crg-branch-cache] CACHE HIT + UPDATE (base commit 7d2c1bfb58 is an ancestor of HEAD; slot main, link mode)
+    [crg-branch-cache] re-applied 25 config edge(s)
+    [crg-branch-cache] done in 2.6s
+  PASS: main's config rows return after swap back
+
+== cleanup ==
+    crg update --quiet: (no output)
+
+== summary ==
+  PASS  CRG native code->config edge count is 0
+  PASS  scan applied edges
+  PASS  API_KEY linked (.env.example + terraform definitions)
+  PASS  DATABASE_URL linked (.env.example)
+  PASS  AWS_REGION linked (Dockerfile ENV)
+  PASS  undefined var produces NO edge
+  PASS  env var defined but never read is NOT linked
+  PASS  API_KEY links to BOTH .env.example and infra.tf
+  PASS  SQL table 'user' linked from code to flask's own schema.sql
+  PASS  SQL table 'post' linked (INSERT INTO)
+  PASS  schema links point at flask's pre-existing schema.sql
+  PASS  schema links carry a REAL CRG target node
+  PASS  code side always resolves to a real graph node
+  PASS  code side resolves to the enclosing function, not just the file
+  PASS  env-var edges have no target node (.env/Dockerfile aren't parsed)
+  PASS  re-scan is idempotent (same row count)
+  PASS  config_edges survive an incremental update
+  PASS  config_edges empty before reapply
+  PASS  reapply restores edges against the rebuilt graph
+  PASS  config/schema section present in triage output
+  PASS  triage reports env-var and schema link counts
+  PASS  triage names a linked config key
+  PASS  fresh branch slot has no config rows
+  PASS  probe files ARE present on the other branch (so zero rows is scoping, not absence)
+  PASS  main's config rows return after swap back
+
+25/25 checks passed

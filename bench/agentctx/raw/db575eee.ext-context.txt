@@ -1,0 +1,89 @@
+=== SEED (depth 0 via calls) requests/models.py:881-910  json ===
+def json(self, **kwargs):
+        r"""Returns the json-encoded content of a response, if any.
+
+        :param \*\*kwargs: Optional arguments that ``json.loads`` takes.
+        :raises simplejson.JSONDecodeError: If the response body does not
+            contain valid json and simplejson is installed.
+        :raises json.JSONDecodeError: If the response body does not contain
+            valid json and simplejson is not installed on Python 3.
+        :raises ValueError: If the response body does not contain valid
+            json and simplejson is not installed on Python 2.        
+        """
+
+        if not self.encoding and self.content and len(self.content) > 3:
+            # No encoding set. JSON RFC 4627 section 3 states we should expect
+            # UTF-8, -16 or -32. Detect which one to use; If the detection or
+            # decoding fails, fall back to `self.text` (using charset_normalizer to make
+            # a best guess).
+            encoding = guess_json_utf(self.content)
+            if encoding is not None:
+                try:
+                    return complexjson.loads(
+                        self.content.decode(encoding), **kwargs
+                    )
+                except UnicodeDecodeError:
+                    # Wrong UTF codec detected; usually because it's not UTF-8
+                    # but some other 8-bit codec.  This is an RFC violation,
+                    # and the server didn't bother to tell us what codec *was*
+                    # used.
+                    pass
+        return complexjson.loads(self.text, **kwargs)
+
+=== RELATED (depth 1 via imports) requests/utils.py:893-922  guess_json_utf ===
+def guess_json_utf(data):
+    """
+    :rtype: str
+    """
+    # JSON always starts with two ASCII characters, so detection is as
+    # easy as counting the nulls and from their location and count
+    # determine the encoding. Also detect a BOM, if present.
+    sample = data[:4]
+    if sample in (codecs.BOM_UTF32_LE, codecs.BOM_UTF32_BE):
+        return 'utf-32'     # BOM included
+    if sample[:3] == codecs.BOM_UTF8:
+        return 'utf-8-sig'  # BOM included, MS style (discouraged)
+    if sample[:2] in (codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE):
+        return 'utf-16'     # BOM included
+    nullcount = sample.count(_null)
+    if nullcount == 0:
+        return 'utf-8'
+    if nullcount == 2:
+        if sample[::2] == _null2:   # 1st and 3rd are null
+            return 'utf-16-be'
+        if sample[1::2] == _null2:  # 2nd and 4th are null
+            return 'utf-16-le'
+        # Did not detect 2 valid UTF-16 ascii-range characters
+    if nullcount == 3:
+        if sample[:3] == _null3:
+            return 'utf-32-be'
+        if sample[1:] == _null3:
+            return 'utf-32-le'
+        # Did not detect a valid UTF-32 ascii-range character
+    return None
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:331-332  test_bad_utf_like_encoding ===
+def test_bad_utf_like_encoding(self):
+        assert guess_json_utf(b'\x00\x00\x00\x00') is None
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:322-329  test_encoded ===
+@pytest.mark.parametrize(
+        'encoding', (
+            'utf-32', 'utf-8-sig', 'utf-16', 'utf-8', 'utf-16-be', 'utf-16-le',
+            'utf-32-be', 'utf-32-le'
+        ))
+    def test_encoded(self, encoding):
+        data = '{}'.encode(encoding)
+        assert guess_json_utf(data) == encoding
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:334-343  test_guess_by_bom ===
+@pytest.mark.parametrize(
+        ('encoding', 'expected'), (
+            ('utf-16-be', 'utf-16'),
+            ('utf-16-le', 'utf-16'),
+            ('utf-32-be', 'utf-32'),
+            ('utf-32-le', 'utf-32')
+        ))
+    def test_guess_by_bom(self, encoding, expected):
+        data = u'\ufeff{}'.encode(encoding)
+        assert guess_json_utf(data) == expected

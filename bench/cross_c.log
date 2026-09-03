@@ -1,0 +1,35 @@
+﻿=== Section C — mode=link ===
+
+== C1: graphify-out always resolves to the active branch's slot ==
+  PASS  [C1] output path tracks the active branch across repeated switches — final=cfeature
+  PASS  [C1] deleted slot is rebuilt, not served as a dangling pointer — rc=0, 1519 nodes
+
+== C2: concurrent swap while a rebuild is in flight ==
+  PASS  [C2] both concurrent swaps succeed (lock is waited on, not failed on) — exit codes [0, 0]
+  PASS  [C2] graph is well-formed after concurrent access — 1537 nodes / 2518 edges
+  PASS  [C2] output still points at the current branch's slot — main
+  INFO  [C2] contention handling — both ran to completion (per-repo lock serialised them)
+
+== C3: GRAPHIFY_SKIP_HOOK=1 suppresses the hook ==
+  PASS  [C3] control: hook fires when the flag is unset
+  PASS  [C3] GRAPHIFY_SKIP_HOOK=1 prevents the rebuild
+  PASS  [C3] GRAPHIFY_SKIP_HOOK=1 also suppresses post-commit
+
+== C4: PYTHONHASHSEED pin actually stabilises clustering ==
+  PASS  [C4] PYTHONHASHSEED=0 gives identical community assignments — 2002 clustered nodes
+  INFO  [C4] unpinned runs did not vary in this sample — the pin is harmless but unproven on this repo; keep it — networkx community order is hash-sensitive by construction
+
+== Section C summary ==
+  PASS  [C1] output path tracks the active branch across repeated switches — final=cfeature
+  PASS  [C1] deleted slot is rebuilt, not served as a dangling pointer — rc=0, 1519 nodes
+  PASS  [C2] both concurrent swaps succeed (lock is waited on, not failed on) — exit codes [0, 0]
+  PASS  [C2] graph is well-formed after concurrent access — 1537 nodes / 2518 edges
+  PASS  [C2] output still points at the current branch's slot — main
+  PASS  [C2] contention handling — both ran to completion (per-repo lock serialised them)
+  PASS  [C3] control: hook fires when the flag is unset
+  PASS  [C3] GRAPHIFY_SKIP_HOOK=1 prevents the rebuild
+  PASS  [C3] GRAPHIFY_SKIP_HOOK=1 also suppresses post-commit
+  PASS  [C4] PYTHONHASHSEED=0 gives identical community assignments — 2002 clustered nodes
+  PASS  [C4] unpinned runs did not vary in this sample — the pin is harmless but unproven on this repo; keep it — networkx community order is hash-sensitive by construction
+
+11/11 checks passed

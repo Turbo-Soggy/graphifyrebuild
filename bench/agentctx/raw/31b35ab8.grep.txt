@@ -1,0 +1,3 @@
+.\requests\models.py:469:            self.prepare_content_length(body)
+.\requests\models.py:477:    def prepare_content_length(self, body):
+.\requests\models.py:511:            self.prepare_content_length(self.body)

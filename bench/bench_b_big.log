@@ -1,0 +1,117 @@
+﻿=== Section B — mode=link, iterations=2, repo=sandbox-big ===
+baseline pinned at 53eb8d60
+
+== B1: cold full build, stock vs ext ==
+    stock `graphify . --code-only` #1: 54.9s
+    stock `graphify . --code-only` #2: 54.7s
+    stock _rebuild_code full (hook path) #1: 57.3s
+    stock _rebuild_code full (hook path) #2: 58.4s
+    ext first-visit #1: 60.3s (full rebuild)
+    ext first-visit #2: 80.1s (full rebuild)
+  INFO  [B1] stock extract CLI (context, different entry point) — min 54.7s / med 54.7s
+  INFO  [B1] stock _rebuild_code full — the hook path — min 58.4s / med 58.4s
+  INFO  [B1] ext first visit (full build) — min 80.1s / med 80.1s
+  PASS  [B1] ext cold build within 1.5x of the same-code-path stock baseline — 1.37x vs _rebuild_code full
+
+== B2: branch switch main->feature->main, STOCK (full rebuild each) ==
+    stock switch to feature #1: 62.9s
+    stock switch back to main #1: 56.8s
+    stock switch to feature #2: 55.7s
+    stock switch back to main #2: 57.9s
+  INFO  [B2] stock switch to feature — min 55.7s / med 59.3s (n=2)
+  INFO  [B2] stock switch back to main — min 56.8s / med 57.4s (n=2)
+  PASS  [B2] stock shows no revisit speedup (confirms it has no cache) — first 56.8s vs best revisit 57.9s
+
+== B3: branch switch main->feature->main, EXT ==
+    ext first visit main: 64.9s
+    ext first visit feature: 61.2s
+  PASS  [B3] first visit to a branch is a full build — [graphify-ext] activated slot feature for branch feature (link mode)
+    ext revisit main #1: 3.2s (CACHE HIT)
+    ext revisit feature #1: 3.2s (CACHE HIT)
+    ext revisit main #2: 3.2s (CACHE HIT)
+    ext revisit feature #2: 3.3s (CACHE HIT)
+  INFO  [B3] ext revisit main — min 3.2s / med 3.2s (n=2)
+  INFO  [B3] ext revisit feature — min 3.2s / med 3.2s (n=2)
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 3.2s vs stock 55.7s = 17.4x faster
+  PASS  [B3] swapped graphs are branch-correct (feature symbol only on feature) — main=False feature=True
+
+== B5: commit-triggered incremental, stock vs ext ==
+    #1: stock 26.7s  ext 35.1s
+    #2: stock 41.7s  ext 25.9s
+  INFO  [B5] stock incremental — min 26.7s / med 34.2s (n=2)
+  INFO  [B5] ext incremental — min 25.9s / med 30.5s (n=2)
+  PASS  [B5] ext adds no meaningful overhead to the common commit path — +-0.8s over stock 26.7s
+
+== B6: disk footprint ==
+  INFO  [B6] stock graphify-out — 26.7 MB
+  INFO  [B6] ext cache — 54.5 MB across 2 slot(s) = 27.3 MB/branch
+  PASS  [B6] cache grows ~linearly per branch (no hidden blowup) — 1.02x a single stock output per branch
+
+== B7: history rewrite -> full rebuild, ancestry check is what fires ==
+  PASS  [B7] precondition: cached base commit is NOT an ancestor of the rewritten HEAD — base bae77f0f vs HEAD 4b1d56c8
+  PASS  [B7] rewritten branch falls back to a full rebuild — ['[graphify-ext] activated slot feature for branch feature (link mode)']
+  PASS  [B7] graph is healthy after the fallback
+
+== B8: detached HEAD ==
+  PASS  [B8] detached HEAD triggers a full rebuild into a scratch slot — ['[graphify-ext] detached HEAD - full rebuild into scratch slot']
+  PASS  [B8] scratch slot used, not a branch-named slot
+
+== B9: long-diverged branches must NOT read as 'cache invalid' ==
+  PASS  [B9] precondition: branches are genuinely diverged (neither is an ancestor)
+  PASS  [B9] divergence never produces a false 'cache invalid' — false invalidations: none
+  PASS  [B9] each branch's cache stays correctly isolated — div_main=True div_feat=False
+
+== B10: corrupted cache slot -> graceful fallback ==
+  PASS  [B10] corrupt graph with NO pending changes is not served (zero-changed fast path validates the cache) — rc=0
+  PASS  [B10] corrupt graph.json: swap does not crash — rc=0
+  PASS  [B10] corrupt graph.json: graph recovers to a healthy state — 9303 nodes / 24550 edges
+  PASS  [B10] corrupt manifest.json: swap does not crash — rc=0
+  PASS  [B10] corrupt manifest.json: graph recovers to a healthy state — 9303 nodes / 24550 edges
+
+=== timings (link mode) ===
+  B1 stock extract CLI             min 54.7s / med 54.7s
+  B1 stock _rebuild_code full      min 58.4s / med 58.4s
+  B1 ext first-visit (full)        min 80.1s / med 80.1s
+  B2 stock switch->feature         min 55.7s / med 59.3s (n=2)
+  B2 stock switch->main            min 56.8s / med 57.4s (n=2)
+  B3 ext first visit main          min 64.9s / med 64.9s
+  B3 ext first visit feature       min 61.2s / med 61.2s
+  B3 ext revisit main              min 3.2s / med 3.2s (n=2)
+  B3 ext revisit feature           min 3.2s / med 3.2s (n=2)
+  B5 stock incremental             min 26.7s / med 34.2s (n=2)
+  B5 ext incremental               min 25.9s / med 30.5s (n=2)
+
+== Section B summary ==
+  PASS  [B1] stock extract CLI (context, different entry point) — min 54.7s / med 54.7s
+  PASS  [B1] stock _rebuild_code full — the hook path — min 58.4s / med 58.4s
+  PASS  [B1] ext first visit (full build) — min 80.1s / med 80.1s
+  PASS  [B1] ext cold build within 1.5x of the same-code-path stock baseline — 1.37x vs _rebuild_code full
+  PASS  [B2] stock switch to feature — min 55.7s / med 59.3s (n=2)
+  PASS  [B2] stock switch back to main — min 56.8s / med 57.4s (n=2)
+  PASS  [B2] stock shows no revisit speedup (confirms it has no cache) — first 56.8s vs best revisit 57.9s
+  PASS  [B3] first visit to a branch is a full build — [graphify-ext] activated slot feature for branch feature (link mode)
+  PASS  [B3] ext revisit main — min 3.2s / med 3.2s (n=2)
+  PASS  [B3] ext revisit feature — min 3.2s / med 3.2s (n=2)
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 3.2s vs stock 55.7s = 17.4x faster
+  PASS  [B3] swapped graphs are branch-correct (feature symbol only on feature) — main=False feature=True
+  PASS  [B5] stock incremental — min 26.7s / med 34.2s (n=2)
+  PASS  [B5] ext incremental — min 25.9s / med 30.5s (n=2)
+  PASS  [B5] ext adds no meaningful overhead to the common commit path — +-0.8s over stock 26.7s
+  PASS  [B6] stock graphify-out — 26.7 MB
+  PASS  [B6] ext cache — 54.5 MB across 2 slot(s) = 27.3 MB/branch
+  PASS  [B6] cache grows ~linearly per branch (no hidden blowup) — 1.02x a single stock output per branch
+  PASS  [B7] precondition: cached base commit is NOT an ancestor of the rewritten HEAD — base bae77f0f vs HEAD 4b1d56c8
+  PASS  [B7] rewritten branch falls back to a full rebuild — ['[graphify-ext] activated slot feature for branch feature (link mode)']
+  PASS  [B7] graph is healthy after the fallback
+  PASS  [B8] detached HEAD triggers a full rebuild into a scratch slot — ['[graphify-ext] detached HEAD - full rebuild into scratch slot']
+  PASS  [B8] scratch slot used, not a branch-named slot
+  PASS  [B9] precondition: branches are genuinely diverged (neither is an ancestor)
+  PASS  [B9] divergence never produces a false 'cache invalid' — false invalidations: none
+  PASS  [B9] each branch's cache stays correctly isolated — div_main=True div_feat=False
+  PASS  [B10] corrupt graph with NO pending changes is not served (zero-changed fast path validates the cache) — rc=0
+  PASS  [B10] corrupt graph.json: swap does not crash — rc=0
+  PASS  [B10] corrupt graph.json: graph recovers to a healthy state — 9303 nodes / 24550 edges
+  PASS  [B10] corrupt manifest.json: swap does not crash — rc=0
+  PASS  [B10] corrupt manifest.json: graph recovers to a healthy state — 9303 nodes / 24550 edges
+
+31/31 checks passed

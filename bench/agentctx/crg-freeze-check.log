@@ -1,0 +1,24 @@
+########## verify_req1 ##########
+  PASS  corrupt slot DB handled without crash (labeled outcome still printed)
+  PASS  graph is healthy after corrupt-slot recovery
+
+14/14 checks passed
+exit=0
+########## verify_req2 ##########
+  PASS  post-fix output visibly differs from pre-fix triage output
+
+11/11 checks passed
+(triage run 1 wall time incl. server spawn: 8.5s)
+exit=0
+########## verify_taint ##########
+  PASS  vulnerable file IS present on the other branch (so zero rows is scoping, not absence)
+  PASS  main's taint rows return after swap back
+
+16/16 checks passed
+exit=0
+########## verify_config ##########
+  PASS  probe files ARE present on the other branch (so zero rows is scoping, not absence)
+  PASS  main's config rows return after swap back
+
+25/25 checks passed
+exit=0

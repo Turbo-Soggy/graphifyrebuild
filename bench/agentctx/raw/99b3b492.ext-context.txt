@@ -1,0 +1,673 @@
+=== SEED (depth 0 via calls) requests/sessions.py:273-312  rebuild_proxies ===
+def rebuild_proxies(self, prepared_request, proxies):
+        """This method re-evaluates the proxy configuration by considering the
+        environment variables. If we are redirected to a URL covered by
+        NO_PROXY, we strip the proxy configuration. Otherwise, we set missing
+        proxy keys for this URL (in case they were stripped by a previous
+        redirect).
+
+        This method also replaces the Proxy-Authorization header where
+        necessary.
+
+        :rtype: dict
+        """
+        proxies = proxies if proxies is not None else {}
+        headers = prepared_request.headers
+        url = prepared_request.url
+        scheme = urlparse(url).scheme
+        new_proxies = proxies.copy()
+        no_proxy = proxies.get('no_proxy')
+
+        bypass_proxy = should_bypass_proxies(url, no_proxy=no_proxy)
+        if self.trust_env and not bypass_proxy:
+            environ_proxies = get_environ_proxies(url, no_proxy=no_proxy)
+
+            proxy = environ_proxies.get(scheme, environ_proxies.get('all'))
+
+            if proxy:
+                new_proxies.setdefault(scheme, proxy)
+
+        if 'Proxy-Authorization' in headers:
+            del headers['Proxy-Authorization']
+
+        try:
+            username, password = get_auth_from_url(new_proxies[scheme])
+        except KeyError:
+            username, password = None, None
+
+        if username and password:
+            headers['Proxy-Authorization'] = _basic_auth_str(username, password)
+
+        return new_proxies
+
+=== RELATED (depth 1 via calls) requests/sessions.py:144-252  resolve_redirects ===
+def resolve_redirects(self, resp, req, stream=False, timeout=None,
+                          verify=True, cert=None, proxies=None, yield_requests=False, **adapter_kwargs):
+        """Receives a Response. Returns a generator of Responses or Requests."""
+
+        hist = []  # keep track of history
+
+        url = self.get_redirect_target(resp)
+        previous_fragment = urlparse(req.url).fragment
+        while url:
+            prepared_request = req.copy()
+
+            # Update history and keep track of redirects.
+            # resp.history must ignore the original request in this loop
+            hist.append(resp)
+            resp.history = hist[1:]
+
+            try:
+                resp.content  # Consume socket so it can be released
+            except (ChunkedEncodingError, ContentDecodingError, RuntimeError):
+                resp.raw.read(decode_content=False)
+
+            if len(resp.history) >= self.max_redirects:
+                raise TooManyRedirects('Exceeded {} redirects.'.format(self.max_redirects), response=resp)
+
+            # Release the connection back into the pool.
+            resp.close()
+
+            # Handle redirection without scheme (see: RFC 1808 Section 4)
+            if url.startswith('//'):
+                parsed_rurl = urlparse(resp.url)
+                url = ':'.join([to_native_string(parsed_rurl.scheme), url])
+
+            # Normalize url case and attach previous fragment if needed (RFC 7231 7.1.2)
+            parsed = urlparse(url)
+            if parsed.fragment == '' and previous_fragment:
+                parsed = parsed._replace(fragment=previous_fragment)
+            elif parsed.fragment:
+                previous_fragment = parsed.fragment
+            url = parsed.geturl()
+
+            # Facilitate relative 'location' headers, as allowed by RFC 7231.
+            # (e.g. '/path/to/resource' instead of 'http://domain.tld/path/to/resource')
+            # Compliant with RFC3986, we percent encode the url.
+            if not parsed.netloc:
+                url = urljoin(resp.url, requote_uri(url))
+            else:
+                url = requote_uri(url)
+
+            prepared_request.url = to_native_string(url)
+
+            self.rebuild_method(prepared_request, resp)
+
+            # https://github.com/psf/requests/issues/1084
+            if resp.status_code not in (codes.temporary_redirect, codes.permanent_redirect):
+                # https://github.com/psf/requests/issues/3490
+                purged_headers = ('Content-Length', 'Content-Type', 'Transfer-Encoding')
+                for header in purged_headers:
+                    prepared_request.headers.pop(header, None)
+                prepared_request.body = None
+
+            headers = prepared_request.headers
+            headers.pop('Cookie', None)
+
+            # Extract any cookies sent on the response to the cookiejar
+            # in the new request. Because we've mutated our copied prepared
+            # request, use the old one that we haven't yet touched.
+            extract_cookies_to_jar(prepared_request._cookies, req, resp.raw)
+            merge_cookies(prepared_request._cookies, self.cookies)
+            prepared_request.prepare_cookies(prepared_request._cookies)
+
+            # Rebuild auth and proxy information.
+            proxies = self.rebuild_proxies(prepared_request, proxies)
+            self.rebuild_auth(prepared_request, resp)
+
+            # A failed tell() sets `_body_position` to `object()`. This non-None
+            # value ensures `rewindable` will be True, allowing us to raise an
+            # UnrewindableBodyError, instead of hanging the connection.
+            rewindable = (
+                prepared_request._body_position is not None and
+                ('Content-Length' in headers or 'Transfer-Encoding' in headers)
+… truncated at 80 of 109 lines (requests/sessions.py:224-252 omitted)
+
+=== RELATED (depth 1 via calls) requests/sessions.py:626-699  send ===
+def send(self, request, **kwargs):
+        """Send a given PreparedRequest.
+
+        :rtype: requests.Response
+        """
+        # Set defaults that the hooks can utilize to ensure they always have
+        # the correct parameters to reproduce the previous request.
+        kwargs.setdefault('stream', self.stream)
+        kwargs.setdefault('verify', self.verify)
+        kwargs.setdefault('cert', self.cert)
+        kwargs.setdefault('proxies', self.rebuild_proxies(request, self.proxies))
+
+        # It's possible that users might accidentally send a Request object.
+        # Guard against that specific failure case.
+        if isinstance(request, Request):
+            raise ValueError('You can only send PreparedRequests.')
+
+        # Set up variables needed for resolve_redirects and dispatching of hooks
+        allow_redirects = kwargs.pop('allow_redirects', True)
+        stream = kwargs.get('stream')
+        hooks = request.hooks
+
+        # Get the appropriate adapter to use
+        adapter = self.get_adapter(url=request.url)
+
+        # Start time (approximately) of the request
+        start = preferred_clock()
+
+        # Send the request
+        r = adapter.send(request, **kwargs)
+
+        # Total elapsed time of the request (approximately)
+        elapsed = preferred_clock() - start
+        r.elapsed = timedelta(seconds=elapsed)
+
+        # Response manipulation hooks
+        r = dispatch_hook('response', hooks, r, **kwargs)
+
+        # Persist cookies
+        if r.history:
+
+            # If the hooks create history then we want those cookies too
+            for resp in r.history:
+                extract_cookies_to_jar(self.cookies, resp.request, resp.raw)
+
+        extract_cookies_to_jar(self.cookies, request, r.raw)
+
+        # Resolve redirects if allowed.
+        if allow_redirects:
+            # Redirect resolving generator.
+            gen = self.resolve_redirects(r, request, **kwargs)
+            history = [resp for resp in gen]
+        else:
+            history = []
+
+        # Shuffle things around if there's history.
+        if history:
+            # Insert the first (original) request at the start
+            history.insert(0, r)
+            # Get the last request made
+            r = history.pop()
+            r.history = history
+
+        # If redirects aren't being followed, store the response on the Request for Response.next().
+        if not allow_redirects:
+            try:
+                r._next = next(self.resolve_redirects(r, request, yield_requests=True, **kwargs))
+            except StopIteration:
+                pass
+
+        if not stream:
+            r.content
+
+        return r
+
+=== RELATED (depth 1 via calls) requests/auth.py:28-69  _basic_auth_str ===
+def _basic_auth_str(username, password):
+    """Returns a Basic Auth string."""
+
+    # "I want us to put a big-ol' comment on top of it that
+    # says that this behaviour is dumb but we need to preserve
+    # it because people are relying on it."
+    #    - Lukasa
+    #
+    # These are here solely to maintain backwards compatibility
+    # for things like ints. This will be removed in 3.0.0.
+    if not isinstance(username, basestring):
+        warnings.warn(
+            "Non-string usernames will no longer be supported in Requests "
+            "3.0.0. Please convert the object you've passed in ({!r}) to "
+            "a string or bytes object in the near future to avoid "
+            "problems.".format(username),
+            category=DeprecationWarning,
+        )
+        username = str(username)
+
+    if not isinstance(password, basestring):
+        warnings.warn(
+            "Non-string passwords will no longer be supported in Requests "
+            "3.0.0. Please convert the object you've passed in ({!r}) to "
+            "a string or bytes object in the near future to avoid "
+            "problems.".format(type(password)),
+            category=DeprecationWarning,
+        )
+        password = str(password)
+    # -- End Removal --
+
+    if isinstance(username, str):
+        username = username.encode('latin1')
+
+    if isinstance(password, str):
+        password = password.encode('latin1')
+
+    authstr = 'Basic ' + to_native_string(
+        b64encode(b':'.join((username, password))).strip()
+    )
+
+    return authstr
+
+=== RELATED (depth 1 via calls) requests/utils.py:795-804  get_environ_proxies ===
+def get_environ_proxies(url, no_proxy=None):
+    """
+    Return a dict of environment proxies.
+
+    :rtype: dict
+    """
+    if should_bypass_proxies(url, no_proxy=no_proxy):
+        return {}
+    else:
+        return getproxies()
+
+=== RELATED (depth 1 via calls) requests/utils.py:734-792  should_bypass_proxies ===
+def should_bypass_proxies(url, no_proxy):
+    """
+    Returns whether we should bypass proxies or not.
+
+    :rtype: bool
+    """
+    # Prioritize lowercase environment variables over uppercase
+    # to keep a consistent behaviour with other http projects (curl, wget).
+    get_proxy = lambda k: os.environ.get(k) or os.environ.get(k.upper())
+
+    # First check whether no_proxy is defined. If it is, check that the URL
+    # we're getting isn't in the no_proxy list.
+    no_proxy_arg = no_proxy
+    if no_proxy is None:
+        no_proxy = get_proxy('no_proxy')
+    parsed = urlparse(url)
+
+    if parsed.hostname is None:
+        # URLs don't always have hostnames, e.g. file:/// urls.
+        return True
+
+    if no_proxy:
+        # We need to check whether we match here. We need to see if we match
+        # the end of the hostname, both with and without the port.
+        no_proxy = (
+            host for host in no_proxy.replace(' ', '').split(',') if host
+        )
+
+        if is_ipv4_address(parsed.hostname):
+            for proxy_ip in no_proxy:
+                if is_valid_cidr(proxy_ip):
+                    if address_in_network(parsed.hostname, proxy_ip):
+                        return True
+                elif parsed.hostname == proxy_ip:
+                    # If no_proxy ip was defined in plain IP notation instead of cidr notation &
+                    # matches the IP of the index
+                    return True
+        else:
+            host_with_port = parsed.hostname
+            if parsed.port:
+                host_with_port += ':{}'.format(parsed.port)
+
+            for host in no_proxy:
+                if parsed.hostname.endswith(host) or host_with_port.endswith(host):
+                    # The URL does match something in no_proxy, so we don't want
+                    # to apply the proxies on this URL.
+                    return True
+
+    with set_environ('no_proxy', no_proxy_arg):
+        # parsed.hostname can be `None` in cases such as a file URI.
+        try:
+            bypass = proxy_bypass(parsed.hostname)
+        except (TypeError, socket.gaierror):
+            bypass = False
+
+    if bypass:
+        return True
+
+    return False
+
+=== RELATED (depth 1 via imports) requests/utils.py:946-959  get_auth_from_url ===
+def get_auth_from_url(url):
+    """Given a url with authentication components, extract them into a tuple of
+    username,password.
+
+    :rtype: (str,str)
+    """
+    parsed = urlparse(url)
+
+    try:
+        auth = (unquote(parsed.username), unquote(parsed.password))
+    except (AttributeError, TypeError):
+        auth = ('', '')
+
+    return auth
+
+=== RELATED (depth 2 via calls) requests/auth.py:95-97  __call__ ===
+def __call__(self, r):
+        r.headers['Authorization'] = _basic_auth_str(self.username, self.password)
+        return r
+
+=== RELATED (depth 2 via calls) requests/auth.py:103-105  __call__ ===
+def __call__(self, r):
+        r.headers['Proxy-Authorization'] = _basic_auth_str(self.username, self.password)
+        return r
+
+=== RELATED (depth 2 via calls) requests/sessions.py:730-742  get_adapter ===
+def get_adapter(self, url):
+        """
+        Returns the appropriate connection adapter for the given URL.
+
+        :rtype: requests.adapters.BaseAdapter
+        """
+        for (prefix, adapter) in self.adapters.items():
+
+            if url.lower().startswith(prefix.lower()):
+                return adapter
+
+        # Nothing matches :-/
+        raise InvalidSchema("No connection adapters were found for {!r}".format(url))
+
+=== RELATED (depth 2 via calls) requests/sessions.py:98-117  get_redirect_target ===
+def get_redirect_target(self, resp):
+        """Receives a Response. Returns a redirect URI or ``None``"""
+        # Due to the nature of how requests processes redirects this method will
+        # be called at least once upon the original response and at least twice
+        # on each subsequent redirect response (if any).
+        # If a custom mixin is used to handle this logic, it may be advantageous
+        # to cache the redirect location onto the response object as a private
+        # attribute.
+        if resp.is_redirect:
+            location = resp.headers['location']
+            # Currently the underlying http module on py3 decode headers
+            # in latin1, but empirical evidence suggests that latin1 is very
+            # rarely used with non-ASCII characters in HTTP headers.
+            # It is more likely to get UTF8 header rather than latin1.
+            # This causes incorrect handling of UTF8 encoded location headers.
+            # To solve this, we re-encode the location in latin1.
+            if is_py3:
+                location = location.encode('latin1')
+            return to_native_string(location, 'utf8')
+        return None
+
+=== RELATED (depth 2 via calls) requests/sessions.py:701-728  merge_environment_settings ===
+def merge_environment_settings(self, url, proxies, stream, verify, cert):
+        """
+        Check the environment and merge it with some settings.
+
+        :rtype: dict
+        """
+        # Gather clues from the surrounding environment.
+        if self.trust_env:
+            # Set environment's proxies.
+            no_proxy = proxies.get('no_proxy') if proxies is not None else None
+            env_proxies = get_environ_proxies(url, no_proxy=no_proxy)
+            for (k, v) in env_proxies.items():
+                proxies.setdefault(k, v)
+
+            # Look for requests environment configuration and be compatible
+            # with cURL.
+            if verify is True or verify is None:
+                verify = (os.environ.get('REQUESTS_CA_BUNDLE') or
+                          os.environ.get('CURL_CA_BUNDLE'))
+
+        # Merge all the kwargs.
+        proxies = merge_setting(proxies, self.proxies)
+        stream = merge_setting(stream, self.stream)
+        verify = merge_setting(verify, self.verify)
+        cert = merge_setting(cert, self.cert)
+
+        return {'verify': verify, 'proxies': proxies, 'stream': stream,
+                'cert': cert}
+
+=== RELATED (depth 2 via calls) requests/models.py:544-564  prepare_auth ===
+def prepare_auth(self, auth, url=''):
+        """Prepares the given HTTP auth data."""
+
+        # If no Auth is explicitly provided, extract it from the URL first.
+        if auth is None:
+            url_auth = get_auth_from_url(self.url)
+            auth = url_auth if any(url_auth) else None
+
+        if auth:
+            if isinstance(auth, tuple) and len(auth) == 2:
+                # special-case basic HTTP auth
+                auth = HTTPBasicAuth(*auth)
+
+            # Allow auth to make its changes.
+            r = auth(self)
+
+            # Update self to reflect the auth changes.
+            self.__dict__.update(r.__dict__)
+
+            # Recompute Content-Length
+            self.prepare_content_length(self.body)
+
+=== RELATED (depth 2 via calls) requests/adapters.py:373-393  proxy_headers ===
+def proxy_headers(self, proxy):
+        """Returns a dictionary of the headers to add to any request sent
+        through a proxy. This works with urllib3 magic to ensure that they are
+        correctly sent to the proxy, rather than in a tunnelled request if
+        CONNECT is being used.
+
+        This should not be called from user code, and is only exposed for use
+        when subclassing the
+        :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.
+
+        :param proxy: The url of the proxy being used for this request.
+        :rtype: dict
+        """
+        headers = {}
+        username, password = get_auth_from_url(proxy)
+
+        if username:
+            headers['Proxy-Authorization'] = _basic_auth_str(username,
+                                                             password)
+
+        return headers
+
+=== RELATED (depth 2 via calls) requests/adapters.py:167-202  proxy_manager_for ===
+def proxy_manager_for(self, proxy, **proxy_kwargs):
+        """Return urllib3 ProxyManager for the given proxy.
+
+        This method should not be called from user code, and is only
+        exposed for use when subclassing the
+        :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.
+
+        :param proxy: The proxy to return a urllib3 ProxyManager for.
+        :param proxy_kwargs: Extra keyword arguments used to configure the Proxy Manager.
+        :returns: ProxyManager
+        :rtype: urllib3.ProxyManager
+        """
+        if proxy in self.proxy_manager:
+            manager = self.proxy_manager[proxy]
+        elif proxy.lower().startswith('socks'):
+            username, password = get_auth_from_url(proxy)
+            manager = self.proxy_manager[proxy] = SOCKSProxyManager(
+                proxy,
+                username=username,
+                password=password,
+                num_pools=self._pool_connections,
+                maxsize=self._pool_maxsize,
+                block=self._pool_block,
+                **proxy_kwargs
+            )
+        else:
+            proxy_headers = self.proxy_headers(proxy)
+            manager = self.proxy_manager[proxy] = proxy_from_url(
+                proxy,
+                proxy_headers=proxy_headers,
+                num_pools=self._pool_connections,
+                maxsize=self._pool_maxsize,
+                block=self._pool_block,
+                **proxy_kwargs)
+
+        return manager
+
+=== RELATED (depth 2 via calls) requests/sessions.py:254-270  rebuild_auth ===
+def rebuild_auth(self, prepared_request, response):
+        """When being redirected we may want to strip authentication from the
+        request to avoid leaking credentials. This method intelligently removes
+        and reapplies authentication where possible to avoid credential loss.
+        """
+        headers = prepared_request.headers
+        url = prepared_request.url
+
+        if 'Authorization' in headers and self.should_strip_auth(response.request.url, url):
+            # If we get redirected to a new host, we should strip out any
+            # authentication headers.
+            del headers['Authorization']
+
+        # .netrc might have more auth for us on our new host.
+        new_auth = get_netrc_auth(url) if self.trust_env else None
+        if new_auth is not None:
+            prepared_request.prepare_auth(new_auth)
+
+=== RELATED (depth 2 via calls) requests/sessions.py:314-334  rebuild_method ===
+def rebuild_method(self, prepared_request, response):
+        """When being redirected we may want to change the method of the request
+        based on certain specs or browser behavior.
+        """
+        method = prepared_request.method
+
+        # https://tools.ietf.org/html/rfc7231#section-6.4.4
+        if response.status_code == codes.see_other and method != 'HEAD':
+            method = 'GET'
+
+        # Do what the browsers do, despite standards...
+        # First, turn 302s into GETs.
+        if response.status_code == codes.found and method != 'HEAD':
+            method = 'GET'
+
+        # Second, if a POST is responded to with a 301, turn it into a GET.
+        # This bizarre behaviour is explained in Issue 1704.
+        if response.status_code == codes.moved and method == 'POST':
+            method = 'GET'
+
+        prepared_request.method = method
+
+=== RELATED (depth 2 via calls) requests/sessions.py:470-544  request ===
+def request(self, method, url,
+            params=None, data=None, headers=None, cookies=None, files=None,
+            auth=None, timeout=None, allow_redirects=True, proxies=None,
+            hooks=None, stream=None, verify=None, cert=None, json=None):
+        """Constructs a :class:`Request <Request>`, prepares it and sends it.
+        Returns :class:`Response <Response>` object.
+
+        :param method: method for the new :class:`Request` object.
+        :param url: URL for the new :class:`Request` object.
+        :param params: (optional) Dictionary or bytes to be sent in the query
+            string for the :class:`Request`.
+        :param data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the :class:`Request`.
+        :param json: (optional) json to send in the body of the
+            :class:`Request`.
+        :param headers: (optional) Dictionary of HTTP Headers to send with the
+            :class:`Request`.
+        :param cookies: (optional) Dict or CookieJar object to send with the
+            :class:`Request`.
+        :param files: (optional) Dictionary of ``'filename': file-like-objects``
+            for multipart encoding upload.
+        :param auth: (optional) Auth tuple or callable to enable
+            Basic/Digest/Custom HTTP Auth.
+        :param timeout: (optional) How long to wait for the server to send
+            data before giving up, as a float, or a :ref:`(connect timeout,
+            read timeout) <timeouts>` tuple.
+        :type timeout: float or tuple
+        :param allow_redirects: (optional) Set to True by default.
+        :type allow_redirects: bool
+        :param proxies: (optional) Dictionary mapping protocol or protocol and
+            hostname to the URL of the proxy.
+        :param stream: (optional) whether to immediately download the response
+            content. Defaults to ``False``.
+        :param verify: (optional) Either a boolean, in which case it controls whether we verify
+            the server's TLS certificate, or a string, in which case it must be a path
+            to a CA bundle to use. Defaults to ``True``. When set to
+            ``False``, requests will accept any TLS certificate presented by
+            the server, and will ignore hostname mismatches and/or expired
+            certificates, which will make your application vulnerable to
+            man-in-the-middle (MitM) attacks. Setting verify to ``False`` 
+            may be useful during local development or testing.
+        :param cert: (optional) if String, path to ssl client cert file (.pem).
+            If Tuple, ('cert', 'key') pair.
+        :rtype: requests.Response
+        """
+        # Create the Request.
+        req = Request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            files=files,
+            data=data or {},
+            json=json,
+            params=params or {},
+            auth=auth,
+            cookies=cookies,
+            hooks=hooks,
+        )
+        prep = self.prepare_request(req)
+
+        proxies = proxies or {}
+
+        settings = self.merge_environment_settings(
+            prep.url, proxies, stream, verify, cert
+        )
+
+        # Send the request.
+        send_kwargs = {
+            'timeout': timeout,
+            'allow_redirects': allow_redirects,
+        }
+        send_kwargs.update(settings)
+        resp = self.send(prep, **send_kwargs)
+
+        return resp
+
+=== RELATED (depth 2 via calls) tests/test_requests.py:1801-1809  test_basic_auth_str_is_always_native ===
+@pytest.mark.parametrize(
+        'username, password, auth_str', (
+            ('test', 'test', 'Basic dGVzdDp0ZXN0'),
+            (u'имя'.encode('utf-8'), u'пароль'.encode('utf-8'), 'Basic 0LjQvNGPOtC/0LDRgNC+0LvRjA=='),
+        ))
+    def test_basic_auth_str_is_always_native(self, username, password, auth_str):
+        s = _basic_auth_str(username, password)
+        assert isinstance(s, builtin_str)
+        assert s == auth_str
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:161-170  test_bypass ===
+@pytest.mark.parametrize(
+        'url', (
+            'http://192.168.0.1:5000/',
+            'http://192.168.0.1/',
+            'http://172.16.1.1/',
+            'http://172.16.1.1:5000/',
+            'http://localhost.localdomain:5000/v1.0/',
+        ))
+    def test_bypass(self, url):
+        assert get_environ_proxies(url, no_proxy=None) == {}
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:181-189  test_bypass_no_proxy_keyword ===
+@pytest.mark.parametrize(
+        'url', (
+            'http://192.168.1.1:5000/',
+            'http://192.168.1.1/',
+            'http://www.requests.com/',
+        ))
+    def test_bypass_no_proxy_keyword(self, url):
+        no_proxy = '192.168.1.1,requests.com'
+        assert get_environ_proxies(url, no_proxy=no_proxy) == {}
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:172-179  test_not_bypass ===
+@pytest.mark.parametrize(
+        'url', (
+            'http://192.168.1.1:5000/',
+            'http://192.168.1.1/',
+            'http://www.requests.com/',
+        ))
+    def test_not_bypass(self, url):
+        assert get_environ_proxies(url, no_proxy=None) != {}
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:191-204  test_not_bypass_no_proxy_keyword ===
+@pytest.mark.parametrize(
+        'url', (
+            'http://192.168.0.1:5000/',
+            'http://192.168.0.1/',
+            'http://172.16.1.1/',
+            'http://172.16.1.1:5000/',
+            'http://localhost.localdomain:5000/v1.0/',
+        ))
+    def test_not_bypass_no_proxy_keyword(self, url, monkeypatch):
+        # This is testing that the 'no_proxy' argument overrides the
+        # environment variable 'no_proxy'
+        monkeypatch.setenv('http_proxy', 'http://proxy.example.com:3128/')
+        no_proxy = '192.168.1.1,requests.com'
+        assert get_environ_proxies(url, no_proxy=no_proxy) != {}

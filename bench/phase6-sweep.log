@@ -1,0 +1,23 @@
+=== regression_a ===
+19/19 checks passed
+=== bench_b link ===
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 4.5s vs stock 9.2s = 2.0x faster
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 4.5s vs stock 9.2s = 2.0x faster
+31/31 checks passed
+=== bench_b copy ===
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 6.1s vs stock 10.0s = 1.6x faster
+  PASS  [B3] HEADLINE: branch revisit is faster than a stock full rebuild — 6.1s vs stock 10.0s = 1.6x faster
+31/31 checks passed
+=== cross_c ===
+11/11 checks passed
+=== corpus ===
+36/36 checks passed
+=== crg/verify_req1 ===
+14/14 checks passed
+=== crg/verify_req2 ===
+11/11 checks passed
+=== crg/verify_taint ===
+16/16 checks passed
+=== crg/verify_config ===
+25/25 checks passed
+=== SWEEP COMPLETE ===

@@ -1,0 +1,6 @@
+Affected nodes for .prepare_content_length()
+Relations: calls, indirect_call, references, imports, imports_from, dynamic_import, re_exports, inherits, extends, implements, uses, mixes_in, embeds, requires
+Depth: 2
+- .prepare_body() [calls] requests/models.py:L469
+- .prepare_auth() [calls] requests/models.py:L511
+- .prepare() [calls] requests/models.py:L302

@@ -1,0 +1,2 @@
+Blast radius of requests_models_response_content (depth 2, up): 1 nodes, 0 edges, ~138 tokens
+  [0] .content() requests/models.py:L821

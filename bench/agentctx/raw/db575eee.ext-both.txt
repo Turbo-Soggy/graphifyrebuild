@@ -1,0 +1,8 @@
+Blast radius of requests_models_response_json (depth 2, both): 7 nodes, 6 edges, ~869 tokens
+  [0] .json() requests/models.py:L881
+  [1] guess_json_utf() requests/utils.py:L893
+  [2] models.py requests/models.py:L1
+  [2] test_utils.py tests/test_utils.py:L1
+  [2] .test_bad_utf_like_encoding() tests/test_utils.py:L331
+  [2] .test_encoded() tests/test_utils.py:L327
+  [2] .test_guess_by_bom() tests/test_utils.py:L341

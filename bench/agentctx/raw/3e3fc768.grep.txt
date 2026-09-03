@@ -1,0 +1,4 @@
+.\requests\packages\__init__.py:28:class VendorAlias(object):
+.\requests\packages\__init__.py:68:            # VendorAlias instances on sys.meta_path
+.\requests\packages\__init__.py:73:                    if not isinstance(m, VendorAlias)
+.\requests\packages\__init__.py:107:sys.meta_path.insert(0, VendorAlias(["urllib3", "chardet"]))

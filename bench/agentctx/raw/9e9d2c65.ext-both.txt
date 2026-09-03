@@ -1,0 +1,2 @@
+Blast radius of requests_adapters_baseadapter_send (depth 2, both): 1 nodes, 0 edges, ~139 tokens
+  [0] .send() requests/adapters.py:L57

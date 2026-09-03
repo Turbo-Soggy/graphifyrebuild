@@ -1,0 +1,5 @@
+Blast radius of requests_models_preparedrequest_prepare_content_length (depth 2, up): 4 nodes, 4 edges, ~602 tokens
+  [0] .prepare_content_length() requests/models.py:L477
+  [1] .prepare_auth() requests/models.py:L491
+  [1] .prepare_body() requests/models.py:L418
+  [2] .prepare() requests/models.py:L294

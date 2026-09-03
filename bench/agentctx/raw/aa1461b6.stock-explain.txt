@@ -1,0 +1,17 @@
+Node: ._get_connection()
+  ID:        src_requests_adapters_httpadapter_get_connection
+  Source:    src/requests/adapters.py L377
+  Type:      code
+  Community: 
+  Degree:    9
+
+Connections (9):
+  <-- HTTPAdapter [method] [EXTRACTED] src/requests/adapters.py:L377
+  --> InvalidURL [calls] [EXTRACTED] src/requests/adapters.py:L385
+  <-- .send() [calls] [EXTRACTED] src/requests/adapters.py:L532
+  --> InvalidProxyURL [calls] [EXTRACTED] src/requests/adapters.py:L390
+  --> .proxy_manager_for() [calls] [EXTRACTED] src/requests/adapters.py:L394
+  --> select_proxy() [calls] [EXTRACTED] src/requests/adapters.py:L381
+  --> prepend_scheme_if_needed() [calls] [EXTRACTED] src/requests/adapters.py:L387
+  --> _urllib3_request_context() [calls] [EXTRACTED] src/requests/adapters.py:L383
+  <-- Returns a urllib3 connection for the given URL. This should not be called from… [rationale_for] [EXTRACTED] src/requests/adapters.py:L407

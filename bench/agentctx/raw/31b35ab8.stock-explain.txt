@@ -1,0 +1,12 @@
+Node: .prepare_content_length()
+  ID:        requests_models_preparedrequest_prepare_content_length
+  Source:    requests/models.py L477
+  Type:      code
+  Community: 
+  Degree:    4
+
+Connections (4):
+  <-- PreparedRequest [method] [EXTRACTED] requests/models.py:L477
+  --> super_len() [calls] [EXTRACTED] requests/models.py:L485
+  <-- .prepare_body() [calls] [EXTRACTED] requests/models.py:L469
+  <-- .prepare_auth() [calls] [EXTRACTED] requests/models.py:L511

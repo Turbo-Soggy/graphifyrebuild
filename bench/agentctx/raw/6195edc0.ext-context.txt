@@ -1,0 +1,5 @@
+=== SEED (depth 0) requests/auth.py:50-53  __eq__ ===
+def __eq__(self, other):
+        if not isinstance(other, HTTPBasicAuth):
+            return NotImplemented
+        return self.username == other.username and self.password == other.password

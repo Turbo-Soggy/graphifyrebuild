@@ -1,0 +1,4 @@
+=== SEED (depth 0) requests/models.py:580-582  send ===
+def send(self, session):
+        """Sends the given PreparedRequest to the given session."""
+        return session.send(self)

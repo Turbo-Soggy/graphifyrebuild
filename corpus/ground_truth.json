@@ -1,0 +1,172 @@
+{
+  "_comment": [
+    "Ground truth for taint-MAPPING validation (critique #2).",
+    "Locations are expressed as (function, call) pairs rather than raw line",
+    "numbers so the corpus can be edited without silently invalidating the",
+    "expectations; validate_taint.py resolves them to lines via the AST.",
+    "'expected_source_node'/'expected_sink_node' are the function nodes each",
+    "end of the flow MUST resolve to.",
+    "boundary_cases (M8) probe file:line -> node resolution at containment boundaries. graph.json stores no function extents, so a module-level finding was attributed to whichever function preceded it. Positions are declarative (function name / assignment name) and resolved through the AST at run time, never hardcoded."
+  ],
+  "module": "corpus/vuln_app/handlers.py",
+  "flows": [
+    {
+      "id": "TP1",
+      "kind": "sqli",
+      "source": {
+        "function": "tp_direct_sqli",
+        "call": "read_query_param"
+      },
+      "sink": {
+        "function": "tp_direct_sqli",
+        "call": "run_sql"
+      },
+      "expected_source_node": "tp_direct_sqli",
+      "expected_sink_node": "tp_direct_sqli",
+      "note": "single-hop; both ends resolve to the same node"
+    },
+    {
+      "id": "TP2",
+      "kind": "command-injection",
+      "source": {
+        "function": "tp_multihop_shell",
+        "call": "read_header"
+      },
+      "sink": {
+        "function": "_exec_path",
+        "call": "run_shell"
+      },
+      "expected_source_node": "tp_multihop_shell",
+      "expected_sink_node": "_exec_path",
+      "note": "cross-function; the two ends MUST resolve to different nodes"
+    },
+    {
+      "id": "TP3",
+      "kind": "xss",
+      "source": {
+        "function": "tp_reflected_xss",
+        "call": "read_query_param"
+      },
+      "sink": {
+        "function": "tp_reflected_xss",
+        "call": "render_html"
+      },
+      "expected_source_node": "tp_reflected_xss",
+      "expected_sink_node": "tp_reflected_xss",
+      "note": "single-hop reflected XSS"
+    }
+  ],
+  "negatives": [
+    {
+      "id": "TN1",
+      "function": "tn_sanitized_sql",
+      "reason": "value is sanitised before the sink"
+    },
+    {
+      "id": "TN2",
+      "function": "tn_constant_sql",
+      "reason": "reaches a sink but the value is a trusted constant"
+    },
+    {
+      "id": "TN3",
+      "function": "tn_unreached_sink",
+      "reason": "holds a sink but is never called from untrusted input"
+    },
+    {
+      "id": "TN4",
+      "function": "tn_pure_helper",
+      "reason": "no source and no sink"
+    }
+  ],
+  "expected_exposed_nodes": [
+    "tp_direct_sqli",
+    "tp_multihop_shell",
+    "_exec_path",
+    "tp_reflected_xss"
+  ],
+  "unresolvable_probes": [
+    {
+      "id": "UR1",
+      "file": "corpus/vuln_app/does_not_exist.py",
+      "line": 1,
+      "reason": "file absent from the graph"
+    },
+    {
+      "id": "UR2",
+      "file": "corpus/vuln_app/handlers.py",
+      "line": 99999,
+      "reason": "line beyond end of file"
+    }
+  ],
+  "boundary_module": "corpus/vuln_app/boundaries.py",
+  "boundary_cases": [
+    {
+      "id": "B1",
+      "at": {
+        "kind": "def_line",
+        "function": "first_function"
+      },
+      "expect": {
+        "kind": "function",
+        "name": "first_function"
+      },
+      "why": "a finding ON a def line belongs to that definition, even though the line is unindented"
+    },
+    {
+      "id": "B2",
+      "at": {
+        "kind": "in_body",
+        "function": "first_function"
+      },
+      "expect": {
+        "kind": "function",
+        "name": "first_function"
+      },
+      "why": "an indented line inside a body resolves to its enclosing function"
+    },
+    {
+      "id": "B3",
+      "at": {
+        "kind": "module_level",
+        "assignment": "MODULE_LEVEL_SECRET"
+      },
+      "expect": {
+        "kind": "file"
+      },
+      "why": "module-level statement AFTER a function ends - must NOT be blamed on that function"
+    },
+    {
+      "id": "B4",
+      "at": {
+        "kind": "in_body",
+        "function": "second_function"
+      },
+      "expect": {
+        "kind": "function",
+        "name": "second_function"
+      },
+      "why": "the next function still resolves correctly after the module-level gap"
+    },
+    {
+      "id": "B5",
+      "at": {
+        "kind": "module_level",
+        "assignment": "LAST_MODULE_LEVEL"
+      },
+      "expect": {
+        "kind": "file"
+      },
+      "why": "module-level statement after the LAST function - no following def to bound it"
+    },
+    {
+      "id": "B6",
+      "at": {
+        "kind": "past_eof"
+      },
+      "expect": {
+        "kind": "none"
+      },
+      "why": "a line beyond the file must not resolve to the last definition in it"
+    }
+  ]
+}

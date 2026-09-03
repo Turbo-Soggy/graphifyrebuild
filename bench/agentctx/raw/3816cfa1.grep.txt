@@ -1,0 +1,3 @@
+.\src\requests\utils.py:45:from ._types import SupportsItems as _SupportsItems
+.\src\requests\utils.py:150:    d: _t.SupportsItems | Iterable[tuple[Any, Any]],
+.\src\requests\_types.py:31:class SupportsItems(Protocol):

@@ -1,0 +1,11 @@
+Node: .json()
+  ID:        requests_models_response_json
+  Source:    requests/models.py L881
+  Type:      code
+  Community: 
+  Degree:    3
+
+Connections (3):
+  <-- Response [method] [EXTRACTED] requests/models.py:L881
+  --> guess_json_utf() [calls] [EXTRACTED] requests/models.py:L898
+  <-- r"""Returns the json-encoded content of a response, if any. :param \*\*kwargs:… [rationale_for] [EXTRACTED] requests/models.py:L882

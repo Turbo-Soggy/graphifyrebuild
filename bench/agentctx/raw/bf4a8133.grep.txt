@@ -1,0 +1,8 @@
+.\docs\conf.py:59:# General information about the project.
+.\requests\help.py:58:def information():
+.\requests\help.py:59:    """Generate information for a bug report."""
+.\requests\help.py:105:    """Pretty-print the bug information as JSON."""
+.\requests\help.py:106:    print(json.dumps(information(), sort_keys=True, indent=2))
+.\requests\sessions.py:188:            # Rebuild auth and proxy information.
+.\requests\utils.py:397:        'more information, please see the discussion on issue #2266. (This'
+.\requests\utils.py:473:        'more information, please see the discussion on issue #2266. (This'

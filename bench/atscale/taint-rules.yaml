@@ -1,0 +1,27 @@
+rules:
+  - id: ts-env-to-exec
+    mode: taint
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: environment/argv input reaches a command or dynamic evaluation sink
+    pattern-sources:
+      - pattern: process.env.$X
+      - pattern: process.argv
+    pattern-sinks:
+      - pattern: $CP.exec(...)
+      - pattern: $CP.execSync(...)
+      - pattern: $CP.spawn(...)
+      - pattern: eval(...)
+  - id: ts-input-to-fs
+    mode: taint
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: external input reaches a filesystem path sink
+    pattern-sources:
+      - pattern: process.env.$X
+      - pattern: process.argv
+    pattern-sinks:
+      - pattern: $FS.readFile(...)
+      - pattern: $FS.readFileSync(...)
+      - pattern: $FS.writeFile(...)
+      - pattern: $FS.writeFileSync(...)

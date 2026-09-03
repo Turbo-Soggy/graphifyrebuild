@@ -1,0 +1,8 @@
+.\requests\auth.py:50:    def __eq__(self, other):
+.\requests\auth.py:233:    def __eq__(self, other):
+.\requests\structures.py:73:    def __eq__(self, other):
+.\requests\packages\urllib3\packages\ordered_dict.py:235:    def __eq__(self, other):
+.\requests\packages\urllib3\packages\ordered_dict.py:236:        '''od.__eq__(y) <==> od==y.  Comparison to another OD is order-sensitive
+.\requests\packages\urllib3\packages\ordered_dict.py:242:        return dict.__eq__(self, other)
+.\requests\packages\urllib3\_collections.py:160:    def __eq__(self, other):
+.\requests\packages\urllib3\_collections.py:169:        return not self.__eq__(other)

@@ -1,0 +1,2 @@
+Blast radius of requests_models_preparedrequest_send (depth 2, both): 1 nodes, 0 edges, ~140 tokens
+  [0] .send() requests/models.py:L580

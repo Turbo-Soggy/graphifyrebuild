@@ -1,0 +1,45 @@
+{
+  "mode": "link",
+  "repo": "sandbox-big",
+  "timings": {
+    "B1 stock extract CLI": [
+      54.72283769999922
+    ],
+    "B1 stock _rebuild_code full": [
+      58.3635772000016
+    ],
+    "B1 ext first-visit (full)": [
+      80.05558089999977
+    ],
+    "B2 stock switch->feature": [
+      62.899429600001895,
+      55.730003799999395
+    ],
+    "B2 stock switch->main": [
+      56.76471239999955,
+      57.946533199999976
+    ],
+    "B3 ext first visit main": [
+      64.8683740000015
+    ],
+    "B3 ext first visit feature": [
+      61.24712350000118
+    ],
+    "B3 ext revisit main": [
+      3.203498300001229,
+      3.2088135999983933
+    ],
+    "B3 ext revisit feature": [
+      3.208207100000436,
+      3.2902695999982825
+    ],
+    "B5 stock incremental": [
+      26.72233889999916,
+      41.72993730000235
+    ],
+    "B5 ext incremental": [
+      35.05624929999976,
+      25.90672370000175
+    ]
+  }
+}

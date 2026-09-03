@@ -1,0 +1,6 @@
+Affected nodes for .rebuild_proxies()
+Relations: calls, indirect_call, references, imports, imports_from, dynamic_import, re_exports, inherits, extends, implements, uses, mixes_in, embeds, requires
+Depth: 2
+- .resolve_redirects() [calls] requests/sessions.py:L215
+- .send() [calls] requests/sessions.py:L636
+- .request() [calls] requests/sessions.py:L542

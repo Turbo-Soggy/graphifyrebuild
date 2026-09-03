@@ -1,0 +1,490 @@
+=== SEED (depth 0 via method) requests/models.py:318-326  copy ===
+def copy(self):
+        p = PreparedRequest()
+        p.method = self.method
+        p.url = self.url
+        p.headers = self.headers.copy() if self.headers is not None else None
+        p._cookies = self._cookies.copy() if self._cookies is not None else None
+        p.body = self.body
+        p.hooks = self.hooks
+        return p
+
+=== RELATED (depth 1 via inherits) requests/models.py:264-518  PreparedRequest ===
+class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
+    """The fully mutable :class:`PreparedRequest <PreparedRequest>` object,
+    containing the exact bytes that will be sent to the server.
+
+    Generated from either a :class:`Request <Request>` object or manually.
+
+    Usage::
+
+      >>> import requests
+      >>> req = requests.Request('GET', 'http://httpbin.org/get')
+      >>> r = req.prepare()
+      <PreparedRequest [GET]>
+
+      >>> s = requests.Session()
+      >>> s.send(r)
+      <Response [200]>
+
+    """
+
+    def __init__(self):
+        #: HTTP verb to send to the server.
+        self.method = None
+        #: HTTP URL to send the request to.
+        self.url = None
+        #: dictionary of HTTP headers.
+        self.headers = None
+        # The `CookieJar` used to create the Cookie header will be stored here
+        # after prepare_cookies is called
+        self._cookies = None
+        #: request body to send to the server.
+        self.body = None
+        #: dictionary of callback hooks, for internal usage.
+        self.hooks = default_hooks()
+
+    def prepare(self, method=None, url=None, headers=None, files=None,
+                data=None, params=None, auth=None, cookies=None, hooks=None,
+                json=None):
+        """Prepares the entire request with the given parameters."""
+
+        self.prepare_method(method)
+        self.prepare_url(url, params)
+        self.prepare_headers(headers)
+        self.prepare_cookies(cookies)
+        self.prepare_body(data, files, json)
+        self.prepare_auth(auth, url)
+        # Note that prepare_auth must be last to enable authentication schemes
+        # such as OAuth to work on a fully prepared request.
+
+        # This MUST go after prepare_auth. Authenticators could add a hook
+        self.prepare_hooks(hooks)
+
+    def __repr__(self):
+        return '<PreparedRequest [%s]>' % (self.method)
+
+    def copy(self):
+        p = PreparedRequest()
+        p.method = self.method
+        p.url = self.url
+        p.headers = self.headers.copy() if self.headers is not None else None
+        p._cookies = self._cookies.copy() if self._cookies is not None else None
+        p.body = self.body
+        p.hooks = self.hooks
+        return p
+
+    def prepare_method(self, method):
+        """Prepares the given HTTP method."""
+        self.method = method
+        if self.method is not None:
+            self.method = self.method.upper()
+
+    def prepare_url(self, url, params):
+        """Prepares the given HTTP URL."""
+        #: Accept objects that have string representations.
+        #: We're unable to blindy call unicode/str functions
+        #: as this will include the bytestring indicator (b'')
+        #: on python 3.x.
+        #: https://github.com/kennethreitz/requests/pull/2238
+        if isinstance(url, bytes):
+            url = url.decode('utf8')
+        else:
+… truncated at 80 of 255 lines (requests/models.py:344-518 omitted)
+
+=== RELATED (depth 2 via calls) requests/models.py:246-261  prepare ===
+def prepare(self):
+        """Constructs a :class:`PreparedRequest <PreparedRequest>` for transmission and returns it."""
+        p = PreparedRequest()
+        p.prepare(
+            method=self.method,
+            url=self.url,
+            headers=self.headers,
+            files=self.files,
+            data=self.data,
+            json=self.json,
+            params=self.params,
+            auth=self.auth,
+            cookies=self.cookies,
+            hooks=self.hooks,
+        )
+        return p
+
+=== RELATED (depth 2 via method) requests/sessions.py:345-383  prepare_request ===
+def prepare_request(self, request):
+        """Constructs a :class:`PreparedRequest <PreparedRequest>` for
+        transmission and returns it. The :class:`PreparedRequest` has settings
+        merged from the :class:`Request <Request>` instance and those of the
+        :class:`Session`.
+
+        :param request: :class:`Request` instance to prepare with this
+            session's settings.
+        """
+        cookies = request.cookies or {}
+
+        # Bootstrap CookieJar.
+        if not isinstance(cookies, cookielib.CookieJar):
+            cookies = cookiejar_from_dict(cookies)
+
+        # Merge with session cookies
+        merged_cookies = merge_cookies(
+            merge_cookies(RequestsCookieJar(), self.cookies), cookies)
+
+
+        # Set environment's basic authentication if not explicitly set.
+        auth = request.auth
+        if self.trust_env and not auth and not self.auth:
+            auth = get_netrc_auth(request.url)
+
+        p = PreparedRequest()
+        p.prepare(
+            method=request.method.upper(),
+            url=request.url,
+            files=request.files,
+            data=request.data,
+            json=request.json,
+            headers=merge_setting(request.headers, self.headers, dict_class=CaseInsensitiveDict),
+            params=merge_setting(request.params, self.params),
+            auth=merge_setting(auth, self.auth),
+            cookies=merged_cookies,
+            hooks=merge_hooks(request.hooks, self.hooks),
+        )
+        return p
+
+=== RELATED (depth 2 via contains) requests/sessions.py:266-679  Session ===
+class Session(SessionRedirectMixin):
+    """A Requests session.
+
+    Provides cookie persistence, connection-pooling, and configuration.
+
+    Basic Usage::
+
+      >>> import requests
+      >>> s = requests.Session()
+      >>> s.get('http://httpbin.org/get')
+      200
+    """
+
+    __attrs__ = [
+        'headers', 'cookies', 'auth', 'proxies', 'hooks', 'params', 'verify',
+        'cert', 'prefetch', 'adapters', 'stream', 'trust_env',
+        'max_redirects',
+    ]
+
+    def __init__(self):
+
+        #: A case-insensitive dictionary of headers to be sent on each
+        #: :class:`Request <Request>` sent from this
+        #: :class:`Session <Session>`.
+        self.headers = default_headers()
+
+        #: Default Authentication tuple or object to attach to
+        #: :class:`Request <Request>`.
+        self.auth = None
+
+        #: Dictionary mapping protocol to the URL of the proxy (e.g.
+        #: {'http': 'foo.bar:3128'}) to be used on each
+        #: :class:`Request <Request>`.
+        self.proxies = {}
+
+        #: Event-handling hooks.
+        self.hooks = default_hooks()
+
+        #: Dictionary of querystring data to attach to each
+        #: :class:`Request <Request>`. The dictionary values may be lists for
+        #: representing multivalued query parameters.
+        self.params = {}
+
+        #: Stream response content default.
+        self.stream = False
+
+        #: SSL Verification default.
+        self.verify = True
+
+        #: SSL certificate default.
+        self.cert = None
+
+        #: Maximum number of redirects allowed. If the request exceeds this
+        #: limit, a :class:`TooManyRedirects` exception is raised.
+        self.max_redirects = DEFAULT_REDIRECT_LIMIT
+
+        #: Should we trust the environment?
+        self.trust_env = True
+
+        #: A CookieJar containing all currently outstanding cookies set on this
+        #: session. By default it is a
+        #: :class:`RequestsCookieJar <requests.cookies.RequestsCookieJar>`, but
+        #: may be any other ``cookielib.CookieJar`` compatible object.
+        self.cookies = cookiejar_from_dict({})
+
+        # Default connection adapters.
+        self.adapters = OrderedDict()
+        self.mount('https://', HTTPAdapter())
+        self.mount('http://', HTTPAdapter())
+
+        # Only store 1000 redirects to prevent using infinite memory
+        self.redirect_cache = RecentlyUsedContainer(REDIRECT_CACHE_SIZE)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+    def prepare_request(self, request):
+… truncated at 80 of 414 lines (requests/sessions.py:346-679 omitted)
+
+=== RELATED (depth 2 via contains) test_requests.py:1562-1575  test_data_argument_accepts_tuples ===
+def test_data_argument_accepts_tuples(list_of_tuples):
+    """
+    Ensure that the data argument will accept tuples of strings
+    and properly encode them.
+    """
+    for data in list_of_tuples:
+        p = PreparedRequest()
+        p.prepare(
+            method='GET',
+            url='http://www.example.com',
+            data=data,
+            hooks=default_hooks()
+        )
+        assert p.body == urlencode(data)
+
+=== RELATED (depth 2 via contains) test_requests.py:1611-1618  test_prepare_unicode_url ===
+def test_prepare_unicode_url():
+    p = PreparedRequest()
+    p.prepare(
+        method='GET',
+        url=u('http://www.example.com/üniçø∂é'),
+        hooks=[]
+    )
+    assert_copy(p, p.copy())
+
+=== RELATED (depth 2 via contains) test_requests.py:1599-1608  test_prepared_request_complete_copy ===
+def test_prepared_request_complete_copy():
+    p = PreparedRequest()
+    p.prepare(
+        method='GET',
+        url='http://www.example.com',
+        data='foo=bar',
+        hooks=default_hooks(),
+        cookies={'foo': 'bar'}
+    )
+    assert_copy(p, p.copy())
+
+=== RELATED (depth 2 via contains) test_requests.py:1583-1585  test_prepared_request_empty_copy ===
+def test_prepared_request_empty_copy():
+    p = PreparedRequest()
+    assert_copy(p, p.copy())
+
+=== RELATED (depth 2 via contains) test_requests.py:1588-1596  test_prepared_request_no_cookies_copy ===
+def test_prepared_request_no_cookies_copy():
+    p = PreparedRequest()
+    p.prepare(
+        method='GET',
+        url='http://www.example.com',
+        data='foo=bar',
+        hooks=default_hooks()
+    )
+    assert_copy(p, p.copy())
+
+=== RELATED (depth 2 via inherits) requests/models.py:52-159  RequestEncodingMixin ===
+class RequestEncodingMixin(object):
+    @property
+    def path_url(self):
+        """Build the path URL to use."""
+
+        url = []
+
+        p = urlsplit(self.url)
+
+        path = p.path
+        if not path:
+            path = '/'
+
+        url.append(path)
+
+        query = p.query
+        if query:
+            url.append('?')
+            url.append(query)
+
+        return ''.join(url)
+
+    @staticmethod
+    def _encode_params(data):
+        """Encode parameters in a piece of data.
+
+        Will successfully encode parameters when passed as a dict or a list of
+        2-tuples. Order is retained if data is a list of 2-tuples but arbitrary
+        if parameters are supplied as a dict.
+        """
+
+        if isinstance(data, (str, bytes)):
+            return data
+        elif hasattr(data, 'read'):
+            return data
+        elif hasattr(data, '__iter__'):
+            result = []
+            for k, vs in to_key_val_list(data):
+                if isinstance(vs, basestring) or not hasattr(vs, '__iter__'):
+                    vs = [vs]
+                for v in vs:
+                    if v is not None:
+                        result.append(
+                            (k.encode('utf-8') if isinstance(k, str) else k,
+                             v.encode('utf-8') if isinstance(v, str) else v))
+            return urlencode(result, doseq=True)
+        else:
+            return data
+
+    @staticmethod
+    def _encode_files(files, data):
+        """Build the body for a multipart/form-data request.
+
+        Will successfully encode files when passed as a dict or a list of
+        2-tuples. Order is retained if data is a list of 2-tuples but arbitrary
+        if parameters are supplied as a dict.
+
+        """
+        if (not files):
+            raise ValueError("Files must be provided.")
+        elif isinstance(data, basestring):
+            raise ValueError("Data must not be a string.")
+
+        new_fields = []
+        fields = to_key_val_list(data or {})
+        files = to_key_val_list(files or {})
+
+        for field, val in fields:
+            if isinstance(val, basestring) or not hasattr(val, '__iter__'):
+                val = [val]
+            for v in val:
+                if v is not None:
+                    # Don't call str() on bytestrings: in Py3 it all goes wrong.
+                    if not isinstance(v, bytes):
+                        v = str(v)
+
+                    new_fields.append(
+                        (field.decode('utf-8') if isinstance(field, bytes) else field,
+                         v.encode('utf-8') if isinstance(v, str) else v))
+
+… truncated at 80 of 108 lines (requests/models.py:132-159 omitted)
+
+=== RELATED (depth 2 via inherits) requests/models.py:162-183  RequestHooksMixin ===
+class RequestHooksMixin(object):
+    def register_hook(self, event, hook):
+        """Properly register a hook."""
+
+        if event not in self.hooks:
+            raise ValueError('Unsupported event specified, with event name "%s"' % (event))
+
+        if isinstance(hook, collections.Callable):
+            self.hooks[event].append(hook)
+        elif hasattr(hook, '__iter__'):
+            self.hooks[event].extend(h for h in hook if isinstance(h, collections.Callable))
+
+    def deregister_hook(self, event, hook):
+        """Deregister a previously registered hook.
+        Returns True if the hook existed, False if not.
+        """
+
+        try:
+            self.hooks[event].remove(hook)
+            return True
+        except ValueError:
+            return False
+
+=== RELATED (depth 2 via uses) requests/auth.py:43-51  HTTPBasicAuth ===
+class HTTPBasicAuth(AuthBase):
+    """Attaches HTTP Basic Authentication to the given Request object."""
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def __call__(self, r):
+        r.headers['Authorization'] = _basic_auth_str(self.username, self.password)
+        return r
+
+=== RELATED (depth 2 via imports) requests/structures.py:14-86  CaseInsensitiveDict ===
+class CaseInsensitiveDict(collections.MutableMapping):
+    """
+    A case-insensitive ``dict``-like object.
+
+    Implements all methods and operations of
+    ``collections.MutableMapping`` as well as dict's ``copy``. Also
+    provides ``lower_items``.
+
+    All keys are expected to be strings. The structure remembers the
+    case of the last key to be set, and ``iter(instance)``,
+    ``keys()``, ``items()``, ``iterkeys()``, and ``iteritems()``
+    will contain case-sensitive keys. However, querying and contains
+    testing is case insensitive::
+
+        cid = CaseInsensitiveDict()
+        cid['Accept'] = 'application/json'
+        cid['aCCEPT'] == 'application/json'  # True
+        list(cid) == ['Accept']  # True
+
+    For example, ``headers['content-encoding']`` will return the
+    value of a ``'Content-Encoding'`` response header, regardless
+    of how the header name was originally stored.
+
+    If the constructor, ``.update``, or equality comparison
+    operations are given keys that have equal ``.lower()``s, the
+    behavior is undefined.
+
+    """
+    def __init__(self, data=None, **kwargs):
+        self._store = dict()
+        if data is None:
+            data = {}
+        self.update(data, **kwargs)
+
+    def __setitem__(self, key, value):
+        # Use the lowercased key for lookups, but store the actual
+        # key alongside the value.
+        self._store[key.lower()] = (key, value)
+
+    def __getitem__(self, key):
+        return self._store[key.lower()][1]
+
+    def __delitem__(self, key):
+        del self._store[key.lower()]
+
+    def __iter__(self):
+        return (casedkey for casedkey, mappedvalue in self._store.values())
+
+    def __len__(self):
+        return len(self._store)
+
+    def lower_items(self):
+        """Like iteritems(), but with all lowercase keys."""
+        return (
+            (lowerkey, keyval[1])
+            for (lowerkey, keyval)
+            in self._store.items()
+        )
+
+    def __eq__(self, other):
+        if isinstance(other, collections.Mapping):
+            other = CaseInsensitiveDict(other)
+        else:
+            return NotImplemented
+        # Compare insensitively
+        return dict(self.lower_items()) == dict(other.lower_items())
+
+    # Copy is required
+    def copy(self):
+        return CaseInsensitiveDict(self._store.values())
+
+    def __repr__(self):
+        return str(dict(self.items()))
+
+=== RELATED (depth 2 via imports) requests/exceptions.py:82-83  InvalidURL ===
+class InvalidURL(RequestException, ValueError):
+    """ The URL provided was somehow invalid. """
+
+=== RELATED (depth 2 via imports) requests/exceptions.py:74-75  MissingSchema ===
+class MissingSchema(RequestException, ValueError):
+    """The URL schema (e.g. http or https) is missing."""

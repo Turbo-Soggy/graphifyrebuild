@@ -1,0 +1,53 @@
+
+== A1: commit-triggered incremental, stock vs ext ==
+  PASS  [A1] stock incremental rebuild succeeded
+  PASS  [A1] ext incremental rebuild succeeded
+  PASS  [A1] extracted graph identical to stock (ext edges excluded) — 1503 nodes / 2541 edges both
+  PASS  [A1] probe symbol present in both
+
+== A2/A3: stock hook guards ==
+  PASS  [A2] stock: post-checkout hook installed
+  PASS  [A2] stock: no rebuild on `checkout -b` (HEAD unchanged)
+  PASS  [A3] stock: no rebuild on file checkout (`checkout -- path`)
+  PASS  [A2] stock: positive control — real branch switch DOES fire — [graphify] Branch switched - launching background rebuild (log: /c/Users/SISABen
+
+== A2/A3: ext hook guards ==
+  PASS  [A2] ext: post-checkout hook installed
+  PASS  [A2] ext: no rebuild on `checkout -b` (HEAD unchanged)
+  PASS  [A3] ext: no rebuild on file checkout (`checkout -- path`)
+  PASS  [A2] ext: positive control — real branch switch DOES fire — [graphify] Branch switched - launching background rebuild (log: /c/Users/SISABen
+
+== A4: read commands identical before any ext command runs ==
+  PASS  [A4] stock `query` output unchanged
+  PASS  [A4] stock `explain` output unchanged
+  PASS  [A4] stock `god-nodes` output unchanged
+  PASS  [A4] graphify-out is still a real directory (slot machinery inert until swap is invoked)
+
+== A5: `graphify update .` with no ext hooks installed ==
+  PASS  [A5] update exits 0 —   warning: 2 .sql file(s) contributed nothing to the graph because a dependency is missing
+  PASS  [A5] update reports the documented success message
+  PASS  [A5] graphify-out still a real directory (no slot side effects)
+
+== Section A (regression) summary ==
+  PASS  [A1] stock incremental rebuild succeeded
+  PASS  [A1] ext incremental rebuild succeeded
+  PASS  [A1] extracted graph identical to stock (ext edges excluded) — 1503 nodes / 2541 edges both
+  PASS  [A1] probe symbol present in both
+  PASS  [A2] stock: post-checkout hook installed
+  PASS  [A2] stock: no rebuild on `checkout -b` (HEAD unchanged)
+  PASS  [A3] stock: no rebuild on file checkout (`checkout -- path`)
+  PASS  [A2] stock: positive control — real branch switch DOES fire — [graphify] Branch switched - launching background rebuild (log: /c/Users/SISABen
+  PASS  [A2] ext: post-checkout hook installed
+  PASS  [A2] ext: no rebuild on `checkout -b` (HEAD unchanged)
+  PASS  [A3] ext: no rebuild on file checkout (`checkout -- path`)
+  PASS  [A2] ext: positive control — real branch switch DOES fire — [graphify] Branch switched - launching background rebuild (log: /c/Users/SISABen
+  PASS  [A4] stock `query` output unchanged
+  PASS  [A4] stock `explain` output unchanged
+  PASS  [A4] stock `god-nodes` output unchanged
+  PASS  [A4] graphify-out is still a real directory (slot machinery inert until swap is invoked)
+  PASS  [A5] update exits 0 —   warning: 2 .sql file(s) contributed nothing to the graph because a dependency is missing
+  PASS  [A5] update reports the documented success message
+  PASS  [A5] graphify-out still a real directory (no slot side effects)
+
+19/19 checks passed
+regression_a exit=0

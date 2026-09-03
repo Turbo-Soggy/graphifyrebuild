@@ -1,0 +1,982 @@
+[
+  {
+    "commit": "3816cfa1",
+    "subject": "Parameterize SupportsItems to handle Mapping key invariance (#7426)",
+    "entry": "SupportsItems",
+    "seed_node": "src_requests_types_supportsitems",
+    "n_discover": 3,
+    "graph_nodes": 1127,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 2,
+        "recall": 0.333,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 64,
+        "files_to_open": 2,
+        "chars": 222
+      },
+      "stock-affected": {
+        "returned": 14,
+        "recall": 0.333,
+        "hits": 1,
+        "precision": 0.071,
+        "tokens": 270,
+        "files_to_open": 7,
+        "chars": 999,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 5,
+        "recall": 0.667,
+        "hits": 2,
+        "precision": 0.4,
+        "tokens": 180,
+        "files_to_open": 2,
+        "chars": 597,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 15,
+        "recall": 0.667,
+        "hits": 2,
+        "precision": 0.133,
+        "tokens": 278,
+        "files_to_open": 8,
+        "chars": 871,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 33,
+        "recall": 0.667,
+        "hits": 2,
+        "precision": 0.061,
+        "tokens": 601,
+        "files_to_open": 15,
+        "chars": 1891,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 18,
+        "recall": 0.667,
+        "hits": 2,
+        "precision": 0.111,
+        "tokens": 4480,
+        "files_to_open": 0,
+        "chars": 19157,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "aa1461b6",
+    "subject": "Move _get_connection to get_connection_with_tls_context",
+    "entry": "HTTPAdapter._get_connection",
+    "seed_node": "src_requests_adapters_httpadapter_get_connection",
+    "n_discover": 2,
+    "graph_nodes": 1023,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 2,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 59,
+        "files_to_open": 1,
+        "chars": 222
+      },
+      "stock-affected": {
+        "returned": 1,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 64,
+        "files_to_open": 1,
+        "chars": 259,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 9,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.111,
+        "tokens": 273,
+        "files_to_open": 3,
+        "chars": 942,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 1,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 64,
+        "files_to_open": 1,
+        "chars": 212,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 34,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.029,
+        "tokens": 598,
+        "files_to_open": 6,
+        "chars": 1972,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 17,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.059,
+        "tokens": 5981,
+        "files_to_open": 0,
+        "chars": 27525,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "99b3b492",
+    "subject": "Refactor rebuild_proxies to allow proxy resolution (#5924)",
+    "entry": "SessionRedirectMixin.rebuild_proxies",
+    "seed_node": "requests_sessions_sessionredirectmixin_rebuild_proxies",
+    "n_discover": 2,
+    "graph_nodes": 972,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 4,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.25,
+        "tokens": 91,
+        "files_to_open": 2,
+        "chars": 377
+      },
+      "stock-affected": {
+        "returned": 3,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.333,
+        "tokens": 94,
+        "files_to_open": 1,
+        "chars": 361,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 8,
+        "recall": 1.0,
+        "hits": 2,
+        "precision": 0.25,
+        "tokens": 240,
+        "files_to_open": 3,
+        "chars": 853,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 3,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.333,
+        "tokens": 94,
+        "files_to_open": 1,
+        "chars": 308,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 45,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.022,
+        "tokens": 765,
+        "files_to_open": 11,
+        "chars": 2537,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 22,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.045,
+        "tokens": 5984,
+        "files_to_open": 0,
+        "chars": 27929,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "db575eee",
+    "subject": "Fix inconsistent exception type in response.json() method (#5856)",
+    "entry": "Response.json",
+    "seed_node": "requests_models_response_json",
+    "n_discover": 1,
+    "graph_nodes": 963,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 47,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.021,
+        "tokens": 1839,
+        "files_to_open": 8,
+        "chars": 7077
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 225,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 3,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 122,
+        "files_to_open": 2,
+        "chars": 435,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 40,
+        "files_to_open": 0,
+        "chars": 131,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 6,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 131,
+        "files_to_open": 3,
+        "chars": 426,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 4,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 992,
+        "files_to_open": 0,
+        "chars": 3988,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "bd100472",
+    "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+    "entry": "Response.content",
+    "seed_node": "requests_models_response_content",
+    "n_discover": 2,
+    "graph_nodes": 967,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 44,
+        "recall": 0.5,
+        "hits": 1,
+        "precision": 0.023,
+        "tokens": 1935,
+        "files_to_open": 13,
+        "chars": 7936
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 228,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 3,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 125,
+        "files_to_open": 1,
+        "chars": 458,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 40,
+        "files_to_open": 0,
+        "chars": 137,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 7,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 146,
+        "files_to_open": 4,
+        "chars": 510,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 7,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 1225,
+        "files_to_open": 0,
+        "chars": 6030,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "bf4a8133",
+    "subject": "rename information/info",
+    "entry": "information",
+    "seed_node": "requests_help_information",
+    "n_discover": 1,
+    "graph_nodes": 902,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 5,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.2,
+        "tokens": 153,
+        "files_to_open": 3,
+        "chars": 617
+      },
+      "stock-affected": {
+        "returned": 1,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 58,
+        "files_to_open": 1,
+        "chars": 245,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 4,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.25,
+        "tokens": 123,
+        "files_to_open": 1,
+        "chars": 442,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 1,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 50,
+        "files_to_open": 1,
+        "chars": 166,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 2,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 63,
+        "files_to_open": 1,
+        "chars": 214,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 2,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 657,
+        "files_to_open": 0,
+        "chars": 3150,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "c3367d18",
+    "subject": "remove Request.send(session)",
+    "entry": "PreparedRequest.send",
+    "seed_node": "requests_models_preparedrequest_send",
+    "n_discover": 2,
+    "graph_nodes": 2120,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 50,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 2125,
+        "files_to_open": 14,
+        "chars": 8080
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 225,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 2,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 93,
+        "files_to_open": 1,
+        "chars": 355,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 42,
+        "files_to_open": 0,
+        "chars": 138,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 42,
+        "files_to_open": 0,
+        "chars": 140,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 45,
+        "files_to_open": 0,
+        "chars": 185,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "f002b730",
+    "subject": "Move to_native_string to _internal_utils.py to avoid circular dependency",
+    "entry": "to_native_string",
+    "seed_node": "requests_utils_to_native_string",
+    "n_discover": 1,
+    "graph_nodes": 1638,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 8,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.125,
+        "tokens": 276,
+        "files_to_open": 6,
+        "chars": 1150
+      },
+      "stock-affected": {
+        "returned": 21,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 356,
+        "files_to_open": 8,
+        "chars": 1313,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 13,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 318,
+        "files_to_open": 6,
+        "chars": 1126,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 21,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 348,
+        "files_to_open": 8,
+        "chars": 1126,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 117,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 1867,
+        "files_to_open": 27,
+        "chars": 6351,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 33,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 5967,
+        "files_to_open": 0,
+        "chars": 27949,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "31b35ab8",
+    "subject": "removing redundant logic from prepare_content_length",
+    "entry": "PreparedRequest.prepare_content_length",
+    "seed_node": "requests_models_preparedrequest_prepare_content_length",
+    "n_discover": 1,
+    "graph_nodes": 1632,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.333,
+        "tokens": 45,
+        "files_to_open": 1,
+        "chars": 219
+      },
+      "stock-affected": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.333,
+        "tokens": 90,
+        "files_to_open": 1,
+        "chars": 365,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 4,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.25,
+        "tokens": 128,
+        "files_to_open": 2,
+        "chars": 475,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.333,
+        "tokens": 87,
+        "files_to_open": 1,
+        "chars": 310,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 21,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.048,
+        "tokens": 391,
+        "files_to_open": 5,
+        "chars": 1317,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 19,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.053,
+        "tokens": 3247,
+        "files_to_open": 0,
+        "chars": 14742,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "9e9d2c65",
+    "subject": "Make BaseAdapter describe the mandatory adapter interface (#3216)",
+    "entry": "BaseAdapter.send",
+    "seed_node": "requests_adapters_baseadapter_send",
+    "n_discover": 1,
+    "graph_nodes": 1552,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 36,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 1563,
+        "files_to_open": 13,
+        "chars": 6033
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 225,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 1,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 67,
+        "files_to_open": 1,
+        "chars": 238,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 43,
+        "files_to_open": 0,
+        "chars": 137,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 43,
+        "files_to_open": 0,
+        "chars": 139,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 28,
+        "files_to_open": 0,
+        "chars": 107,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "6195edc0",
+    "subject": "cleanup of auth __eq__",
+    "entry": "HTTPBasicAuth.__eq__",
+    "seed_node": "requests_auth_httpbasicauth_eq",
+    "n_discover": 1,
+    "graph_nodes": 1428,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 6,
+        "recall": 1.0,
+        "hits": 1,
+        "precision": 0.167,
+        "tokens": 190,
+        "files_to_open": 4,
+        "chars": 652
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 54,
+        "files_to_open": 0,
+        "chars": 227,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 1,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 69,
+        "files_to_open": 1,
+        "chars": 230,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 44,
+        "files_to_open": 0,
+        "chars": 131,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 44,
+        "files_to_open": 0,
+        "chars": 133,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 57,
+        "files_to_open": 0,
+        "chars": 248,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "3e3fc768",
+    "subject": "Remove VendorAlias meta_path hook",
+    "entry": "VendorAlias",
+    "seed_node": "requests_packages_init_vendoralias",
+    "n_discover": 3,
+    "graph_nodes": 1352,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 2,
+        "recall": 0.333,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 91,
+        "files_to_open": 1,
+        "chars": 340
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 229,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 4,
+        "recall": 1.0,
+        "hits": 3,
+        "precision": 0.75,
+        "tokens": 163,
+        "files_to_open": 1,
+        "chars": 579,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 3,
+        "precision": 1.0,
+        "tokens": 94,
+        "files_to_open": 1,
+        "chars": 315,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 3,
+        "precision": 1.0,
+        "tokens": 100,
+        "files_to_open": 1,
+        "chars": 332,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 3,
+        "recall": 1.0,
+        "hits": 3,
+        "precision": 1.0,
+        "tokens": 1335,
+        "files_to_open": 0,
+        "chars": 6479,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "36093e69",
+    "subject": "Copy a PreparedRequest's CookieJar reliably",
+    "entry": "PreparedRequest.copy",
+    "seed_node": "requests_models_preparedrequest_copy",
+    "n_discover": 1,
+    "graph_nodes": 1347,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 18,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 1827,
+        "files_to_open": 11,
+        "chars": 6999
+      },
+      "stock-affected": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 52,
+        "files_to_open": 0,
+        "chars": 225,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 1,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 83,
+        "files_to_open": 1,
+        "chars": 309,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 0,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 42,
+        "files_to_open": 0,
+        "chars": 138,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 18,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 306,
+        "files_to_open": 7,
+        "chars": 1079,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 15,
+        "recall": 0.0,
+        "hits": 0,
+        "precision": 0.0,
+        "tokens": 3744,
+        "files_to_open": 0,
+        "chars": 17042,
+        "delivers_code": true
+      }
+    }
+  },
+  {
+    "commit": "8ed941fa",
+    "subject": "Fix a couple of issues I noticed",
+    "entry": "PreparedRequest.prepare_body",
+    "seed_node": "requests_models_preparedrequest_prepare_body",
+    "n_discover": 4,
+    "graph_nodes": 1256,
+    "build_s": 0.0,
+    "arms": {
+      "grep": {
+        "returned": 2,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 0.5,
+        "tokens": 38,
+        "files_to_open": 1,
+        "chars": 150
+      },
+      "stock-affected": {
+        "returned": 1,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 61,
+        "files_to_open": 1,
+        "chars": 253,
+        "delivers_code": false
+      },
+      "stock-explain": {
+        "returned": 7,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 0.143,
+        "tokens": 192,
+        "files_to_open": 2,
+        "chars": 691,
+        "delivers_code": false
+      },
+      "ext-up": {
+        "returned": 1,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 1.0,
+        "tokens": 57,
+        "files_to_open": 1,
+        "chars": 196,
+        "delivers_code": false
+      },
+      "ext-both": {
+        "returned": 18,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 0.056,
+        "tokens": 309,
+        "files_to_open": 5,
+        "chars": 1059,
+        "delivers_code": false
+      },
+      "ext-context": {
+        "returned": 16,
+        "recall": 0.25,
+        "hits": 1,
+        "precision": 0.062,
+        "tokens": 3828,
+        "files_to_open": 0,
+        "chars": 17645,
+        "delivers_code": true
+      }
+    }
+  }
+]

@@ -1,0 +1,17 @@
+[1/14] 3816cfa1 |D|=3 recall={'grep': 0.333, 'stock-affected': 0.333, 'stock-explain': 0.667, 'ext-up': 0.667, 'ext-both': 0.667, 'ext-context': 0.667}
+[2/14] aa1461b6 |D|=2 recall={'grep': 0.5, 'stock-affected': 0.5, 'stock-explain': 0.5, 'ext-up': 0.5, 'ext-both': 0.5, 'ext-context': 0.5}
+[3/14] 99b3b492 |D|=2 recall={'grep': 0.5, 'stock-affected': 0.5, 'stock-explain': 1.0, 'ext-up': 0.5, 'ext-both': 0.5, 'ext-context': 0.5}
+[4/14] db575eee |D|=1 recall={'grep': 1.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[5/14] bd100472 |D|=2 recall={'grep': 0.5, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[6/14] bf4a8133 |D|=1 recall={'grep': 1.0, 'stock-affected': 1.0, 'stock-explain': 1.0, 'ext-up': 1.0, 'ext-both': 1.0, 'ext-context': 1.0}
+[7/14] c3367d18 |D|=2 recall={'grep': 0.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[8/14] f002b730 |D|=1 recall={'grep': 1.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[9/14] 31b35ab8 |D|=1 recall={'grep': 1.0, 'stock-affected': 1.0, 'stock-explain': 1.0, 'ext-up': 1.0, 'ext-both': 1.0, 'ext-context': 1.0}
+[10/14] 9e9d2c65 |D|=1 recall={'grep': 0.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[11/14] 6195edc0 |D|=1 recall={'grep': 1.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[12/14] 3e3fc768 |D|=3 recall={'grep': 0.333, 'stock-affected': 0.0, 'stock-explain': 1.0, 'ext-up': 1.0, 'ext-both': 1.0, 'ext-context': 1.0}
+[13/14] 36093e69 |D|=1 recall={'grep': 0.0, 'stock-affected': 0.0, 'stock-explain': 0.0, 'ext-up': 0.0, 'ext-both': 0.0, 'ext-context': 0.0}
+[14/14] 8ed941fa |D|=4 recall={'grep': 0.25, 'stock-affected': 0.25, 'stock-explain': 0.25, 'ext-up': 0.25, 'ext-both': 0.25, 'ext-context': 0.25}
+
+wrote C:\projects\graphifyrebuild\bench\agentctx\results.json
+exit=0

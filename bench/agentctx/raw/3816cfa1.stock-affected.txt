@@ -1,0 +1,17 @@
+Affected nodes for SupportsItems
+Relations: calls, indirect_call, references, imports, imports_from, dynamic_import, re_exports, inherits, extends, implements, uses, mixes_in, embeds, requires
+Depth: 2
+- dict_to_sequence() [references] src/requests/utils.py:L149
+- requests/utils.py [imports] src/requests/utils.py:L45
+- to_key_val_list() [uses] src/requests/utils.py:L401
+- adapters.py [imports_from] src/requests/adapters.py:L53
+- auth.py [imports_from] src/requests/auth.py:L22
+- models.py [imports_from] src/requests/models.py:L72
+- sessions.py [imports_from] src/requests/sessions.py:L48
+- test_utils.py [imports_from] tests/test_utils.py:L16
+- requests/__init__.py [imports_from] src/requests/__init__.py:L158
+- merge_setting() [calls] src/requests/sessions.py:L96
+- ._encode_params() [calls] src/requests/models.py:L168
+- ._encode_files() [calls] src/requests/models.py:L201
+- .test_valid() [calls] tests/test_utils.py:L195
+- .test_invalid() [calls] tests/test_utils.py:L199

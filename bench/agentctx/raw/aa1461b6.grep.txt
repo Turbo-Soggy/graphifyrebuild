@@ -1,0 +1,2 @@
+.\src\requests\adapters.py:377:    def _get_connection(self, request, verify, proxies=None, cert=None):
+.\src\requests\adapters.py:532:            conn = self._get_connection(request, verify, proxies=proxies, cert=cert)

@@ -1,0 +1,21 @@
+Node: to_native_string()
+  ID:        requests_utils_to_native_string
+  Source:    requests/utils.py L773
+  Type:      code
+  Community: 
+  Degree:    13
+
+Connections (13):
+  <-- requests/utils.py [contains] [EXTRACTED] requests/utils.py:L773
+  <-- models.py [imports] [EXTRACTED] requests/models.py:L32
+  <-- adapters.py [imports] [EXTRACTED] requests/adapters.py:L20
+  <-- test_utils.py [imports] [EXTRACTED] tests/test_utils.py:L8
+  <-- sessions.py [imports] [EXTRACTED] requests/sessions.py:L20
+  <-- auth.py [imports] [EXTRACTED] requests/auth.py:L20
+  <-- .resolve_redirects() [calls] [EXTRACTED] requests/sessions.py:L134
+  <-- _basic_auth_str() [calls] [EXTRACTED] requests/auth.py:L30
+  <-- .prepare_url() [calls] [EXTRACTED] requests/models.py:L357
+  <-- .prepare_headers() [calls] [EXTRACTED] requests/models.py:L416
+  <-- .prepare_method() [calls] [EXTRACTED] requests/models.py:L328
+  <-- test_to_native_string() [calls] [EXTRACTED] tests/test_utils.py:L470
+  <-- Given a string object, regardless of type, returns a representation of that… [rationale_for] [EXTRACTED] requests/utils.py:L774

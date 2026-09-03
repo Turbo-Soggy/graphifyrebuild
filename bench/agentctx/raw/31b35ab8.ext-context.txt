@@ -1,0 +1,387 @@
+=== SEED (depth 0 via calls) requests/models.py:477-489  prepare_content_length ===
+def prepare_content_length(self, body):
+        if hasattr(body, 'seek') and hasattr(body, 'tell'):
+            curr_pos = body.tell()
+            body.seek(0, 2)
+            end_pos = body.tell()
+            self.headers['Content-Length'] = builtin_str(max(0, end_pos - curr_pos))
+            body.seek(curr_pos, 0)
+        elif body is not None:
+            l = super_len(body)
+            if l:
+                self.headers['Content-Length'] = builtin_str(l)
+        elif (self.method not in ('GET', 'HEAD')) and (self.headers.get('Content-Length') is None):
+            self.headers['Content-Length'] = '0'
+
+=== RELATED (depth 1 via calls) requests/models.py:491-511  prepare_auth ===
+def prepare_auth(self, auth, url=''):
+        """Prepares the given HTTP auth data."""
+
+        # If no Auth is explicitly provided, extract it from the URL first.
+        if auth is None:
+            url_auth = get_auth_from_url(self.url)
+            auth = url_auth if any(url_auth) else None
+
+        if auth:
+            if isinstance(auth, tuple) and len(auth) == 2:
+                # special-case basic HTTP auth
+                auth = HTTPBasicAuth(*auth)
+
+            # Allow auth to make its changes.
+            r = auth(self)
+
+            # Update self to reflect the auth changes.
+            self.__dict__.update(r.__dict__)
+
+            # Recompute Content-Length
+            self.prepare_content_length(self.body)
+
+=== RELATED (depth 1 via calls) requests/models.py:418-475  prepare_body ===
+def prepare_body(self, data, files, json=None):
+        """Prepares the given HTTP body data."""
+
+        # Check if file, fo, generator, iterator.
+        # If not, run through normal process.
+
+        # Nottin' on you.
+        body = None
+        content_type = None
+        length = None
+
+        if not data and json is not None:
+            # urllib3 requires a bytes-like body. Python 2's json.dumps
+            # provides this natively, but Python 3 gives a Unicode string.
+            content_type = 'application/json'
+            body = complexjson.dumps(json)
+            if not isinstance(body, bytes):
+                body = body.encode('utf-8')
+
+        is_stream = all([
+            hasattr(data, '__iter__'),
+            not isinstance(data, (basestring, list, tuple, dict))
+        ])
+
+        try:
+            length = super_len(data)
+        except (TypeError, AttributeError, UnsupportedOperation):
+            length = None
+
+        if is_stream:
+            body = data
+
+            if files:
+                raise NotImplementedError('Streamed bodies and files are mutually exclusive.')
+
+            if length:
+                self.headers['Content-Length'] = builtin_str(length)
+            else:
+                self.headers['Transfer-Encoding'] = 'chunked'
+        else:
+            # Multi-part file uploads.
+            if files:
+                (body, content_type) = self._encode_files(files, data)
+            else:
+                if data:
+                    body = self._encode_params(data)
+                    if isinstance(data, basestring) or hasattr(data, 'read'):
+                        content_type = None
+                    else:
+                        content_type = 'application/x-www-form-urlencoded'
+
+            self.prepare_content_length(body)
+
+            # Add content-type if it wasn't explicitly provided.
+            if content_type and ('content-type' not in self.headers):
+                self.headers['Content-Type'] = content_type
+
+        self.body = body
+
+=== RELATED (depth 1 via imports) requests/utils.py:47-103  super_len ===
+def super_len(o):
+    total_length = None
+    current_position = 0
+
+    if hasattr(o, '__len__'):
+        total_length = len(o)
+
+    elif hasattr(o, 'len'):
+        total_length = o.len
+
+    elif hasattr(o, 'fileno'):
+        try:
+            fileno = o.fileno()
+        except io.UnsupportedOperation:
+            pass
+        else:
+            total_length = os.fstat(fileno).st_size
+
+            # Having used fstat to determine the file length, we need to
+            # confirm that this file was opened up in binary mode.
+            if 'b' not in o.mode:
+                warnings.warn((
+                    "Requests has determined the content-length for this "
+                    "request using the binary size of the file: however, the "
+                    "file has been opened in text mode (i.e. without the 'b' "
+                    "flag in the mode). This may lead to an incorrect "
+                    "content-length. In Requests 3.0, support will be removed "
+                    "for files in text mode."),
+                    FileModeWarning
+                )
+
+    if hasattr(o, 'tell'):
+        try:
+            current_position = o.tell()
+        except (OSError, IOError):
+            # This can happen in some weird situations, such as when the file
+            # is actually a special file descriptor like stdin. In this
+            # instance, we don't know what the length is, so set it to zero and
+            # let requests chunk it instead.
+            if total_length is not None:
+                current_position = total_length
+
+        if hasattr(o, 'seek') and total_length is None:
+            # StringIO and BytesIO have seek but no useable fileno
+
+            # seek to end of file
+            o.seek(0, 2)
+            total_length = o.tell()
+
+            # seek back to current position to support
+            # partially read file-like objects
+            o.seek(current_position or 0)
+
+    if total_length is None:
+        total_length = 0
+
+    return max(0, total_length - current_position)
+
+=== RELATED (depth 2 via calls) requests/models.py:107-165  _encode_files ===
+@staticmethod
+    def _encode_files(files, data):
+        """Build the body for a multipart/form-data request.
+
+        Will successfully encode files when passed as a dict or a list of
+        tuples. Order is retained if data is a list of tuples but arbitrary
+        if parameters are supplied as a dict.
+        The tuples may be 2-tuples (filename, fileobj), 3-tuples (filename, fileobj, contentype)
+        or 4-tuples (filename, fileobj, contentype, custom_headers).
+        """
+        if (not files):
+            raise ValueError("Files must be provided.")
+        elif isinstance(data, basestring):
+            raise ValueError("Data must not be a string.")
+
+        new_fields = []
+        fields = to_key_val_list(data or {})
+        files = to_key_val_list(files or {})
+
+        for field, val in fields:
+            if isinstance(val, basestring) or not hasattr(val, '__iter__'):
+                val = [val]
+            for v in val:
+                if v is not None:
+                    # Don't call str() on bytestrings: in Py3 it all goes wrong.
+                    if not isinstance(v, bytes):
+                        v = str(v)
+
+                    new_fields.append(
+                        (field.decode('utf-8') if isinstance(field, bytes) else field,
+                         v.encode('utf-8') if isinstance(v, str) else v))
+
+        for (k, v) in files:
+            # support for explicit filename
+            ft = None
+            fh = None
+            if isinstance(v, (tuple, list)):
+                if len(v) == 2:
+                    fn, fp = v
+                elif len(v) == 3:
+                    fn, fp, ft = v
+                else:
+                    fn, fp, ft, fh = v
+            else:
+                fn = guess_filename(v) or k
+                fp = v
+
+            if isinstance(fp, (str, bytes, bytearray)):
+                fdata = fp
+            else:
+                fdata = fp.read()
+
+            rf = RequestField(name=k, data=fdata, filename=fn, headers=fh)
+            rf.make_multipart(content_type=ft)
+            new_fields.append(rf)
+
+        body, content_type = encode_multipart_formdata(new_fields)
+
+        return body, content_type
+
+=== RELATED (depth 2 via calls) requests/models.py:80-105  _encode_params ===
+@staticmethod
+    def _encode_params(data):
+        """Encode parameters in a piece of data.
+
+        Will successfully encode parameters when passed as a dict or a list of
+        2-tuples. Order is retained if data is a list of 2-tuples but arbitrary
+        if parameters are supplied as a dict.
+        """
+
+        if isinstance(data, (str, bytes)):
+            return data
+        elif hasattr(data, 'read'):
+            return data
+        elif hasattr(data, '__iter__'):
+            result = []
+            for k, vs in to_key_val_list(data):
+                if isinstance(vs, basestring) or not hasattr(vs, '__iter__'):
+                    vs = [vs]
+                for v in vs:
+                    if v is not None:
+                        result.append(
+                            (k.encode('utf-8') if isinstance(k, str) else k,
+                             v.encode('utf-8') if isinstance(v, str) else v))
+            return urlencode(result, doseq=True)
+        else:
+            return data
+
+=== RELATED (depth 2 via calls) requests/models.py:294-309  prepare ===
+def prepare(self, method=None, url=None, headers=None, files=None,
+        data=None, params=None, auth=None, cookies=None, hooks=None, json=None):
+        """Prepares the entire request with the given parameters."""
+
+        self.prepare_method(method)
+        self.prepare_url(url, params)
+        self.prepare_headers(headers)
+        self.prepare_cookies(cookies)
+        self.prepare_body(data, files, json)
+        self.prepare_auth(auth, url)
+
+        # Note that prepare_auth must be last to enable authentication schemes
+        # such as OAuth to work on a fully prepared request.
+
+        # This MUST go after prepare_auth. Authenticators could add a hook
+        self.prepare_hooks(hooks)
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:57-67  test_file ===
+@pytest.mark.parametrize(
+        'mode, warnings_num', (
+            ('r', 1),
+            ('rb', 0),
+        ))
+    def test_file(self, tmpdir, mode, warnings_num, recwarn):
+        file_obj = tmpdir.join('test.txt')
+        file_obj.write('Test')
+        with file_obj.open(mode) as fd:
+            assert super_len(fd) == 4
+        assert len(recwarn) == warnings_num
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:25-34  test_io_streams ===
+@pytest.mark.parametrize(
+        'stream, value', (
+            (StringIO.StringIO, 'Test'),
+            (BytesIO, b'Test'),
+            pytest.mark.skipif('cStringIO is None')((cStringIO, 'Test')),
+        ))
+    def test_io_streams(self, stream, value):
+        """Ensures that we properly deal with different kinds of IO streams."""
+        assert super_len(stream()) == 0
+        assert super_len(stream(value)) == 4
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:54-55  test_string ===
+def test_string(self):
+        assert super_len('Test') == 4
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:36-40  test_super_len_correctly_calculates_len_of_partially_read_file ===
+def test_super_len_correctly_calculates_len_of_partially_read_file(self):
+        """Ensure that we handle partially consumed file like objects."""
+        s = StringIO.StringIO()
+        s.write('foobarbogus')
+        assert super_len(s) == 0
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:42-52  test_super_len_handles_files_raising_weird_errors_in_tell ===
+@pytest.mark.parametrize('error', [IOError, OSError])
+    def test_super_len_handles_files_raising_weird_errors_in_tell(self, error):
+        """If tell() raises errors, assume the cursor is at position zero."""
+        class BoomFile(object):
+            def __len__(self):
+                return 5
+
+            def tell(self):
+                raise error()
+
+        assert super_len(BoomFile()) == 0
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:69-72  test_super_len_with__len__ ===
+def test_super_len_with__len__(self):
+        foo = [1,2,3,4]
+        len_foo = super_len(foo)
+        assert len_foo == 4
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:87-91  test_super_len_with_fileno ===
+def test_super_len_with_fileno(self):
+        with open(__file__, 'rb') as f:
+            length = super_len(f)
+            file_data = f.read()
+        assert length == len(file_data)
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:74-79  test_super_len_with_no__len__ ===
+def test_super_len_with_no__len__(self):
+        class LenFile(object):
+            def __init__(self):
+                self.len = 5
+
+        assert super_len(LenFile()) == 5
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:93-95  test_super_len_with_no_matches ===
+def test_super_len_with_no_matches(self):
+        """Ensure that objects without any length methods default to 0"""
+        assert super_len(object()) == 0
+
+=== RELATED (depth 2 via calls) tests/test_utils.py:81-85  test_super_len_with_tell ===
+def test_super_len_with_tell(self):
+        foo = StringIO.StringIO('12345')
+        assert super_len(foo) == 5
+        foo.read(2)
+        assert super_len(foo) == 3
+
+=== RELATED (depth 2 via uses) requests/exceptions.py:112-114  FileModeWarning ===
+class FileModeWarning(RequestsWarning, DeprecationWarning):
+    """A file was opened in text mode, but Requests determined its binary length."""
+    pass
+
+=== RELATED (depth 2 via imports) requests/auth.py:44-62  HTTPBasicAuth ===
+class HTTPBasicAuth(AuthBase):
+    """Attaches HTTP Basic Authentication to the given Request object."""
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def __eq__(self, other):
+        return all([
+            self.username == getattr(other, 'username', None),
+            self.password == getattr(other, 'password', None)
+        ])
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __call__(self, r):
+        r.headers['Authorization'] = _basic_auth_str(self.username, self.password)
+        return r
+
+=== RELATED (depth 2 via imports) requests/utils.py:757-770  get_auth_from_url ===
+def get_auth_from_url(url):
+    """Given a url with authentication components, extract them into a tuple of
+    username,password.
+
+    :rtype: (str,str)
+    """
+    parsed = urlparse(url)
+
+    try:
+        auth = (unquote(parsed.username), unquote(parsed.password))
+    except (AttributeError, TypeError):
+        auth = ('', '')
+
+    return auth

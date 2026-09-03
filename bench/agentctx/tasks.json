@@ -1,0 +1,504 @@
+[
+  {
+    "commit": "3816cfa1abd42dca21b9e837f26c59b246016aaf",
+    "parent": "b684dcb9bbf3aa557d1238e72062c4a29737dd1c",
+    "subject": "Parameterize SupportsItems to handle Mapping key invariance (#7426)",
+    "entry": "SupportsItems",
+    "ground_truth": [
+      "src/requests/_types.py::SupportsItems",
+      "src/requests/_types.py::SupportsItems.items",
+      "src/requests/utils.py::dict_to_sequence",
+      "src/requests/utils.py::to_key_val_list"
+    ],
+    "discover": [
+      "src/requests/_types.py::SupportsItems.items",
+      "src/requests/utils.py::dict_to_sequence",
+      "src/requests/utils.py::to_key_val_list"
+    ],
+    "by_file": {
+      "src/requests/_types.py": [
+        {
+          "name": "SupportsItems",
+          "kind": "class",
+          "start": 31,
+          "end": 32
+        },
+        {
+          "name": "SupportsItems.items",
+          "kind": "function",
+          "start": 32,
+          "end": 32
+        }
+      ],
+      "src/requests/utils.py": [
+        {
+          "name": "dict_to_sequence",
+          "kind": "function",
+          "start": 149,
+          "end": 157
+        },
+        {
+          "name": "to_key_val_list",
+          "kind": "function",
+          "start": 376,
+          "end": 404
+        }
+      ]
+    }
+  },
+  {
+    "commit": "aa1461b68aa73e2f6ec0e78c8853b635c76fd099",
+    "parent": "970e8cec988421bd43da57350723b05c8ce8dc7e",
+    "subject": "Move _get_connection to get_connection_with_tls_context",
+    "entry": "HTTPAdapter._get_connection",
+    "ground_truth": [
+      "src/requests/adapters.py::HTTPAdapter._get_connection",
+      "src/requests/adapters.py::HTTPAdapter.get_connection",
+      "src/requests/adapters.py::HTTPAdapter.send"
+    ],
+    "discover": [
+      "src/requests/adapters.py::HTTPAdapter.get_connection",
+      "src/requests/adapters.py::HTTPAdapter.send"
+    ],
+    "by_file": {
+      "src/requests/adapters.py": [
+        {
+          "name": "HTTPAdapter._get_connection",
+          "kind": "function",
+          "start": 377,
+          "end": 404
+        },
+        {
+          "name": "HTTPAdapter.get_connection",
+          "kind": "function",
+          "start": 406,
+          "end": 433
+        },
+        {
+          "name": "HTTPAdapter.send",
+          "kind": "function",
+          "start": 512,
+          "end": 616
+        }
+      ]
+    }
+  },
+  {
+    "commit": "99b3b492418d0751ca960178d274f89805095e4c",
+    "parent": "590350f8d094c216051510ed1dd18fe871b53b72",
+    "subject": "Refactor rebuild_proxies to allow proxy resolution (#5924)",
+    "entry": "SessionRedirectMixin.rebuild_proxies",
+    "ground_truth": [
+      "requests/sessions.py::SessionRedirectMixin",
+      "requests/sessions.py::SessionRedirectMixin.rebuild_proxies",
+      "requests/sessions.py::Session.send"
+    ],
+    "discover": [
+      "requests/sessions.py::SessionRedirectMixin",
+      "requests/sessions.py::Session.send"
+    ],
+    "by_file": {
+      "requests/sessions.py": [
+        {
+          "name": "SessionRedirectMixin",
+          "kind": "class",
+          "start": 96,
+          "end": 334
+        },
+        {
+          "name": "SessionRedirectMixin.rebuild_proxies",
+          "kind": "function",
+          "start": 273,
+          "end": 312
+        },
+        {
+          "name": "Session.send",
+          "kind": "function",
+          "start": 626,
+          "end": 699
+        }
+      ]
+    }
+  },
+  {
+    "commit": "db575eeedcfdb03bf31285afd3033e301df8b685",
+    "parent": "941a77f2b86a801aff9bda17c65b9f7e56f2c68a",
+    "subject": "Fix inconsistent exception type in response.json() method (#5856)",
+    "entry": "Response.json",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/models.py::Response.json"
+    ],
+    "discover": [
+      "requests/models.py::PreparedRequest.prepare_body"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "start": 455,
+          "end": 527
+        },
+        {
+          "name": "Response.json",
+          "kind": "function",
+          "start": 881,
+          "end": 910
+        }
+      ]
+    }
+  },
+  {
+    "commit": "bd100472443dcf4189630f6b1ed3ec0a61259dd8",
+    "parent": "d91fe00983f1c66b9a428fe1ad15bf6ea8238972",
+    "subject": "#4965 fix: Accessing response.content twice removes forgets read error.",
+    "entry": "Response.content",
+    "ground_truth": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response.iter_content.generate",
+      "requests/models.py::Response.content"
+    ],
+    "discover": [
+      "requests/models.py::Response.__init__",
+      "requests/models.py::Response.iter_content.generate"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Response.__init__",
+          "kind": "function",
+          "start": 596,
+          "end": 643
+        },
+        {
+          "name": "Response.iter_content.generate",
+          "kind": "function",
+          "start": 748,
+          "end": 771
+        },
+        {
+          "name": "Response.content",
+          "kind": "function",
+          "start": 821,
+          "end": 841
+        }
+      ]
+    }
+  },
+  {
+    "commit": "bf4a813304cc17b4ed4c4e4178024303c530fb0d",
+    "parent": "6d082ea9724a6dc75d14c08ebe3d4f4ac7b6610f",
+    "subject": "rename information/info",
+    "entry": "information",
+    "ground_truth": [
+      "requests/help.py::information",
+      "requests/help.py::main"
+    ],
+    "discover": [
+      "requests/help.py::main"
+    ],
+    "by_file": {
+      "requests/help.py": [
+        {
+          "name": "information",
+          "kind": "function",
+          "start": 58,
+          "end": 102
+        },
+        {
+          "name": "main",
+          "kind": "function",
+          "start": 104,
+          "end": 106
+        }
+      ]
+    }
+  },
+  {
+    "commit": "c3367d1854208c37855622659ae0a621d9352af2",
+    "parent": "a7239aab84b59534fb5e6eb7b83a97dcf913f8de",
+    "subject": "remove Request.send(session)",
+    "entry": "PreparedRequest.send",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.send",
+      "requests/models.py::Response",
+      "requests/models.py::Response.next"
+    ],
+    "discover": [
+      "requests/models.py::Response",
+      "requests/models.py::Response.next"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.send",
+          "kind": "function",
+          "start": 580,
+          "end": 582
+        },
+        {
+          "name": "Response",
+          "kind": "class",
+          "start": 585,
+          "end": 951
+        },
+        {
+          "name": "Response.next",
+          "kind": "function",
+          "start": 717,
+          "end": 720
+        }
+      ]
+    }
+  },
+  {
+    "commit": "f002b73026bdc136654ba545296898af9a88007a",
+    "parent": "2af059797a33a1ee2132ed13e456413c18bc7aa2",
+    "subject": "Move to_native_string to _internal_utils.py to avoid circular dependency",
+    "entry": "to_native_string",
+    "ground_truth": [
+      "requests/cookies.py::MockRequest.get_full_url",
+      "requests/utils.py::to_native_string"
+    ],
+    "discover": [
+      "requests/cookies.py::MockRequest.get_full_url"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "MockRequest.get_full_url",
+          "kind": "function",
+          "start": 54,
+          "end": 66
+        }
+      ],
+      "requests/utils.py": [
+        {
+          "name": "to_native_string",
+          "kind": "function",
+          "start": 773,
+          "end": 786
+        }
+      ]
+    }
+  },
+  {
+    "commit": "31b35ab838dfab92ea199a2688fefb74215aa7e9",
+    "parent": "ddf7df9b00f0a17ed067fee77a5d70b4f427ca91",
+    "subject": "removing redundant logic from prepare_content_length",
+    "entry": "PreparedRequest.prepare_content_length",
+    "ground_truth": [
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/models.py::PreparedRequest.prepare_content_length"
+    ],
+    "discover": [
+      "requests/models.py::PreparedRequest.prepare_body"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "start": 418,
+          "end": 475
+        },
+        {
+          "name": "PreparedRequest.prepare_content_length",
+          "kind": "function",
+          "start": 477,
+          "end": 489
+        }
+      ]
+    }
+  },
+  {
+    "commit": "9e9d2c6521e37e1c4f35e04f95a910ad47e28958",
+    "parent": "49b69c4751689df7aca4435ef1223a58871a64e2",
+    "subject": "Make BaseAdapter describe the mandatory adapter interface (#3216)",
+    "entry": "BaseAdapter.send",
+    "ground_truth": [
+      "requests/adapters.py::BaseAdapter.send",
+      "requests/adapters.py::BaseAdapter.close"
+    ],
+    "discover": [
+      "requests/adapters.py::BaseAdapter.close"
+    ],
+    "by_file": {
+      "requests/adapters.py": [
+        {
+          "name": "BaseAdapter.send",
+          "kind": "function",
+          "start": 57,
+          "end": 58
+        },
+        {
+          "name": "BaseAdapter.close",
+          "kind": "function",
+          "start": 60,
+          "end": 61
+        }
+      ]
+    }
+  },
+  {
+    "commit": "6195edc075b5960cdc2699c8556be35406247f61",
+    "parent": "f7447d18714fcf955065b53c77893899ddb5383c",
+    "subject": "cleanup of auth __eq__",
+    "entry": "HTTPBasicAuth.__eq__",
+    "ground_truth": [
+      "requests/auth.py::HTTPBasicAuth.__eq__",
+      "requests/auth.py::HTTPDigestAuth.__eq__"
+    ],
+    "discover": [
+      "requests/auth.py::HTTPDigestAuth.__eq__"
+    ],
+    "by_file": {
+      "requests/auth.py": [
+        {
+          "name": "HTTPBasicAuth.__eq__",
+          "kind": "function",
+          "start": 50,
+          "end": 53
+        },
+        {
+          "name": "HTTPDigestAuth.__eq__",
+          "kind": "function",
+          "start": 233,
+          "end": 242
+        }
+      ]
+    }
+  },
+  {
+    "commit": "3e3fc7683cab2d401981fdf01ae8cdc40c8d6222",
+    "parent": "3d339ed7e61261832347190185113b890b55009e",
+    "subject": "Remove VendorAlias meta_path hook",
+    "entry": "VendorAlias",
+    "ground_truth": [
+      "requests/packages/__init__.py::VendorAlias",
+      "requests/packages/__init__.py::VendorAlias.__init__",
+      "requests/packages/__init__.py::VendorAlias.find_module",
+      "requests/packages/__init__.py::VendorAlias.load_module"
+    ],
+    "discover": [
+      "requests/packages/__init__.py::VendorAlias.__init__",
+      "requests/packages/__init__.py::VendorAlias.find_module",
+      "requests/packages/__init__.py::VendorAlias.load_module"
+    ],
+    "by_file": {
+      "requests/packages/__init__.py": [
+        {
+          "name": "VendorAlias",
+          "kind": "class",
+          "start": 28,
+          "end": 104
+        },
+        {
+          "name": "VendorAlias.__init__",
+          "kind": "function",
+          "start": 30,
+          "end": 36
+        },
+        {
+          "name": "VendorAlias.find_module",
+          "kind": "function",
+          "start": 38,
+          "end": 40
+        },
+        {
+          "name": "VendorAlias.load_module",
+          "kind": "function",
+          "start": 42,
+          "end": 104
+        }
+      ]
+    }
+  },
+  {
+    "commit": "36093e69c70b9b24dd1e007befa35ad891313f51",
+    "parent": "18e678c1f897d5bcc934f0b1d5788afee9c37ada",
+    "subject": "Copy a PreparedRequest's CookieJar reliably",
+    "entry": "PreparedRequest.copy",
+    "ground_truth": [
+      "requests/cookies.py::RequestsCookieJar.update",
+      "requests/models.py::PreparedRequest.copy"
+    ],
+    "discover": [
+      "requests/cookies.py::RequestsCookieJar.update"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "RequestsCookieJar.update",
+          "kind": "function",
+          "start": 301,
+          "end": 307
+        }
+      ],
+      "requests/models.py": [
+        {
+          "name": "PreparedRequest.copy",
+          "kind": "function",
+          "start": 318,
+          "end": 326
+        }
+      ]
+    }
+  },
+  {
+    "commit": "8ed941fa6991355753e698f6b253096d57f6c7e4",
+    "parent": "0713e09526d3ed2d2fe2516fa6d35727c557024f",
+    "subject": "Fix a couple of issues I noticed",
+    "entry": "PreparedRequest.prepare_body",
+    "ground_truth": [
+      "requests/models.py::Request",
+      "requests/models.py::Request.__init__",
+      "requests/models.py::PreparedRequest.prepare",
+      "requests/models.py::PreparedRequest.prepare_body",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/models.py::Request",
+      "requests/models.py::Request.__init__",
+      "requests/models.py::PreparedRequest.prepare",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/models.py": [
+        {
+          "name": "Request",
+          "kind": "class",
+          "start": 183,
+          "end": 259
+        },
+        {
+          "name": "Request.__init__",
+          "kind": "function",
+          "start": 207,
+          "end": 239
+        },
+        {
+          "name": "PreparedRequest.prepare",
+          "kind": "function",
+          "start": 296,
+          "end": 310
+        },
+        {
+          "name": "PreparedRequest.prepare_body",
+          "kind": "function",
+          "start": 405,
+          "end": 458
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "start": 377,
+          "end": 455
+        }
+      ]
+    }
+  }
+]

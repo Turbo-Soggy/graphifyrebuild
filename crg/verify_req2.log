@@ -1,0 +1,42 @@
+﻿== sync graph to main ==
+(no output)
+
+== add untested hotspot probe (validate_token, 5 callers) ==
+INFO: FTS index rebuilt: 1479 rows indexed
+
+== triage run 1: validate_token should be flagged untested ==
+  PASS: all four tools returned sections
+  PASS: blast radius contains real probe nodes
+  PASS: callers_of returned the probe callers
+  PASS: validate_token flagged as untested hotspot
+  PASS: taint stub line present
+  PASS: round-trip within interactive budget (4.6s < 30s)
+
+== add covering test, update, re-run: flag must flip off ==
+INFO: FTS index rebuilt: 1481 rows indexed
+  PASS: validate_token NO LONGER flagged after covering test added
+
+== post-fix: edit validate_token, detect_changes delta ==
+  PASS: post-fix run used detect_changes_tool
+  PASS: delta mentions the edited probe file
+  PASS: delta is risk-scored
+  PASS: post-fix output visibly differs from pre-fix triage output
+
+== cleanup ==
+(no output)
+
+== summary ==
+  PASS  all four tools returned sections
+  PASS  blast radius contains real probe nodes
+  PASS  callers_of returned the probe callers
+  PASS  validate_token flagged as untested hotspot
+  PASS  taint stub line present
+  PASS  round-trip within interactive budget (4.6s < 30s)
+  PASS  validate_token NO LONGER flagged after covering test added
+  PASS  post-fix run used detect_changes_tool
+  PASS  delta mentions the edited probe file
+  PASS  delta is risk-scored
+  PASS  post-fix output visibly differs from pre-fix triage output
+
+11/11 checks passed
+(triage run 1 wall time incl. server spawn: 6.3s)

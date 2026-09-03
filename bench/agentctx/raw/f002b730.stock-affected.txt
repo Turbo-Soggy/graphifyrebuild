@@ -1,0 +1,24 @@
+Affected nodes for to_native_string()
+Relations: calls, indirect_call, references, imports, imports_from, dynamic_import, re_exports, inherits, extends, implements, uses, mixes_in, embeds, requires
+Depth: 2
+- adapters.py [imports] requests/adapters.py:L20
+- auth.py [imports] requests/auth.py:L20
+- models.py [imports] requests/models.py:L32
+- sessions.py [imports] requests/sessions.py:L20
+- test_utils.py [imports] tests/test_utils.py:L8
+- _basic_auth_str() [calls] requests/auth.py:L30
+- .prepare_method() [calls] requests/models.py:L328
+- .prepare_url() [calls] requests/models.py:L357
+- .prepare_headers() [calls] requests/models.py:L416
+- .resolve_redirects() [calls] requests/sessions.py:L134
+- test_to_native_string() [calls] tests/test_utils.py:L470
+- test_requests.py [imports_from] tests/test_requests.py:L17
+- requests/__init__.py [imports_from] requests/__init__.py:L64
+- api.py [imports_from] requests/api.py:L13
+- .__call__() [calls] requests/auth.py:L61
+- .__call__() [calls] requests/auth.py:L69
+- .proxy_headers() [calls] requests/adapters.py:L370
+- .rebuild_proxies() [calls] requests/sessions.py:L243
+- .test_basic_auth_str_is_always_native() [calls] tests/test_requests.py:L1385
+- .prepare() [calls] requests/models.py:L298
+- .send() [calls] requests/sessions.py:L614

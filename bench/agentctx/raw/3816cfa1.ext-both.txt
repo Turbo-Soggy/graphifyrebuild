@@ -1,0 +1,41 @@
+Blast radius of src_requests_types_supportsitems (depth 2, both): 40 nodes, 151 edges, ~11626 tokens
+  [0] SupportsItems src/requests/_types.py:L31
+  [0] .items() src/requests/_types.py:L32
+  [1] Protocol 
+  [1] Any 
+  [1] requests/utils.py src/requests/utils.py:L1
+  [1] dict_to_sequence() src/requests/utils.py:L149
+  [1] to_key_val_list() src/requests/utils.py:L371
+  [2] _KT 
+  [2] adapters.py src/requests/adapters.py:L1
+  [2] auth.py src/requests/auth.py:L1
+  [2] certs.py src/requests/certs.py:L1
+  [2] requests/compat.py src/requests/compat.py:L1
+  [2] cookies.py src/requests/cookies.py:L1
+  [2] cookiejar_from_dict() src/requests/cookies.py:L564
+  [2] exceptions.py src/requests/exceptions.py:L1
+  [2] FileModeWarning src/requests/exceptions.py:L157
+  [2] InvalidHeader src/requests/exceptions.py:L122
+  [2] InvalidURL src/requests/exceptions.py:L118
+  [2] UnrewindableBodyError src/requests/exceptions.py:L146
+  [2] requests/__init__.py src/requests/__init__.py:L1
+  [2] _internal_utils.py src/requests/_internal_utils.py:L1
+  [2] to_native_string() src/requests/_internal_utils.py:L26
+  [2] models.py src/requests/models.py:L1
+  [2] PreparedRequest src/requests/models.py:L376
+  [2] Request src/requests/models.py:L283
+  [2] ._encode_files() src/requests/models.py:L184
+  [2] ._encode_params() src/requests/models.py:L135
+  [2] Response src/requests/models.py:L730
+  [2] sessions.py src/requests/sessions.py:L1
+  [2] merge_setting() src/requests/sessions.py:L76
+  [2] structures.py src/requests/structures.py:L1
+  [2] CaseInsensitiveDict src/requests/structures.py:L20
+  [2] _types.py src/requests/_types.py:L1
+  [2] Any 
+  [2] _VT 
+  [2] __version__.py src/requests/__version__.py:L1
+  [2] test_utils.py tests/test_utils.py:L1
+  [2] .test_invalid() tests/test_utils.py:L197
+  [2] .test_valid() tests/test_utils.py:L194
+  [2] ValueError 

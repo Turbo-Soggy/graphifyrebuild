@@ -1,0 +1,47 @@
+{
+  "results": [
+    {
+      "check_id": "python.flask.security.injection.tainted-sql-string",
+      "path": "src/flask/crg_vuln.py",
+      "start": {
+        "line": 13
+      },
+      "end": {
+        "line": 13
+      },
+      "extra": {
+        "severity": "ERROR",
+        "dataflow_trace": {
+          "taint_source": [
+            {
+              "path": "src/flask/crg_vuln.py",
+              "start": {
+                "line": 5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "check_id": "python.bogus.unresolvable",
+      "path": "src/flask/does_not_exist.py",
+      "start": {
+        "line": 1
+      },
+      "extra": {
+        "severity": "WARNING",
+        "dataflow_trace": {
+          "taint_source": [
+            {
+              "path": "src/flask/does_not_exist.py",
+              "start": {
+                "line": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

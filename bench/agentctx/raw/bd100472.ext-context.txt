@@ -1,0 +1,157 @@
+=== SEED (depth 0 via calls) requests/models.py:820-841  content ===
+@property
+    def content(self):
+        """Content of the response, in bytes."""
+
+        if self._content is False:
+            # Read the contents.
+            if self._content_consumed:
+                raise RuntimeError(
+                    'The content for this response was already consumed')
+
+            if self.status_code == 0 or self.raw is None:
+                self._content = None
+            else:
+                self._content = b''.join(self.iter_content(CONTENT_CHUNK_SIZE)) or b''
+
+        if self._error is not None:
+            raise self._error
+
+        self._content_consumed = True
+        # don't need to release the connection; that's been handled by urllib3
+        # since we exhausted the data.
+        return self._content
+
+=== RELATED (depth 1 via calls) requests/models.py:731-787  iter_content ===
+def iter_content(self, chunk_size=1, decode_unicode=False):
+        """Iterates over the response data.  When stream=True is set on the
+        request, this avoids reading the content at once into memory for
+        large responses.  The chunk size is the number of bytes it should
+        read into memory.  This is not necessarily the length of each item
+        returned as decoding can take place.
+
+        chunk_size must be of type int or None. A value of None will
+        function differently depending on the value of `stream`.
+        stream=True will read data as it arrives in whatever size the
+        chunks are received. If stream=False, data is returned as
+        a single chunk.
+
+        If decode_unicode is True, content will be decoded using the best
+        available encoding based on the response.
+        """
+
+        def generate():
+            # Special case for urllib3.
+            if hasattr(self.raw, 'stream'):
+                try:
+                    for chunk in self.raw.stream(chunk_size, decode_content=True):
+                        yield chunk
+                except ProtocolError as e:
+                    self._error = e
+                    raise ChunkedEncodingError(e)
+                except DecodeError as e:
+                    self._error = e
+                    raise ContentDecodingError(e)
+                except ReadTimeoutError as e:
+                    self._error = e
+                    raise ConnectionError(e)
+            else:
+                # Standard file-like object.
+                while True:
+                    chunk = self.raw.read(chunk_size)
+                    if not chunk:
+                        break
+                    yield chunk
+
+            self._content_consumed = True
+
+        if self._content_consumed and isinstance(self._content, bool):
+            raise StreamConsumedError()
+        elif chunk_size is not None and not isinstance(chunk_size, int):
+            raise TypeError("chunk_size must be an int, it is instead a %s." % type(chunk_size))
+        # simulate reading small chunks of the content
+        reused_chunks = iter_slices(self._content, chunk_size)
+
+        stream_chunks = generate()
+
+        chunks = reused_chunks if self._content_consumed else stream_chunks
+
+        if decode_unicode:
+            chunks = stream_decode_response_unicode(chunks, self)
+
+        return chunks
+
+=== RELATED (depth 2 via calls) requests/models.py:690-692  __iter__ ===
+def __iter__(self):
+        """Allows you to use a response as an iterator."""
+        return self.iter_content(128)
+
+=== RELATED (depth 2 via calls) requests/models.py:789-818  iter_lines ===
+def iter_lines(self, chunk_size=ITER_CHUNK_SIZE, decode_unicode=False, delimiter=None):
+        """Iterates over the response data, one line at a time.  When
+        stream=True is set on the request, this avoids reading the
+        content at once into memory for large responses.
+
+        .. note:: This method is not reentrant safe.
+        """
+
+        pending = None
+
+        for chunk in self.iter_content(chunk_size=chunk_size, decode_unicode=decode_unicode):
+
+            if pending is not None:
+                chunk = pending + chunk
+
+            if delimiter:
+                lines = chunk.split(delimiter)
+            else:
+                lines = chunk.splitlines()
+
+            if lines and lines[-1] and chunk and lines[-1][-1] == chunk[-1]:
+                pending = lines.pop()
+            else:
+                pending = None
+
+            for line in lines:
+                yield line
+
+        if pending is not None:
+            yield pending
+
+=== RELATED (depth 2 via calls) requests/exceptions.py:100-101  StreamConsumedError ===
+class StreamConsumedError(RequestException, TypeError):
+    """The content for this response was already consumed"""
+
+=== RELATED (depth 2 via calls) requests/utils.py:514-521  iter_slices ===
+def iter_slices(string, slice_length):
+    """Iterate over slices of a string."""
+    pos = 0
+    if slice_length is None or slice_length <= 0:
+        slice_length = len(string)
+    while pos < len(string):
+        yield string[pos:pos + slice_length]
+        pos += slice_length
+
+=== RELATED (depth 2 via calls) requests/utils.py:496-511  stream_decode_response_unicode ===
+def stream_decode_response_unicode(iterator, r):
+    """Stream decodes a iterator."""
+
+    if r.encoding is None:
+        for item in iterator:
+            yield item
+        return
+
+    decoder = codecs.getincrementaldecoder(r.encoding)(errors='replace')
+    for chunk in iterator:
+        rv = decoder.decode(chunk)
+        if rv:
+            yield rv
+    rv = decoder.decode(b'', final=True)
+    if rv:
+        yield rv
+
+=== RELATED (depth 2 via inherits) requests/cookies.py:165-168  CookieConflictError ===
+class CookieConflictError(RuntimeError):
+    """There are two cookies that meet the criteria specified in the cookie jar.
+    Use .get and .set and include domain and path args in order to be more specific.
+    """

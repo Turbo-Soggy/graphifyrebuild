@@ -1,0 +1,57 @@
+﻿workspace: C:\Users\SISABE~1\AppData\Local\Temp\taint-corpus-_fkv9c7o
+
+=== Build A (graphify_ext) ===
+  PASS  [A/build] corpus graph built
+  PASS  [A/M1 TP1] source end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [A/M2 TP1] sink end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [A/M1 TP2] source end resolves to expected node — got tp_multihop_shell, want tp_multihop_shell
+  PASS  [A/M2 TP2] sink end resolves to expected node — got _exec_path, want _exec_path
+  PASS  [A/M3 TP2] cross-function flow maps to two distinct nodes
+  PASS  [A/M1 TP3] source end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [A/M2 TP3] sink end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [A/M4] taint-exposed set matches ground truth — extra=[] missing=[]
+  PASS  [A/M5] no true-negative function is exposed — leaked=[]
+  PASS  [A/M6] missing-file finding reported, not dropped — unresolved=['UR1', 'UR2']
+  PASS  [A/M7] out-of-range line does not silently produce a wrong edge — correctly unresolved
+
+=== Build B (crg) ===
+  PASS  [B/build] corpus graph built
+  PASS  [B/M1 TP1] source end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [B/M2 TP1] sink end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [B/M1 TP2] source end resolves to expected node — got tp_multihop_shell, want tp_multihop_shell
+  PASS  [B/M2 TP2] sink end resolves to expected node — got _exec_path, want _exec_path
+  PASS  [B/M3 TP2] cross-function flow maps to two distinct nodes
+  PASS  [B/M1 TP3] source end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [B/M2 TP3] sink end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [B/M4] taint-exposed set matches ground truth — extra=[] missing=[]
+  PASS  [B/M5] no true-negative function is exposed — leaked=[]
+  PASS  [B/M6] missing-file finding reported, not dropped — unresolved=['UR1', 'UR2']
+  PASS  [B/M7] out-of-range line does not silently produce a wrong edge — correctly unresolved
+
+== summary ==
+  PASS  [A/build] corpus graph built
+  PASS  [A/M1 TP1] source end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [A/M2 TP1] sink end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [A/M1 TP2] source end resolves to expected node — got tp_multihop_shell, want tp_multihop_shell
+  PASS  [A/M2 TP2] sink end resolves to expected node — got _exec_path, want _exec_path
+  PASS  [A/M3 TP2] cross-function flow maps to two distinct nodes
+  PASS  [A/M1 TP3] source end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [A/M2 TP3] sink end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [A/M4] taint-exposed set matches ground truth — extra=[] missing=[]
+  PASS  [A/M5] no true-negative function is exposed — leaked=[]
+  PASS  [A/M6] missing-file finding reported, not dropped — unresolved=['UR1', 'UR2']
+  PASS  [A/M7] out-of-range line does not silently produce a wrong edge — correctly unresolved
+  PASS  [B/build] corpus graph built
+  PASS  [B/M1 TP1] source end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [B/M2 TP1] sink end resolves to expected node — got tp_direct_sqli, want tp_direct_sqli
+  PASS  [B/M1 TP2] source end resolves to expected node — got tp_multihop_shell, want tp_multihop_shell
+  PASS  [B/M2 TP2] sink end resolves to expected node — got _exec_path, want _exec_path
+  PASS  [B/M3 TP2] cross-function flow maps to two distinct nodes
+  PASS  [B/M1 TP3] source end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [B/M2 TP3] sink end resolves to expected node — got tp_reflected_xss, want tp_reflected_xss
+  PASS  [B/M4] taint-exposed set matches ground truth — extra=[] missing=[]
+  PASS  [B/M5] no true-negative function is exposed — leaked=[]
+  PASS  [B/M6] missing-file finding reported, not dropped — unresolved=['UR1', 'UR2']
+  PASS  [B/M7] out-of-range line does not silently produce a wrong edge — correctly unresolved
+
+24/24 checks passed

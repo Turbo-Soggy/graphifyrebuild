@@ -1,0 +1,3 @@
+=== SEED (depth 0) requests/adapters.py:57-58  send ===
+def send(self):
+        raise NotImplementedError

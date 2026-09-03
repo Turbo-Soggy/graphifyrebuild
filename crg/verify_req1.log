@@ -1,0 +1,189 @@
+﻿== resetting sandbox state ==
+
+== baseline: full build on main (timed) ==
+baseline full build: 10.6s
+
+== first swap on main (adopts freshly built real data dir) ==
+[crg-branch-cache] added .code-review-graph, .code-review-graph/, .crg-cache/ to .git/info/exclude
+[crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.2s
+  PASS: first swap adopts existing data (CACHE HIT + UPDATE, 0 files) or rebuilds (FULL BUILD)
+
+== first visit to test-branch (expect FULL BUILD) ==
+[crg-branch-cache] FULL BUILD (no cache for branch 'test-branch'; slot test-branch, link mode)
+Full build: 94 files, 1710 nodes, 8359 edges (postprocess=full)
+[crg-branch-cache] done in 11.5s
+INFO: Schema version 1 -> 9: running migrations
+INFO: Running migration v2
+INFO: Migration v2: added 'signature' column to nodes
+INFO: Running migration v3
+INFO: Migration v3: created flows and flow_memberships tables
+INFO: Running migration v4
+INFO: Migration v4: added 'community_id' column to nodes
+INFO: Migration v4: created communities table
+INFO: Running migration v5
+INFO: Migration v5: created nodes_fts FTS5 virtual table
+INFO: Running migration v6
+INFO: Migration v6: created summary tables (community_summaries, flow_snapshots, risk_index)
+INFO: Running migration v7
+INFO: Migration v7: added compound edge indexes
+INFO: Running migration v8
+INFO: Migration v8: created composite edge index
+INFO: Running migration v9
+INFO: Migration v9: added edge confidence columns
+INFO: Migrations complete, now at schema version 9
+INFO: Progress: 94/94 files parsed
+INFO: Python import resolution: {'files_indexed': 83, 'imports_updated': 526, 'imports_resolved': 53, 'imports_ambiguous': 78}
+INFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges
+INFO: Resolved 416 evidence-backed bare CALLS targets
+INFO: Resolved 344 evidence-backed bare TESTED_BY sources
+INFO: FTS index rebuilt: 1447 rows indexed
+INFO: Loaded 1361 unique nodes, 8345 edges
+INFO: igraph not available, using file-based community detection
+  PASS: new branch first visit prints FULL BUILD
+
+== commit on test-branch, then swap (expect CACHE HIT + UPDATE, incremental) ==
+[crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot test-branch, link mode)
+Incremental: 1 files updated, 2 nodes, 1 edges (postprocess=full)
+[crg-branch-cache] done in 3.2s
+INFO: Python import resolution: {'files_indexed': 84, 'imports_updated': 0, 'imports_resolved': 0, 'imports_ambiguous': 0}
+INFO: FTS index rebuilt: 1449 rows indexed
+  PASS: post-commit swap prints CACHE HIT + UPDATE
+  PASS: CRG reports incremental (not full rebuild)
+  PASS: edit is reflected in graph
+
+== switch away and back (expect CACHE HIT + UPDATE, faster than build) ==
+[crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.4s
+  PASS: back on main: CACHE HIT + UPDATE
+  PASS: main's graph does NOT have the branch edit
+[crg-branch-cache] CACHE HIT + UPDATE (base commit b1fbf36418 is an ancestor of HEAD; slot test-branch, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.4s
+  PASS: revisit test-branch: CACHE HIT + UPDATE
+  PASS: pre-switch edit survived the round-trip
+  PASS: revisit swap (2.9s) measurably faster than full build (10.6s)
+
+== history rewrite (amend) -> expect CACHE INVALID, REBUILDING ==
+[crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.7s
+[crg-branch-cache] CACHE INVALID, REBUILDING (base commit b1fbf36418 is not an ancestor of HEAD (history rewritten?); slot test-branch, link mode)
+Full build: 95 files, 1712 nodes, 8360 edges (postprocess=full)
+[crg-branch-cache] done in 12.5s
+INFO: Progress: 95/95 files parsed
+INFO: Python import resolution: {'files_indexed': 84, 'imports_updated': 526, 'imports_resolved': 53, 'imports_ambiguous': 78}
+INFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges
+INFO: Resolved 416 evidence-backed bare CALLS targets
+INFO: Resolved 344 evidence-backed bare TESTED_BY sources
+INFO: FTS index rebuilt: 1449 rows indexed
+INFO: Loaded 1362 unique nodes, 8346 edges
+INFO: igraph not available, using file-based community detection
+  PASS: amended branch triggers CACHE INVALID, REBUILDING
+
+== detached HEAD -> expect DETACHED HEAD, FULL BUILD ==
+[crg-branch-cache] DETACHED HEAD, FULL BUILD (scratch slot, link mode)
+Full build: 95 files, 1712 nodes, 8360 edges (postprocess=full)
+[crg-branch-cache] done in 11.3s
+INFO: Schema version 1 -> 9: running migrations
+INFO: Running migration v2
+INFO: Migration v2: added 'signature' column to nodes
+INFO: Running migration v3
+INFO: Migration v3: created flows and flow_memberships tables
+INFO: Running migration v4
+INFO: Migration v4: added 'community_id' column to nodes
+INFO: Migration v4: created communities table
+INFO: Running migration v5
+INFO: Migration v5: created nodes_fts FTS5 virtual table
+INFO: Running migration v6
+INFO: Migration v6: created summary tables (community_summaries, flow_snapshots, risk_index)
+INFO: Running migration v7
+INFO: Migration v7: added compound edge indexes
+INFO: Running migration v8
+INFO: Migration v8: created composite edge index
+INFO: Running migration v9
+INFO: Migration v9: added edge confidence columns
+INFO: Migrations complete, now at schema version 9
+INFO: Progress: 95/95 files parsed
+INFO: Python import resolution: {'files_indexed': 84, 'imports_updated': 526, 'imports_resolved': 53, 'imports_ambiguous': 78}
+INFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges
+INFO: Resolved 416 evidence-backed bare CALLS targets
+INFO: Resolved 344 evidence-backed bare TESTED_BY sources
+INFO: FTS index rebuilt: 1449 rows indexed
+INFO: Loaded 1362 unique nodes, 8346 edges
+INFO: igraph not available, using file-based community detection
+  PASS: detached HEAD prints DETACHED HEAD, FULL BUILD
+
+== error fallback: broken slot DB must not crash or serve stale ==
+[crg-branch-cache] CACHE HIT + UPDATE (base commit ed71d171bf is an ancestor of HEAD; slot test-branch, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.4s
+[crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+Incremental: 0 files updated, 0 nodes, 0 edges (postprocess=full)
+[crg-branch-cache] done in 2.5s
+[crg-branch-cache] CACHE HIT + UPDATE (base commit ed71d171bf is an ancestor of HEAD; slot test-branch, link mode)
+[crg-branch-cache] update failed - clearing slot data, falling back to FULL BUILD
+Full build: 95 files, 1712 nodes, 8360 edges (postprocess=full)
+[crg-branch-cache] done in 13.0s
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\projects\graphifyrebuild\.venv\Scripts\code-review-graph.exe\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\projects\graphifyrebuild\crg\crg-upstream\code_review_graph\cli.py", line 1729, in main
+    store = GraphStore(db_path)
+  File "C:\projects\graphifyrebuild\crg\crg-upstream\code_review_graph\graph.py", line 196, in __init__
+    self._conn.execute("PRAGMA journal_mode=WAL")
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.DatabaseError: file is not a database
+INFO: Schema version 1 -> 9: running migrations
+INFO: Running migration v2
+INFO: Migration v2: added 'signature' column to nodes
+INFO: Running migration v3
+INFO: Migration v3: created flows and flow_memberships tables
+INFO: Running migration v4
+INFO: Migration v4: added 'community_id' column to nodes
+INFO: Migration v4: created communities table
+INFO: Running migration v5
+INFO: Migration v5: created nodes_fts FTS5 virtual table
+INFO: Running migration v6
+INFO: Migration v6: created summary tables (community_summaries, flow_snapshots, risk_index)
+INFO: Running migration v7
+INFO: Migration v7: added compound edge indexes
+INFO: Running migration v8
+INFO: Migration v8: created composite edge index
+INFO: Running migration v9
+INFO: Migration v9: added edge confidence columns
+INFO: Migrations complete, now at schema version 9
+INFO: Progress: 95/95 files parsed
+INFO: Python import resolution: {'files_indexed': 84, 'imports_updated': 526, 'imports_resolved': 53, 'imports_ambiguous': 78}
+INFO: Spring event resolver: indexed 0 events and emitted 0 CALLS edges
+INFO: Resolved 416 evidence-backed bare CALLS targets
+INFO: Resolved 344 evidence-backed bare TESTED_BY sources
+INFO: FTS index rebuilt: 1449 rows indexed
+INFO: Loaded 1362 unique nodes, 8346 edges
+INFO: igraph not available, using file-based community detection
+  PASS: corrupt slot DB handled without crash (labeled outcome still printed)
+  PASS: graph is healthy after corrupt-slot recovery
+== resetting sandbox state ==
+
+== summary ==
+  PASS  first swap adopts existing data (CACHE HIT + UPDATE, 0 files) or rebuilds (FULL BUILD)
+  PASS  new branch first visit prints FULL BUILD
+  PASS  post-commit swap prints CACHE HIT + UPDATE
+  PASS  CRG reports incremental (not full rebuild)
+  PASS  edit is reflected in graph
+  PASS  back on main: CACHE HIT + UPDATE
+  PASS  main's graph does NOT have the branch edit
+  PASS  revisit test-branch: CACHE HIT + UPDATE
+  PASS  pre-switch edit survived the round-trip
+  PASS  revisit swap (2.9s) measurably faster than full build (10.6s)
+  PASS  amended branch triggers CACHE INVALID, REBUILDING
+  PASS  detached HEAD prints DETACHED HEAD, FULL BUILD
+  PASS  corrupt slot DB handled without crash (labeled outcome still printed)
+  PASS  graph is healthy after corrupt-slot recovery
+
+14/14 checks passed

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphify-ext"
+version = "0.1.0"
+description = "Customization layer on top of graphify: per-branch incremental graph caching + AppSec fix-context tooling"
+requires-python = ">=3.10"
+# graphifyy (the upstream package) is imported lazily at runtime by the modules
+# that need it (branch_cache, hook install). It is deliberately NOT a hard
+# dependency so the pure-JSON tooling (blast-radius, inject, triage) works
+# against any graph.json without the upstream package present.
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+# fastmcp is OPTIONAL on purpose: graphify_ext stays dependency-free so the
+# CLI and the git-hook path import cleanly under an interpreter that has
+# graphify but not fastmcp (which is the case for the connected repo).
+mcp = ["fastmcp>=3.2.4,<4"]
+
+[project.scripts]
+graphify-ext = "graphify_ext.__main__:main"
+graphify-ext-mcp = "graphify_ext.mcp_server:main"
+
+[tool.setuptools.packages.find]
+include = ["graphify_ext*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "e2e: end-to-end tests driving the real graphifyy package (slower)",
+]

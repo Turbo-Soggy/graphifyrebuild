@@ -1,0 +1,3 @@
+Blast radius of requests_help_information (depth 2, up): 2 nodes, 1 edges, ~239 tokens
+  [0] information() requests/help.py:L58
+  [1] main() requests/help.py:L104

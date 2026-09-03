@@ -1,0 +1,92 @@
+.\requests\adapters.py:57:    def send(self, request, stream=False, timeout=None, verify=True,
+.\requests\adapters.py:63:        :param timeout: (optional) How long to wait for the server to send
+.\requests\adapters.py:361:        :param kwargs: The keyword arguments from the call to send().
+.\requests\adapters.py:387:    def send(self, request, stream=False, timeout=None, verify=True, cert=None, proxies=None):
+.\requests\adapters.py:392:        :param timeout: (optional) How long to wait for the server to send
+.\requests\adapters.py:460:                        low_conn.send(hex(len(i))[2:].encode('utf-8'))
+.\requests\adapters.py:461:                        low_conn.send(b'\r\n')
+.\requests\adapters.py:462:                        low_conn.send(i)
+.\requests\adapters.py:463:                        low_conn.send(b'\r\n')
+.\requests\adapters.py:464:                    low_conn.send(b'0\r\n\r\n')
+.\requests\api.py:22:    :param data: (optional) Dictionary or list of tuples ``[(key, value)]`` (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\api.py:23:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\api.py:24:    :param headers: (optional) Dictionary of HTTP Headers to send with the :class:`Request`.
+.\requests\api.py:25:    :param cookies: (optional) Dict or CookieJar object to send with the :class:`Request`.
+.\requests\api.py:32:    :param timeout: (optional) How many seconds to wait for the server to send data
+.\requests\api.py:105:    :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\api.py:106:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\api.py:119:    :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\api.py:120:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\api.py:133:    :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\api.py:134:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\auth.py:257:            _r = r.connection.send(prep, **kwargs)
+.\tests\testserver\server.py:48:            sock.send(text.encode('utf-8'))
+.\requests\exceptions.py:61:    """The server did not send any data in the allotted amount of time."""
+.\tests\test_lowlevel.py:13:    """can safely send generators"""
+.\tests\test_lowlevel.py:56:        sock.send(text_401)
+.\tests\test_lowlevel.py:61:        sock.send(text_302)
+.\tests\test_lowlevel.py:64:        # then send another challenge.
+.\tests\test_lowlevel.py:67:        sock.send(text_401)
+.\tests\test_lowlevel.py:72:        sock.send(text_200)
+.\tests\test_lowlevel.py:112:        sock.send(text_401)
+.\tests\test_lowlevel.py:118:        sock.send(text_401)
+.\tests\test_lowlevel.py:139:    """Ensure we only send digestauth on 4xx challenges.
+.\tests\test_lowlevel.py:155:        sock.send(text_200_chal)
+.\tests\test_lowlevel.py:216:        sock.send(
+.\tests\test_lowlevel.py:223:        sock.send(b'HTTP/1.1 200 OK\r\n\r\n')
+.\tests\test_requests.py:156:        r = s.send(r.prepare())
+.\tests\test_requests.py:164:        r = s.send(r.prepare())
+.\tests\test_requests.py:261:        resp = ses.send(prep)
+.\tests\test_requests.py:394:        resp = s.send(prep_req)
+.\tests\test_requests.py:426:        """Do not send headers in Session.headers with None values."""
+.\tests\test_requests.py:864:        resp = s.send(prep)
+.\tests\test_requests.py:872:            s.send(req)
+.\tests\test_requests.py:873:        assert str(e.value) == 'You can only send PreparedRequests.'
+.\tests\test_requests.py:894:        s.send(prep)
+.\tests\test_requests.py:925:        resp = s.send(prep)
+.\tests\test_requests.py:942:        resp = s.send(prep)
+.\tests\test_requests.py:1228:        resp = s.send(r)
+.\tests\test_requests.py:1244:        resp = s.send(r)
+.\tests\test_requests.py:1260:        resp = s.send(r)
+.\tests\test_requests.py:1266:            requests.Session().send(r)
+.\tests\test_requests.py:1285:        r = s.send(r.prepare())
+.\tests\test_requests.py:2092:    def send(self, *args, **kwargs):
+.\tests\test_requests.py:2131:    r0 = session.send(prep)
+.\requests\models.py:199:    :param url: URL to send.
+.\requests\models.py:200:    :param headers: dictionary of headers to send.
+.\requests\models.py:276:      >>> s.send(r)
+.\requests\models.py:281:        #: HTTP verb to send to the server.
+.\requests\models.py:283:        #: HTTP URL to send the request to.
+.\requests\models.py:290:        #: request body to send to the server.
+.\requests\models.py:580:    def send(self, session):
+.\requests\models.py:582:        return session.send(self)
+.\tests\test_testserver.py:74:            sock.sendall(b'send something')
+.\requests\sessions.py:210:                resp = self.send(
+.\requests\sessions.py:466:        :param data: (optional) Dictionary, bytes, or file-like object to send
+.\requests\sessions.py:468:        :param json: (optional) json to send in the body of the
+.\requests\sessions.py:470:        :param headers: (optional) Dictionary of HTTP Headers to send with the
+.\requests\sessions.py:472:        :param cookies: (optional) Dict or CookieJar object to send with the
+.\requests\sessions.py:478:        :param timeout: (optional) How long to wait for the server to send
+.\requests\sessions.py:522:        resp = self.send(prep, **send_kwargs)
+.\requests\sessions.py:563:        :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\sessions.py:564:        :param json: (optional) json to send in the body of the :class:`Request`.
+.\requests\sessions.py:575:        :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\sessions.py:586:        :param data: (optional) Dictionary, bytes, or file-like object to send in the body of the :class:`Request`.
+.\requests\sessions.py:603:    def send(self, request, **kwargs):
+.\requests\sessions.py:615:        # It's possible that users might accidentally send a Request object.
+.\requests\sessions.py:618:            raise ValueError('You can only send PreparedRequests.')
+.\requests\sessions.py:642:        r = adapter.send(request, **kwargs)
+.\requests\packages\urllib3\connection.py:199:                self.send(len_str.encode('utf-8'))
+.\requests\packages\urllib3\connection.py:200:                self.send(b'\r\n')
+.\requests\packages\urllib3\connection.py:201:                self.send(chunk)
+.\requests\packages\urllib3\connection.py:202:                self.send(b'\r\n')
+.\requests\packages\urllib3\connection.py:205:        self.send(b'0\r\n\r\n')
+.\requests\packages\urllib3\contrib\pyopenssl.py:301:                return self.connection.send(data)
+.\requests\packages\urllib3\contrib\securetransport.py:260:                chunk_sent = base_socket.send(data)
+.\requests\packages\urllib3\contrib\securetransport.py:565:    def send(self, data):
+.\requests\packages\urllib3\contrib\securetransport.py:575:            raise socket.timeout("send timed out")
+.\requests\packages\urllib3\contrib\securetransport.py:585:            sent = self.send(data[total_sent:total_sent + SSL_WRITE_BLOCKSIZE])
+.\requests\packages\urllib3\connectionpool.py:471:            Data to send in the request body (useful for creating
+.\requests\packages\urllib3\connectionpool.py:476:            Dictionary of custom headers to send, such as User-Agent,
+.\requests\packages\urllib3\connectionpool.py:527:            If True, urllib3 will send the body using chunked transfer
+.\requests\packages\urllib3\connectionpool.py:528:            encoding. Otherwise, urllib3 will send the body using the standard

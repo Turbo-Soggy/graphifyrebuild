@@ -1,0 +1,2 @@
+Blast radius of requests_models_preparedrequest_copy (depth 2, up): 1 nodes, 0 edges, ~139 tokens
+  [0] .copy() requests/models.py:L318

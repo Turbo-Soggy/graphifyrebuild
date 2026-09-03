@@ -1,0 +1,14 @@
+.\requests\adapters.py:22:                    select_proxy, to_native_string)
+.\requests\auth.py:20:from .utils import parse_dict_header, to_native_string
+.\requests\auth.py:30:    authstr = 'Basic ' + to_native_string(
+.\tests\test_utils.py:16:    to_key_val_list, to_native_string,
+.\tests\test_utils.py:470:    assert to_native_string(value) == expected
+.\requests\cookies.py:60:        host = utils.to_native_string(self._r.headers['Host'], encoding='utf-8')
+.\requests\models.py:35:    iter_slices, guess_json_utf, super_len, to_native_string,
+.\requests\models.py:328:            self.method = to_native_string(self.method.upper())
+.\requests\models.py:357:            error = error.format(to_native_string(url, 'utf8'))
+.\requests\models.py:395:            params = to_native_string(params)
+.\requests\models.py:416:                self.headers[to_native_string(name)] = value
+.\requests\sessions.py:20:from .utils import to_key_val_list, default_headers, to_native_string
+.\requests\sessions.py:134:            prepared_request.url = to_native_string(url)
+.\requests\utils.py:773:def to_native_string(string, encoding='ascii'):

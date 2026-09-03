@@ -1,0 +1,17 @@
+Blast radius of src_requests_types_supportsitems (depth 2, up): 16 nodes, 40 edges, ~3441 tokens
+  [0] SupportsItems src/requests/_types.py:L31
+  [0] .items() src/requests/_types.py:L32
+  [1] requests/utils.py src/requests/utils.py:L1
+  [1] dict_to_sequence() src/requests/utils.py:L149
+  [1] to_key_val_list() src/requests/utils.py:L371
+  [2] adapters.py src/requests/adapters.py:L1
+  [2] auth.py src/requests/auth.py:L1
+  [2] requests/__init__.py src/requests/__init__.py:L1
+  [2] models.py src/requests/models.py:L1
+  [2] ._encode_files() src/requests/models.py:L184
+  [2] ._encode_params() src/requests/models.py:L135
+  [2] sessions.py src/requests/sessions.py:L1
+  [2] merge_setting() src/requests/sessions.py:L76
+  [2] test_utils.py tests/test_utils.py:L1
+  [2] .test_invalid() tests/test_utils.py:L197
+  [2] .test_valid() tests/test_utils.py:L194

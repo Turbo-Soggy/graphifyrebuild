@@ -1,0 +1,4 @@
+.\tests\test_requests.py:2345:        proxies = session.rebuild_proxies(prep, {})
+.\requests\sessions.py:215:            proxies = self.rebuild_proxies(prepared_request, proxies)
+.\requests\sessions.py:273:    def rebuild_proxies(self, prepared_request, proxies):
+.\requests\sessions.py:636:        kwargs.setdefault('proxies', self.rebuild_proxies(request, self.proxies))

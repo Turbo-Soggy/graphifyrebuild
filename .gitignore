@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Vendored/nested repos and benchmark sandboxes — not submodules, tracked separately.
+/graphify-upstream/
+/crg/crg-upstream/
+/crg/sandbox-flask/
+/bench/sandbox-a/
+/bench/sandbox-big/

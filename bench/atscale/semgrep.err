@@ -1,0 +1,29 @@
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 208 files with 76 Code rules:
+                                                                                                                        
+  Language   Rules   Files          Origin      Rules                                                                   
+ ──────────────────────────        ───────────────────                                                                  
+  ts            76     105          Community      74                                                                   
+  js            70      14          Custom          2                                                                   
+                                                                                                                        
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 9 (9 blocking)
+ • Rules run: 76
+ • Targets scanned: 115
+ • Parsed lines: ~99.9%
+ • Scan skipped: 
+   ◦ Matching --exclude patterns: 39
+   ◦ Files matching .semgrepignore patterns: 45
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 76 rules on 115 files: 9 findings.
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading

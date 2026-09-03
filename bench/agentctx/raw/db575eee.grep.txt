@@ -1,0 +1,86 @@
+.\tests\test_structures.py:14:        self.case_insensitive_dict['Accept'] = 'application/json'
+.\tests\test_structures.py:23:        assert self.case_insensitive_dict[key] == 'application/json'
+.\tests\test_structures.py:31:        assert list(self.case_insensitive_dict.lower_items()) == [('accept', 'application/json')]
+.\tests\test_structures.py:34:        assert repr(self.case_insensitive_dict) == "{'Accept': 'application/json'}"
+.\tests\test_structures.py:43:            ({'AccePT': 'application/json'}, True),
+.\tests\test_requests.py:6:import json
+.\tests\test_requests.py:187:        assert r.json()['data'] == 'test'
+.\tests\test_requests.py:195:        assert r.json()['data'] == byte_str.decode('utf-8')
+.\tests\test_requests.py:336:        assert 'Cookie' in r.json()['headers']
+.\tests\test_requests.py:366:        assert r.json()['cookies']['foo'] == 'baz'
+.\tests\test_requests.py:383:        assert r.json()['cookies']['foo'] == 'bar'
+.\tests\test_requests.py:393:        assert r.json()['cookies']['foo'] == 'bar'
+.\tests\test_requests.py:714:        post4 = requests.post(url, data='[{"some": "json"}]')
+.\tests\test_requests.py:762:        assert post1.json()['data'] == 'test'
+.\tests\test_requests.py:768:        assert post2.json()['data'] == 'st'
+.\tests\test_requests.py:782:        post4 = requests.post(url, data='[{"some": "json"}]')
+.\tests\test_requests.py:810:        found_json = requests.post(url, data=data).json().get('form')
+.\tests\test_requests.py:921:            data={'stuff': json.dumps({'a': 123})},
+.\tests\test_requests.py:977:            data={'stuff': json.dumps({'a': 123})},
+.\tests\test_requests.py:1043:        assert resp.json()['headers'][
+.\tests\test_requests.py:1068:            'content-type': 'application/json; charset=utf-8',
+.\tests\test_requests.py:1399:        s.headers.update({'accept': 'application/json'})
+.\tests\test_requests.py:1402:        assert headers['accept'] == 'application/json'
+.\tests\test_requests.py:1403:        assert headers['Accept'] == 'application/json'
+.\tests\test_requests.py:1404:        assert headers['ACCEPT'] == 'application/json'
+.\tests\test_requests.py:1500:        assert r.json()['args'] == {'foo': 'bar', 'FOO': 'bar'}
+.\tests\test_requests.py:1822:            json={'life': 42}
+.\tests\test_requests.py:1825:        assert 'application/json' in r.request.headers['Content-Type']
+.\tests\test_requests.py:1826:        assert {'life': 42} == r.json()['json']
+.\tests\test_requests.py:1831:                             json={'music': 'flute'})
+.\tests\test_requests.py:1897:            r.json()
+.\tests\test_requests.py:2003:        cid['Accept'] = 'application/json'
+.\tests\test_requests.py:2004:        assert cid['aCCEPT'] == 'application/json'
+.\tests\test_requests.py:2090:            'Accept': 'application/json',
+.\tests\test_requests.py:2099:            'Accept': 'application/json',
+.\tests\test_requests.py:2109:            'Accept': 'application/json',
+.\tests\test_requests.py:2112:        cid.update({'ACCEPT': 'application/json'})
+.\tests\test_requests.py:2121:            'Accept': 'application/json',
+.\tests\test_requests.py:2303:        json=body
+.\tests\test_requests.py:2573:          r = requests.post(httpbin('post'), json=data)
+.\tests\test_utils.py:481:            'application/json ; charset=utf-8',
+.\tests\test_utils.py:482:            ('application/json', {'charset': 'utf-8'})
+.\tests\test_utils.py:485:            'application/json ; Charset=utf-8',
+.\tests\test_utils.py:486:            ('application/json', {'charset': 'utf-8'})
+.\tests\test_utils.py:509:            'application/json ; ; ',
+.\tests\test_utils.py:510:            ('application/json', {})
+.\tests\test_utils.py:524:            CaseInsensitiveDict({'content-type': 'application/json; charset=utf-8'}),
+.\requests\compat.py:32:    import simplejson as json
+.\requests\compat.py:34:    import json
+.\requests\help.py:4:import json
+.\requests\help.py:131:    print(json.dumps(info(), sort_keys=True, indent=2))
+.\requests\api.py:25:    :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.
+.\requests\api.py:105:def post(url, data=None, json=None, **kwargs):
+.\requests\api.py:111:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\api.py:117:    return request('post', url, data=data, json=json, **kwargs)
+.\requests\api.py:126:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\api.py:141:    :param json: (optional) json data to send in the body of the :class:`Request`.
+.\requests\models.py:42:from .compat import json as complexjson
+.\requests\models.py:210:    :param json: json for the body to attach to the request (if files or data is not specified).
+.\requests\models.py:228:            params=None, auth=None, cookies=None, hooks=None, json=None):
+.\requests\models.py:246:        self.json = json
+.\requests\models.py:263:            json=self.json,
+.\requests\models.py:312:            params=None, auth=None, cookies=None, hooks=None, json=None):
+.\requests\models.py:319:        self.prepare_body(data, files, json)
+.\requests\models.py:455:    def prepare_body(self, data, files, json=None):
+.\requests\models.py:465:        if not data and json is not None:
+.\requests\models.py:466:            # urllib3 requires a bytes-like body. Python 2's json.dumps
+.\requests\models.py:468:            content_type = 'application/json'
+.\requests\models.py:471:              body = complexjson.dumps(json, allow_nan=False)
+.\requests\models.py:881:    def json(self, **kwargs):
+.\requests\models.py:882:        r"""Returns the json-encoded content of a response, if any.
+.\requests\models.py:884:        :param \*\*kwargs: Optional arguments that ``json.loads`` takes.
+.\requests\models.py:886:            contain valid json and simplejson is installed.
+.\requests\models.py:887:        :raises json.JSONDecodeError: If the response body does not contain
+.\requests\models.py:888:            valid json and simplejson is not installed on Python 3.
+.\requests\models.py:890:            json and simplejson is not installed on Python 2.        
+.\requests\structures.py:29:        cid['Accept'] = 'application/json'
+.\requests\structures.py:30:        cid['aCCEPT'] == 'application/json'  # True
+.\requests\utils.py:527:    if 'application/json' in content_type:
+.\requests\sessions.py:461:            json=request.json,
+.\requests\sessions.py:473:            hooks=None, stream=None, verify=None, cert=None, json=None):
+.\requests\sessions.py:483:        :param json: (optional) json to send in the body of the
+.\requests\sessions.py:522:            json=json,
+.\requests\sessions.py:579:    def post(self, url, data=None, json=None, **kwargs):
+.\requests\sessions.py:585:        :param json: (optional) json to send in the body of the :class:`Request`.
+.\requests\sessions.py:590:        return self.request('POST', url, data=data, json=json, **kwargs)

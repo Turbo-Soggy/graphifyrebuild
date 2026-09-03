@@ -1,0 +1,2 @@
+Blast radius of requests_auth_httpbasicauth_eq (depth 2, both): 1 nodes, 0 edges, ~136 tokens
+  [0] .__eq__() requests/auth.py:L50

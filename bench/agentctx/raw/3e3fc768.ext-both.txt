@@ -1,0 +1,6 @@
+Blast radius of requests_packages_init_vendoralias (depth 2, both): 5 nodes, 4 edges, ~623 tokens
+  [0] VendorAlias requests/packages/__init__.py:L28
+  [0] .find_module() requests/packages/__init__.py:L38
+  [0] .__init__() requests/packages/__init__.py:L30
+  [0] .load_module() requests/packages/__init__.py:L42
+  [1] object 

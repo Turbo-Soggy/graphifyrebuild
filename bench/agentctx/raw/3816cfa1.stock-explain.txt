@@ -1,0 +1,14 @@
+Node: SupportsItems
+  ID:        src_requests_types_supportsitems
+  Source:    src/requests/_types.py L31
+  Type:      code
+  Community: 
+  Degree:    7
+
+Connections (6):
+  <-- requests/utils.py [imports] [EXTRACTED] src/requests/utils.py:L45
+  <-- _types.py [contains] [EXTRACTED] src/requests/_types.py:L31
+  <-- to_key_val_list() [uses] [INFERRED] src/requests/utils.py:L401
+  <-- dict_to_sequence() [references] [EXTRACTED] src/requests/utils.py:L149
+  --> .items() [method] [EXTRACTED] src/requests/_types.py:L32
+  --> Protocol [inherits] [EXTRACTED] src/requests/_types.py:L31

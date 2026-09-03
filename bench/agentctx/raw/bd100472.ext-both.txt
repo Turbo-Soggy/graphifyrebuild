@@ -1,0 +1,10 @@
+Blast radius of requests_models_response_content (depth 2, both): 9 nodes, 8 edges, ~1108 tokens
+  [0] .content() requests/models.py:L821
+  [1] .iter_content() requests/models.py:L731
+  [1] RuntimeError 
+  [2] CookieConflictError requests/cookies.py:L165
+  [2] StreamConsumedError requests/exceptions.py:L100
+  [2] .__iter__() requests/models.py:L690
+  [2] .iter_lines() requests/models.py:L789
+  [2] iter_slices() requests/utils.py:L514
+  [2] stream_decode_response_unicode() requests/utils.py:L496

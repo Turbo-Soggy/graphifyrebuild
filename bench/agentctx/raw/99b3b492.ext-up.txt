@@ -1,0 +1,5 @@
+Blast radius of requests_sessions_sessionredirectmixin_rebuild_proxies (depth 2, up): 4 nodes, 5 edges, ~667 tokens
+  [0] .rebuild_proxies() requests/sessions.py:L273
+  [1] .send() requests/sessions.py:L626
+  [1] .resolve_redirects() requests/sessions.py:L144
+  [2] .request() requests/sessions.py:L470

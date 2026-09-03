@@ -1,0 +1,66 @@
+﻿== setup: make main slot-managed, then add probe & sync ==
+    [crg-branch-cache] CACHE HIT + UPDATE (base commit d318b68347 is an ancestor of HEAD; slot main, link mode)
+    [crg-branch-cache] done in 2.4s
+    crg update --quiet: (no output)
+
+== inject semgrep-style findings ==
+applied 2 taint edge(s)
+2 finding(s) DID NOT resolve to graph nodes:
+  - TAINTS: source unresolved source={'file': 'src/flask/does_not_exist.py', 'line': 1} sink={'file': 'src/flask/does_not_exist.py', 'line': 1}
+  - REACHES_SINK: source unresolved source={'file': 'src/flask/does_not_exist.py', 'line': 1} sink={'file': 'src/flask/does_not_exist.py', 'line': 1}
+  PASS: 2 taint edges applied (TAINTS + REACHES_SINK)
+  PASS: unresolvable finding reported, not dropped
+  PASS: rows land on EXACT node qualified_names (join against nodes table)
+  PASS: source resolved to enclosing function read_user_input
+  PASS: sink resolved to enclosing function run_query
+
+== idempotency: apply again ==
+  PASS: re-apply replaces rows (still exactly 2)
+
+== survival across `update` ==
+    crg update --quiet: (no output)
+  PASS: taint_edges survive an incremental update
+
+== reapply after a full graph REBUILD (new-slot path) ==
+    crg build --quiet: (no output)
+  PASS: taint_edges empty before reapply
+  PASS: reapply re-resolves both edges against the rebuilt graph
+
+== test_triage surfaces the taint-exposed subset ==
+  PASS: stub line is GONE
+  PASS: taint-exposed section present
+  PASS: summary counts injected edges and exposed nodes
+  PASS: exposed nodes include the sink function
+
+== branch scoping: findings live in the slot ==
+    [crg-branch-cache] CACHE INVALID, REBUILDING (base commit 5a29869419 is not an ancestor of HEAD (history rewritten?); slot taint-free, link mode)
+    [crg-branch-cache] done in 12.2s
+  PASS: fresh branch slot has no taint rows
+  PASS: vulnerable file IS present on the other branch (so zero rows is scoping, not absence)
+    [crg-branch-cache] CACHE HIT + UPDATE (base commit 6e69fab98a is an ancestor of HEAD; slot main, link mode)
+    [crg-branch-cache] re-applied 2 taint edge(s) (2 unresolved)
+    [crg-branch-cache] done in 3.5s
+  PASS: main's taint rows return after swap back
+
+== cleanup ==
+    crg update --quiet: (no output)
+
+== summary ==
+  PASS  2 taint edges applied (TAINTS + REACHES_SINK)
+  PASS  unresolvable finding reported, not dropped
+  PASS  rows land on EXACT node qualified_names (join against nodes table)
+  PASS  source resolved to enclosing function read_user_input
+  PASS  sink resolved to enclosing function run_query
+  PASS  re-apply replaces rows (still exactly 2)
+  PASS  taint_edges survive an incremental update
+  PASS  taint_edges empty before reapply
+  PASS  reapply re-resolves both edges against the rebuilt graph
+  PASS  stub line is GONE
+  PASS  taint-exposed section present
+  PASS  summary counts injected edges and exposed nodes
+  PASS  exposed nodes include the sink function
+  PASS  fresh branch slot has no taint rows
+  PASS  vulnerable file IS present on the other branch (so zero rows is scoping, not absence)
+  PASS  main's taint rows return after swap back
+
+16/16 checks passed

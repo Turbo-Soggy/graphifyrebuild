@@ -1,0 +1,69 @@
+.\test_requests.py:1585:    assert_copy(p, p.copy())
+.\test_requests.py:1596:    assert_copy(p, p.copy())
+.\test_requests.py:1608:    assert_copy(p, p.copy())
+.\test_requests.py:1618:    assert_copy(p, p.copy())
+.\requests\auth.py:182:            prep = r.request.copy()
+.\requests\cookies.py:344:        state = self.__dict__.copy()
+.\requests\cookies.py:355:    def copy(self):
+.\requests\cookies.py:356:        """Return a copy of this RequestsCookieJar."""
+.\requests\models.py:318:    def copy(self):
+.\requests\models.py:322:        p.headers = self.headers.copy() if self.headers is not None else None
+.\requests\models.py:323:        p._cookies = self._cookies.copy() if self._cookies is not None else None
+.\requests\sessions.py:100:            prepared_request = req.copy()
+.\requests\sessions.py:242:        new_proxies = proxies.copy() if proxies is not None else {}
+.\requests\packages\__init__.py:5:a copy of this software and associated documentation files (the
+.\requests\packages\__init__.py:7:without limitation the rights to use, copy, modify, merge, publish,
+.\requests\structures.py:19:    ``collections.MutableMapping`` as well as dict's ``copy``. Also
+.\requests\structures.py:82:    def copy(self):
+.\requests\packages\urllib3\connection.py:260:    # Make a copy for testing.
+.\requests\packages\chardet\big5freq.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\big5prober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\connectionpool.py:519:        # Merge the proxy headers. Only do this in HTTP. We have to copy the
+.\requests\packages\urllib3\connectionpool.py:521:        # reflected in anyone else's copy.
+.\requests\packages\urllib3\connectionpool.py:523:            headers = headers.copy()
+.\requests\packages\chardet\chardistribution.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\charsetgroupprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\charsetprober.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\codingstatemachine.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\poolmanager.py:86:            kwargs = self.connection_pool_kw.copy()
+.\requests\packages\chardet\compat.py:15:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\constants.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\packages\ordered_dict.py:213:        inst_dict = vars(self).copy()
+.\requests\packages\urllib3\packages\ordered_dict.py:220:    def copy(self):
+.\requests\packages\urllib3\packages\ordered_dict.py:221:        'od.copy() -> a shallow copy of od'
+.\requests\packages\chardet\cp949prober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\packages\six.py:5:#Permission is hereby granted, free of charge, to any person obtaining a copy of
+.\requests\packages\urllib3\packages\six.py:8:#use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+.\requests\packages\chardet\escsm.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\eucjpprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\_collections.py:285:    def copy(self):
+.\requests\packages\chardet\euckrfreq.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\euckrprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\euctwprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\escprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\euctwfreq.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\util\timeout.py:155:        """ Create a copy of the timeout object
+.\requests\packages\urllib3\util\timeout.py:160:        :return: a copy of the timeout object
+.\requests\packages\urllib3\util\timeout.py:163:        # We can't use copy.deepcopy because that will also create a new object
+.\requests\packages\chardet\gb2312prober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\hebrewprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\jisfreq.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\gb2312freq.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\jpcntx.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\urllib3\packages\ssl_match_hostname\__init__.py:9:        # Our vendored copy
+.\requests\packages\chardet\langbulgarianmodel.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\langcyrillicmodel.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\langgreekmodel.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\langhebrewmodel.py:24:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\langhungarianmodel.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\langthaimodel.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\latin1prober.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\mbcharsetprober.py:24:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\mbcsgroupprober.py:24:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\mbcssm.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\sbcharsetprober.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\sbcsgroupprober.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\sjisprober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\universaldetector.py:23:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\utf8prober.py:22:# You should have received a copy of the GNU Lesser General Public
+.\requests\packages\chardet\__init__.py:12:# You should have received a copy of the GNU Lesser General Public
