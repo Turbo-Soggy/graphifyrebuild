@@ -2,21 +2,46 @@
 
 **Supersedes** the draft at `~/Downloads/graphify-ext-correctness-roadmap.md`.
 Revised 2026-09-03 after verifying its checkable premises against the source and
-measuring two of its open questions. Four structural changes, marked **[REV]**.
+measuring its open questions. Changes marked **[REV]**; the largest are that
+Phase 1's premise was withdrawn on measurement, Phase 2 was scrapped on a scope
+change, and the goal was reframed from completeness to disclosure.
 
-**Scope:** graph/retrieval correctness — ranking, taint-reachability, and the two
-unbenchmarked pillars (test coverage, config/schema). Excludes productization
-(multi-tenant, multi-language, compliance) — separate track.
+**Scope:** graph/retrieval correctness — ranking and the two unbenchmarked
+pillars (test coverage, config/schema). Taint-reachability was **scrapped**
+(Phase 2). Excludes productization (multi-tenant, multi-language, compliance) —
+separate track.
 
-**Framing:** current verdict is "not sufficient alone for autonomous remediation."
-Each phase is a gate; the verdict doesn't move until all gates pass, because an
-agent operating on incomplete or wrongly-ranked context fails silently.
+**Framing — the target is disclosure, not completeness.** No code graph reaches
+zero-miss completeness: static analysis has permanent blind spots (dynamic
+dispatch, reflection, framework magic) and this one additionally inherits an
+upstream extraction ceiling. "The graph never misses" is not an achievable
+engineering target and must not be the thing standing between a user and a
+correct fix.
+
+The achievable target is: **the graph never lies about what it is missing.**
+Every gap disclosed, correctly, with a reason the agent can act on.
+
+This is load-bearing rather than consolatory, because of where the guarantee
+sits. With a verification layer after the agent (re-run the finding, delta-scan
+the diff, run the tests), a *disclosed* gap costs a retry, while an *undisclosed*
+gap produces a confident wrong fix built on context the agent believed was
+complete — the one failure mode verification cannot cheaply prevent, because the
+agent never attempted the right file. So gates below are stated as disclosure
+properties wherever possible, and recall targets are treated as "good enough that
+most fixes clear verification cheaply", never as completeness claims.
+
+**Naming note:** `graphify-ext verify-fix` was renamed to **`edge-diff`**
+(`edge_diff_tool` in MCP; `verify-fix` kept as a warning alias). It diffs a
+node's graph edges and runs no scanner and no tests. The name `verify-fix` is
+reserved for the customer-facing guarantee, which is a stronger claim and is
+currently unbuilt.
 
 ---
 
 ## Evidence discipline (applies to every phase)
 
-Three rules, adopted because each was violated at least once already:
+Eight rules, each adopted because it was violated at least once already — most
+of them in the same session that wrote them down:
 
 1. **Every comparison states its token budget in the same table row.** The
    "0.565 beats grep" claim was measured at a doubled 12k budget; at matched 6k
@@ -38,6 +63,43 @@ Three rules, adopted because each was violated at least once already:
    Prior art worth copying: `code-review-graph` declines to quote a number for
    its co-change eval mode at all while that mode is broken, rather than
    publishing a number it cannot stand behind.
+5. **"Arbitrary" and "harmful" are different claims, and so are "principled" and
+   "performs at least as well."** Replacing an arbitrary rule with a justified
+   one is a design improvement and says nothing about behaviour until measured.
+   The alphabetical tie-break was replaced on exactly this reasoning, called a
+   "safe independent win" by everyone, and turned out to be the ONLY source of a
+   -0.071 recall regression — while the elaborate scoring function it shipped
+   alongside contributed exactly zero. Any change justified on principle rather
+   than on a number is a change that has not been evaluated yet.
+6. **A plausible number that has not been re-derived is a liability, not a fact —
+   and in this codebase specifically, that is a recurring risk category.** Four
+   instances in one session, each surviving until re-derived from scratch:
+   (i) "0.565 beats grep" (missing budget caveat); (ii) a -0.071 regression
+   measured against a baseline that never existed (three stacked config
+   mismatches); (iii) three successive wrong mechanisms for that regression;
+   (iv) a 46% id-collision share that was really 100%, because a classifier
+   tested "is a dunder" before "is nested" and mis-sorted every closure dunder.
+   None was bad luck; each was a number produced by a script whose *categories
+   or conditions* were never checked against a second derivation. Rule: any
+   breakdown or comparison that will be quoted gets re-derived independently —
+   different script, different precedence, or a control — before it leaves the
+   session. A number quoted once is a number that will be quoted again.
+7. **Any scoped/fast check needs a periodic full-scope backstop.** "Scoped" and
+   "sound" are different axes; scoped checks are chosen for speed. This applies
+   in at least three places and should be assumed to apply wherever the trade-off
+   recurs: incremental graph rebuild vs full rebuild; diff-scoped SAST (a fix
+   that changes a shared helper's contract can make an *unchanged* caller newly
+   vulnerable, and the diff scan will not see it); and scoped test runs, whose
+   scope depends on a test-coverage pillar that has never been accuracy-checked.
+8. **A parameter described as "fitted" or "tunable" blocks shipping until it has
+   actually been fit.** Satisfying a couple of hand-picked inequalities is not a
+   fit. This rule exists because `decay = 0.5` shipped exactly that way: chosen
+   to make two illustrative comparisons come out right, documented as
+   "a parameter to be fitted, not a constant to assert", and then merged with a
+   green suite — where the tests confirmed *the code implements the formula*,
+   never *the formula is correct*. A passing suite around an unfitted parameter
+   reads as validation and is not. Fit against the benchmark, report the sweep,
+   or do not ship the parameter.
 
 ---
 
@@ -144,7 +206,80 @@ same one-key-two-meanings defect, in a second place). Not yet regression-tested.
 
 ---
 
-## Phase 1 — Ranking under truncation (blocking correctness bug)
+## Phase 1 — Ranking under truncation — **RESOLVED, and not as predicted**
+
+**[REV 3] Every mechanism proposed for this phase was wrong, including two of
+mine, and the cause was the one change everybody called safe.**
+
+### What was actually wrong: the tie-break
+
+Four-way isolation at depth 3 / budget 12,000 / `max_nodes=800`, one variable at
+a time:
+
+| rank function | tie-break | recall |
+|---|---|---|
+| legacy `_REL_RANK` | alphabetical (original) | **0.565** |
+| weighted score | alphabetical | **0.565** |
+| weighted score | degree descending | 0.530 |
+| legacy `_REL_RANK` | degree ascending + id | 0.494 |
+| weighted score | degree ascending + id (shipped) | 0.494 |
+
+**The rank function contributes exactly zero. The tie-break is the whole
+-0.071.** The relation weights are exonerated (both rank functions score
+identically under both tie-breaks), and so is the unknown-relation weighting.
+
+### Why alphabetical was winning — and it was not luck
+
+graphify labels methods `.name()` with a **leading dot**, and `.` sorts before
+every letter. Sorting by label was therefore an accidental **members-first**
+rule. On a corpus whose ground truth is reached predominantly through
+containment chains, members-first is exactly the right bias, which is why an
+"arbitrary" rule beat two principled ones.
+
+**Shipped:** the tie-break is now `members-first, then node id` — explicit,
+disclosed, deterministic, and matching the best measured result:
+
+| config | legacy | shipped | delta |
+|---|---|---|---|
+| depth 2, budget 6,000 | 0.494 | 0.494 | +0.000 |
+| depth 3, budget 6,000 | 0.494 | 0.494 | +0.000 |
+| depth 3, budget 12,000 | 0.565 | 0.565 | +0.000 |
+
+`build_context(order="legacy")` is retained so any future ordering change can be
+A/B'd in-code against the real prior behaviour, rather than against a
+reconstruction. Reconstructing a baseline is how three config mismatches
+(uniform weights, depth 4 vs 3, `max_nodes` 1200 vs 800) got stacked into one
+bogus -0.071 that had to be retracted twice.
+
+### The three mechanisms that were wrong, recorded so they are not re-proposed
+
+1. **"Exponential depth penalty punishes containment chains."** Falsified: at
+   `decay = 0.95` the depth penalty is nearly gone and the loss is unchanged.
+2. **"The weighted score as primary key is the regression."** Falsified:
+   reverting to depth-primary did not recover the loss.
+3. **"The relation weights / unknown-relation weighting are the cause."**
+   Falsified by the isolation table above.
+
+Each survived until the next measurement killed it. The test suite was green
+throughout — it only ever proved the code implemented the formula.
+
+### Status
+
+- **Tie-break — RESOLVED.** Members-first, measured equal to the best known.
+- **Truncation legibility — SHIPPED.** `omitted` entries carry `score` and a
+  `severity` of `truncated_high_rank` / `truncated_low_rank`, where high means
+  the dropped symbol scored at least as well as the weakest symbol kept.
+- **Relevance scoring — NEUTRAL, retained.** It orders symbols within a depth
+  and measurably changes nothing. Kept because it is more legible than an opaque
+  rank table, **not** because it was shown to help. It has not earned a claim.
+- **Ranking as "the blocking correctness bug" — WITHDRAWN.** Reordering moved
+  recall by 0.000 everywhere it was measured. On this corpus the binding
+  constraint is reach and extraction coverage, not ordering.
+
+---
+
+## Phase 1 — original framing (kept for reference)
+
 
 Highest-severity open item. **[REV] Diagnosis corrected.** The original draft
 suspected insertion-order truncation. Verified: the sort key is
@@ -207,25 +342,27 @@ or if per-task diffs show regressions concentrated in any task shape.
 
 ---
 
-## Phase 2 — Taint-reachability as a first-class edge
+## Phase 2 — Taint-reachability — **SCRAPPED 2026-09-03**
 
-**Blocked dependency, not schedulable work.** "SISA's taint-analysis pipeline"
-is not in this repository and has no interface spec here. Until there is one —
-what it emits, at what granularity, and its staleness model — this phase cannot
-be estimated. Today taint edges exist only after a manual Semgrep injection and
-are absent on a cold graph.
+Dropped from scope at the user's direction. The project is no longer
+appsec-specific: the target is a code graph an agent can rely on for **general**
+fixes, and "is this reachable by an attacker" is not part of that.
 
-**Requirements** (unchanged from the draft, plus)
-- Define the interface before the work: emitted format, per-file or per-repo,
-  and what invalidates a taint edge.
-- Taint edges computable and cached in the normal incremental-build cycle.
-- Define what taint-reachability *does* in output: rank term, hard filter, or a
-  `--taint-only` mode.
-- Defined degraded mode for cold start — not silent absence.
+Shipped code is **retained, not deleted** — `from_semgrep`, the `taints` /
+`reaches_sink` relations, and their tests all still work and cost nothing idle.
+Scrapping a roadmap phase is free; deleting working, tested code is not, and it
+is reversible in the wrong direction. Nothing further will be built on it.
 
-**Acceptance** — taint edges on a cold build without a manual step; a quantified
-precision/recall improvement over blast-radius alone on the taint-relevant subset
-of the Phase 0 corpus; documented cold-start behaviour.
+---
+
+## Substrate note (applies to Phases 3, 4 and 5)
+
+**Build A on graphify is the substrate.** `code-review-graph` was frozen
+2026-09-03 (`crg/FROZEN.md`) — unpackaged, never deployed, `pyproject.toml` has
+no entry for it. Any framing of these phases as "extend what CRG already gives
+you" is wrong: CRG's blast-radius, test-coverage and change-risk tooling are
+**not inherited**. Adopting any of them means porting onto graphify's
+`graph.json`, which is real work, not a banked subsystem.
 
 ---
 
@@ -286,48 +423,99 @@ against the blast-radius-only baseline. **Verdict re-assessed only here** —
 
 ---
 
-## Tracked item — upstream extraction ceiling **[REV: new]**
+## Tracked item — extraction ceiling — **RE-MEASURED, and it decomposes into two things**
 
-No phase above moves this number, and perfect ranking over a graph missing
-symbols still misses them.
+**[REV 4] The earlier breakdown in this document was miscategorised, and the
+mechanism of the mistake is the lesson** (see discipline rule 6): the classifier
+tested "is a dunder" *before* "is nested inside a function", so every `__init__`
+or `__iter__` defined inside a closure was counted as a *dunder* miss. That
+inflated the dunder bucket from 4 to 144, and — by leaving mis-sorted symbols in
+the denominator — diluted the id-collision share from 100% to a reported 46%.
+The wrong number was quoted upstream before it was re-derived; a correction has
+since been posted. Recomputed with function-nesting taking precedence, and with a
+first-party/vendored split:
 
-**Measured** across 14 checkouts of `psf/requests`: **12,379 definitions found by
-tree-sitter, 711 with no graph node at their definition line — 5.7%.** (The 12%
-quoted earlier was the rate within the 25-symbol ground-truth set; 5.7% is the
-repo-wide rate. The smaller number is the more honest one.)
+| cause | all files | first-party only |
+|---|---|---|
+| **nested inside a function** | 610 (86%) | 589 (93%) |
+| plain / leading-underscore | 82 (12%) | 33 (5%) |
+| decorated | 15 (2%) | 10 (2%) |
+| dunder (not nested) | 4 (1%) | 4 (1%) |
+| **totals** | 711 of 12,379 (5.7%) | 636 of 8,231 (7.7%) |
 
-**The loss is systematic, not random:**
+Two corrections to what was previously written here and reported upstream:
 
-| cause | share of misses |
+1. **Excluding vendored code makes the rate WORSE, not better** — 7.7% vs 5.7%.
+   Vendored code was diluting it, not inflating it. The opposite was assumed.
+2. **Id collisions account for 100% of non-nested, non-dunder misses**
+   (97/97 all files, 43/43 first-party), not the 46% reported to upstream. That
+   earlier figure was depressed by the same miscategorisation.
+
+### Cause 1 — nested functions: a design choice, not a defect
+
+**0 of 610** functions nested inside another function have a graph node. That is
+total, so it is deliberate: graphify models module-level and class-level
+definitions, not closures or inner helpers. **Not reportable upstream.** It is,
+however, the single largest *undisclosed* absence in the graph — and under this
+document's framing, an undisclosed absence is the worst kind.
+
+### Cause 2 — id collisions: the upstream defect
+
+Filed as [Graphify-Labs/graphify#3302](https://github.com/Graphify-Labs/graphify/issues/3302).
+The public issue and its follow-up comment quote **46%**, which this re-measurement
+supersedes with **100% of non-nested non-dunder misses**. The comment should be
+corrected — it currently understates the defect's share.
+
+### What shipped in response: disclose the absence
+
+The graph cannot report what it has no record of, so `build_context` now recovers
+definitions from source (`symbols.definitions_in`) and reports any that fall
+**inside code the agent was actually shown** but have no graph node, as
+`unmodelled` — with the symbol, its extent, its signature and the reason.
+
+### Disclosure coverage — a separate metric, deliberately not in the recall table
+
+> **Read this before reading any recall number for this feature.** The feature
+> does not, cannot, and is not meant to move recall. A symbol with no graph node
+> cannot be *retrieved*; it can only be *declared missing*. Flat recall here is
+> the feature working as designed, not the feature failing. It gets its own
+> metric so nobody's eye lands on "recall: unchanged" and concludes "no effect".
+
+| disclosure-coverage measure | result |
 |---|---|
-| nested functions (function-in-function) | 50% |
-| "plain" top-level/method definitions | 27% |
-| dunder methods | 20% |
-| decorated | 2% |
-| leading underscore | 1% |
+| ground-truth symbols with **no graph node** (the un-retrievable set) | 3 |
+| of those, now **declared missing** by the pack | **2 of 3 (67%)** |
+| gaps declared across the 14 packs in total | 15 |
+| recall — reproduced for completeness, **unchanged by design** | 0.494 (containment, d2, b6k) |
 
-Of the non-nested, non-dunder remainder, **46% (97 of 211) collide on a slugged
-node id with a symbol that *is* present** — and the collision classes are wider
-than the leading-underscore case originally reported upstream:
+Anti-vacuity is tested: a graph that *does* know a symbol must not have it
+reported as a gap (`test_symbols_the_graph_does_know_are_not_reported_as_gaps`),
+and gaps outside the code the agent was shown are not reported. Without those
+two tests, "disclose everything unmodelled" could be satisfied by listing every
+definition in every file — technically true and practically useless.
 
-- `session()` @ L705 vs the `Session` class @ L270 in `requests/sessions.py` — **case collapse**
-- `__get_module` vs `_get_module` — underscore collapse
-- the same name defined twice under conditional branches
+### The disclosure system's own disclosed gap — decided, not deferred
 
-Filed upstream as [Graphify-Labs/graphify#3302](https://github.com/Graphify-Labs/graphify/issues/3302),
-with a follow-up comment carrying the broader measurement.
+Disclosure covers **only files the pack actually emitted**. The third case
+(`to_key_val_list`, `src/requests/utils.py:376`) sits in a file the agent was
+never shown, so nothing in the pack can mention it.
 
-**Investigation step before any local repair**
-1. Establish whether the loss correlates with security-relevant code, or is
-   merely dense in vendored compat shims — `six.py` alone contributes heavily and
-   inflates the collision share. Re-measure with vendored paths excluded.
-2. Decide nested-function policy: is 50% of the loss an upstream defect or a
-   deliberate design choice? That determines whether it is reportable at all.
-3. Only then consider a local post-extraction repair pass — and **a repair pass
-   needs its own correctness gate**, since naive de-collision can mint new false
-   edges (re-pointing an existing edge at a newly created node) while fixing a
-   missing one. Any repair ships with a test that asserts edge endpoints are
-   unchanged for symbols that were never colliding.
+**Decision: this is documented as a boundary, not closed.** Reasons:
+
+- Closing it means scanning files the pack did *not* select — but the pack has
+  no signal about *which* unshown files matter, so the honest version is
+  "scan the whole repo per query", which is a different product with a
+  different cost model.
+- The precise, defensible claim is therefore **"every gap in what we show you is
+  disclosed"**, and never **"every gap is disclosed"**. Any customer-facing text
+  must use the first form. The `to_key_val_list` case is the concrete proof of
+  the difference and should travel with the claim.
+- Recursively, then: even the gap-disclosure has a disclosed gap, and that is the
+  correct place to land. A disclosure system that claimed completeness for
+  *itself* would be committing exactly the error it exists to prevent.
+
+Revisit only if Phase 0's larger corpus shows unshown-file gaps to be a large
+share of misses; on 14 tasks it is 1 of 3.
 
 ---
 

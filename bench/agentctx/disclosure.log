@@ -1,0 +1,8 @@
+ground-truth symbols with NO graph node: 3
+   3816cfa1  to_key_val_list                        src/requests/utils.py:376   -> still invisible
+   aa1461b6  HTTPAdapter.get_connection             src/requests/adapters.py:406   -> DISCLOSED
+   bd100472  Response.iter_content.generate         requests/models.py:748   -> DISCLOSED
+
+disclosed by the pack: 2/3
+total gaps disclosed across the 14 packs: 15
+exit=0

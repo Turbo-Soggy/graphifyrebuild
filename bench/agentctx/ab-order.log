@@ -1,0 +1,4 @@
+config               legacy  current   delta
+d2 b6000              0.494    0.494  +0.000
+d3 b12000             0.565    0.494  -0.071
+exit=0

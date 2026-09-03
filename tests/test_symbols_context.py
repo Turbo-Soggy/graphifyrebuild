@@ -408,6 +408,139 @@ def test_omitted_entries_carry_rank_severity(tree):
 
 def test_ranking_basis_is_disclosed_in_the_result(tree):
     pack = context.build_context(_graph(), "seed", tree, depth=1, budget=5000)
-    assert pack["ranking"] == "relation_weight * decay**depth"
+    assert pack["ranking"].startswith("depth, then relation_weight")
     assert pack["decay"] == context.DEFAULT_DECAY
     assert all("score" in i for i in pack["included"])
+
+
+# --------------------------------------------------------------------------
+# disclosure of what the GRAPH does not contain
+# --------------------------------------------------------------------------
+
+NESTED_SRC = '''\
+def outer(a):
+    def inner(b):
+        return b + 1
+    return inner(a)
+'''
+
+
+def test_nested_function_absent_from_graph_is_disclosed(tmp_path):
+    """The graph emits no node for a function nested in a function.
+
+    Measured: 0 of 610 such symbols had a node across 14 checkouts of
+    psf/requests. Nothing downstream can mention what the graph has no record
+    of, so the pack recovers it from source and says so — otherwise an agent
+    editing `outer` is never told `inner` exists.
+    """
+    (tmp_path / "m.py").write_text(NESTED_SRC, encoding="utf-8")
+    graph = {"nodes": [{"id": "outer", "label": "outer()", "source_file": "m.py",
+                        "source_location": "L1"}], "links": []}
+    pack = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
+    names = [u["name"] for u in pack["unmodelled"]]
+    assert "outer.inner" in names
+    gap = next(u for u in pack["unmodelled"] if u["name"] == "outer.inner")
+    assert gap["def_line"] == 2
+    assert "no node" in gap["reason"]
+
+
+def test_symbols_the_graph_does_know_are_not_reported_as_gaps(tmp_path):
+    """Anti-vacuity: the gap list must not simply mirror every definition."""
+    (tmp_path / "m.py").write_text(NESTED_SRC, encoding="utf-8")
+    graph = {"nodes": [
+        {"id": "outer", "label": "outer()", "source_file": "m.py",
+         "source_location": "L1"},
+        {"id": "inner", "label": ".inner()", "source_file": "m.py",
+         "source_location": "L2"},
+    ], "links": []}
+    pack = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
+    assert pack["unmodelled"] == []
+
+
+def test_gaps_outside_the_emitted_code_are_not_reported(tmp_path):
+    """Only gaps inside what the agent was actually shown are its problem."""
+    (tmp_path / "m.py").write_text(
+        NESTED_SRC + "\n\ndef unrelated():\n    def hidden():\n        pass\n",
+        encoding="utf-8")
+    graph = {"nodes": [{"id": "outer", "label": "outer()", "source_file": "m.py",
+                        "source_location": "L1"}], "links": []}
+    pack = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
+    assert [u["name"] for u in pack["unmodelled"]] == ["outer.inner"]
+
+
+# --------------------------------------------------------------------------
+# JavaScript: functions bound by assignment, not declared
+# --------------------------------------------------------------------------
+
+JS_SRC = '''\
+var res = module.exports = {};
+
+res.status = function status(code) {
+  this.statusCode = code;
+  return this;
+};
+
+res.send = function (body) {
+  return this.end(body);
+};
+
+const helper = (x) => x + 1;
+
+function declared(y) {
+  return y;
+}
+
+class Thing {
+  method() { return 1; }
+}
+'''
+
+
+def test_js_functions_bound_by_assignment_are_found(tmp_path):
+    """The dominant JS idiom is assignment, not declaration.
+
+    Measured on expressjs/express `lib/response.js`: the declaration node types
+    alone found 9 symbols against 20 assigned functions that make up the
+    module's entire public API. graphify does not model these either, so without
+    this they are invisible to the graph *and* to the gap disclosure whose whole
+    job is reporting such absences.
+    """
+    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
+    syms = symbols.definitions_from_source(
+        (tmp_path / "r.js").read_bytes(), "r.js")
+    names = {s.name for s in syms}
+    assert {"res.status", "res.send", "helper", "declared", "Thing"} <= names
+
+
+def test_js_assigned_function_keeps_its_receiver(tmp_path):
+    """`res.send` must not collapse to `send` — the leaf alone is not an identifier."""
+    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
+    syms = symbols.definitions_from_source(
+        (tmp_path / "r.js").read_bytes(), "r.js")
+    assert "res.send" in {s.name for s in syms}
+    assert "send" not in {s.name for s in syms}
+
+
+def test_js_binding_def_line_is_the_binding_not_the_body(tmp_path):
+    """A graph keyed on source_location records the line the binding starts on."""
+    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
+    syms = {s.name: s for s in symbols.definitions_from_source(
+        (tmp_path / "r.js").read_bytes(), "r.js")}
+    assert syms["res.status"].def_line == 3      # `res.status = function ...`
+    assert syms["res.status"].end == 6           # through the closing brace
+
+
+def test_js_extent_slices_the_whole_assigned_function(tmp_path):
+    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
+    sym = symbols.resolve(tmp_path, "r.js", 8)   # res.send binding line
+    assert sym is not None and sym.name == "send"
+    assert "return this.end(body)" in sym.source
+
+
+def test_python_is_unaffected_by_the_js_binding_rule(tmp_path):
+    """A Python assignment of a lambda must NOT become a definition."""
+    (tmp_path / "m.py").write_text(
+        "f = lambda x: x + 1\n\n\ndef real(y):\n    return y\n", encoding="utf-8")
+    syms = symbols.definitions_from_source(
+        (tmp_path / "m.py").read_bytes(), "m.py")
+    assert [s.name for s in syms] == ["real"]

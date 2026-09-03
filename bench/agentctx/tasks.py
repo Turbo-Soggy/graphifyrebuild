@@ -36,17 +36,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-import tree_sitter_python as tsp
-from tree_sitter import Language, Parser
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from graphify_ext import symbols  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE / "repo"
 
-# requests moved to a src/ layout partway through its history; accept both so the
-# task set is not silently restricted to one era of the project.
-PKG_PREFIXES = ("src/requests/", "requests/")
-
-_PY_LANG = Language(tsp.language())
+# Directory names that mean "this is test code, not the thing under test".
+TEST_SEGMENTS = frozenset({"tests", "test", "spec", "specs", "__tests__", "e2e"})
 
 
 def git(repo: Path, *args: str) -> str:
@@ -61,58 +58,42 @@ def git_bytes(repo: Path, *args: str) -> bytes:
     return out.stdout
 
 
-def is_pkg_py(path: str) -> bool:
-    """A production source file of the package (not tests, not setup/docs)."""
-    if not path.endswith(".py"):
+def is_pkg_source(path: str, prefixes: tuple[str, ...]) -> bool:
+    """A production source file of the package (not tests, not setup/docs).
+
+    Language is decided by ``symbols.language_for`` rather than a local
+    extension list, so the corpus can only ever contain files the product can
+    actually parse — a task built from a file the tooling cannot read would be
+    unscoreable by construction.
+    """
+    if symbols.language_for(path) is None:
         return False
-    if "/tests/" in path or path.startswith("tests/"):
+    parts = path.split("/")
+    if any(seg in TEST_SEGMENTS for seg in parts[:-1]):
         return False
-    return any(path.startswith(p) for p in PKG_PREFIXES)
+    return any(path.startswith(p) for p in prefixes)
 
 
 # --------------------------------------------------------------------------
 # symbol extents
 # --------------------------------------------------------------------------
 
-def symbol_table(source: bytes) -> list[dict]:
-    """Every function/class in ``source`` with its true extent.
+def symbol_table(source: bytes, path: str = "x.py") -> list[dict]:
+    """Every definition in ``source`` with its true extent.
 
-    Uses tree-sitter's ``start_point``/``end_point`` — the same parser graphify
-    itself depends on. Names are qualified by their enclosing definitions, so a
-    method comes back as ``Class.method`` rather than a bare ``method``.
+    Delegates to ``graphify_ext.symbols`` — the SAME walker the product uses to
+    slice code — so the benchmark's notion of "a symbol" cannot drift away from
+    the thing being measured. ``path`` selects the grammar.
     """
-    parser = Parser(_PY_LANG)
-    tree = parser.parse(source)
-    out: list[dict] = []
-
-    def name_of(node) -> str | None:
-        ident = node.child_by_field_name("name")
-        return ident.text.decode("utf-8", "replace") if ident is not None else None
-
-    def walk(node, prefix: tuple[str, ...]) -> None:
-        for child in node.children:
-            if child.type in ("function_definition", "class_definition"):
-                nm = name_of(child)
-                if nm is None:
-                    walk(child, prefix)
-                    continue
-                qual = (*prefix, nm)
-                out.append({
-                    "name": ".".join(qual),
-                    "kind": "class" if child.type == "class_definition" else "function",
-                    # tree-sitter rows are 0-based; git/editor lines are 1-based.
-                    "start": child.start_point[0] + 1,
-                    "end": child.end_point[0] + 1,
-                })
-                walk(child, qual)
-            else:
-                walk(child, prefix)
-
-    walk(tree.root_node, ())
-    return out
+    syms = symbols.definitions_from_source(source, path)
+    if syms is None:
+        return []
+    return [{"name": s.name, "kind": s.kind,
+             "start": s.def_line,      # match on the DEFINITION line, as graphify records
+             "end": s.end} for s in syms]
 
 
-def enclosing(symbols: list[dict], line: int) -> str | None:
+def enclosing(syms: list[dict], line: int) -> str | None:
     """Innermost symbol containing ``line``; None if the line is module-level.
 
     Innermost wins so a one-line change inside a method is attributed to the
@@ -120,7 +101,7 @@ def enclosing(symbols: list[dict], line: int) -> str | None:
     truth coarser than the fix actually was.
     """
     best: dict | None = None
-    for s in symbols:
+    for s in syms:
         if s["start"] <= line <= s["end"]:
             if best is None or (s["end"] - s["start"]) < (best["end"] - best["start"]):
                 best = s
@@ -134,7 +115,8 @@ def enclosing(symbols: list[dict], line: int) -> str | None:
 HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@")
 
 
-def changed_old_lines(repo: Path, commit: str) -> dict[str, list[int]]:
+def changed_old_lines(repo: Path, commit: str,
+                      prefixes: tuple[str, ...]) -> dict[str, list[int]]:
     """Map file -> old-side line numbers the commit touched.
 
     ``-U0`` keeps hunks tight so the ground truth is the symbols actually edited
@@ -155,7 +137,7 @@ def changed_old_lines(repo: Path, commit: str) -> dict[str, list[int]]:
         if line.startswith("--- "):
             current = None
             continue
-        if line.startswith("@@") and current and is_pkg_py(current):
+        if line.startswith("@@") and current and is_pkg_source(current, prefixes):
             m = HUNK.match(line)
             if not m:
                 continue
@@ -168,7 +150,8 @@ def changed_old_lines(repo: Path, commit: str) -> dict[str, list[int]]:
     return per_file
 
 
-def ground_truth(repo: Path, commit: str) -> tuple[dict[str, list[dict]], list[str]]:
+def ground_truth(repo: Path, commit: str,
+                 prefixes: tuple[str, ...]) -> tuple[dict[str, list[dict]], list[str]]:
     """(file -> changed symbols with extents, flat qualified list), resolved at the parent.
 
     Extents are carried through because graph nodes are matched to ground truth
@@ -177,7 +160,7 @@ def ground_truth(repo: Path, commit: str) -> tuple[dict[str, list[dict]], list[s
     ``source_location`` is exactly tree-sitter's start line.
     """
     parent = git(repo, "rev-parse", f"{commit}^").strip()
-    per_file = changed_old_lines(repo, commit)
+    per_file = changed_old_lines(repo, commit, prefixes)
     by_file: dict[str, list[dict]] = {}
     flat: list[str] = []
     for path, lines in per_file.items():
@@ -185,7 +168,7 @@ def ground_truth(repo: Path, commit: str) -> tuple[dict[str, list[dict]], list[s
             src = git_bytes(repo, "show", f"{parent}:{path}")
         except subprocess.CalledProcessError:
             continue  # file did not exist at P (add), nothing to resolve against
-        syms = symbol_table(src)
+        syms = symbol_table(src, path)
         by_name = {s["name"]: s for s in syms}
         names: list[str] = []
         for ln in lines:
@@ -212,38 +195,86 @@ STOPWORDS = {
 }
 
 
-def pick_entry(message: str, gt_flat: list[str], repo: Path, parent: str) -> str | None:
+def pick_entry(message: str, gt_flat: list[str], repo: Path,
+               parent: str) -> "str | None":
     """Symbol named in the commit message, preferring one that is in ``G``.
 
     Preferring a ``G`` member is not score-fitting: a real report names the
     function that misbehaved, and that function is by definition one the fix
     touched. What must never happen is picking ``E`` to make a tool look good —
     so the choice is a deterministic function of message word order alone.
+
+    **Ambiguous leaf names are refused, not resolved.** If the message names
+    ``__eq__`` and the fix touched both ``HTTPBasicAuth.__eq__`` and
+    ``HTTPDigestAuth.__eq__``, the message does not determine an entry point.
+    This previously collapsed into a dict keyed by leaf name, so the winner was
+    decided by set-iteration order — an arbitrary choice wearing the appearance
+    of a rule, and one that silently changed the corpus when unrelated code was
+    refactored. Returning None drops the task instead.
     """
-    gt_names = {g.split("::", 1)[1] for g in gt_flat}
-    gt_leaf = {n.split(".")[-1]: n for n in gt_names}
+    gt_names = sorted({g.split("::", 1)[1] for g in gt_flat})
+    gt_leaf: dict[str, list[str]] = {}
+    for n in gt_names:
+        gt_leaf.setdefault(n.split(".")[-1], []).append(n)
 
     for tok in IDENT.findall(message):
         if tok.lower() in STOPWORDS or len(tok) < 4:
             continue
         if tok in gt_names:
             return tok
-        leaf = tok.split(".")[-1]
-        if leaf in gt_leaf:
-            return gt_leaf[leaf]
+        matches = gt_leaf.get(tok.split(".")[-1], [])
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            return None      # message is ambiguous; refuse rather than guess
     return None
 
 
 # --------------------------------------------------------------------------
 
-def build(repo: Path, limit: int, scan: int) -> list[dict]:
+def followup_commits(repo: Path, commit: str, by_file: dict[str, list[dict]],
+                     window: int = 400) -> list[str]:
+    """Later commits that touch a symbol this fix touched — a completeness signal.
+
+    Ground truth is "what the fix commit changed". If a LATER commit edits the
+    same symbol, this fix may have been incomplete, and recall is then being
+    scored against a target that was itself wrong. That does not make the task
+    invalid — it makes it a task whose ceiling is unknown — so it is annotated
+    rather than silently dropped, and the decision to exclude is left visible.
+    """
+    hits: list[str] = []
+    for path, syms in by_file.items():
+        try:
+            log = git(repo, "log", f"-n{window}", "--format=%H",
+                      f"{commit}..HEAD", "--", path)
+        except subprocess.CalledProcessError:
+            continue
+        for later in log.split():
+            try:
+                lines = changed_old_lines(repo, later, (path,)).get(path, [])
+            except subprocess.CalledProcessError:
+                continue
+            if not lines:
+                continue
+            for s in syms:
+                if any(s["start"] <= ln <= s["end"] for ln in lines):
+                    if later not in hits:
+                        hits.append(later)
+                    break
+    return hits
+
+
+def build(repo: Path, prefixes: tuple[str, ...], repo_name: str,
+          limit: int, scan: int, screen: int = 0) -> list[dict]:
     log = git(
         repo, "log", "--no-merges", f"-n{scan}", "--format=%H%x00%s%x00%b%x01",
-        "--", *PKG_PREFIXES,
+        "--", *prefixes,
     )
     tasks: list[dict] = []
     skipped = {"no_gt": 0, "single_symbol": 0, "no_entry": 0,
                "revert": 0, "duplicate_entry": 0}
+    # note: "no_entry" now also counts messages whose named symbol is ambiguous
+    # across two or more ground-truth symbols (see pick_entry).
     seen_entries: set[str] = set()
 
     for record in log.split("\x01"):
@@ -264,7 +295,7 @@ def build(repo: Path, limit: int, scan: int) -> list[dict]:
             continue
 
         try:
-            by_file, flat = ground_truth(repo, sha)
+            by_file, flat = ground_truth(repo, sha, prefixes)
         except subprocess.CalledProcessError:
             continue
         if not flat:
@@ -295,6 +326,7 @@ def build(repo: Path, limit: int, scan: int) -> list[dict]:
         seen_entries.add(entry)
 
         tasks.append({
+            "repo": repo_name,
             "commit": sha,
             "parent": parent,
             "subject": subject,
@@ -303,6 +335,8 @@ def build(repo: Path, limit: int, scan: int) -> list[dict]:
             "discover": discover,
             "by_file": by_file,
         })
+        if screen and len(tasks) <= screen:
+            tasks[-1]["followups"] = followup_commits(repo, sha, by_file)
         if len(tasks) >= limit:
             break
 
@@ -313,16 +347,30 @@ def build(repo: Path, limit: int, scan: int) -> list[dict]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=str(REPO))
+    ap.add_argument("--name", default=None, help="corpus label for this repo")
+    ap.add_argument("--prefix", action="append", default=[], metavar="PATH",
+                    help="source-tree prefix to mine (repeatable). Required: an "
+                         "unbounded scan pulls in vendored and generated code")
     ap.add_argument("--limit", type=int, default=12)
     ap.add_argument("--scan", type=int, default=400)
+    ap.add_argument("--screen", type=int, default=0,
+                    help="run follow-up-commit completeness screening on the "
+                         "first N selected tasks (slow: one git log per file)")
     ap.add_argument("--out", default=str(HERE / "tasks.json"))
     args = ap.parse_args()
 
-    tasks = build(Path(args.repo), args.limit, args.scan)
+    if not args.prefix:
+        sys.exit("error: at least one --prefix is required")
+    name = args.name or Path(args.repo).name
+    tasks = build(Path(args.repo), tuple(args.prefix), name,
+                  args.limit, args.scan, args.screen)
     Path(args.out).write_text(json.dumps(tasks, indent=2), encoding="utf-8")
     for t in tasks:
-        print(f"{t['commit'][:10]}  E={t['entry']:<34} |G|={len(t['ground_truth'])} "
-              f"|discover|={len(t['discover'])}  {t['subject'][:52]}")
+        fu = t.get("followups")
+        mark = f"  [followups: {len(fu)}]" if fu else ""
+        print(f"{t['repo']}/{t['commit'][:10]}  E={t['entry']:<30} "
+              f"|G|={len(t['ground_truth'])} |D|={len(t['discover'])}"
+              f"{mark}  {t['subject'][:44]}")
     print(f"\nwrote {args.out}")
     return 0
 

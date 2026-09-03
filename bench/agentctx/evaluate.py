@@ -41,9 +41,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from tasks import symbol_table, enclosing  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE / "repo"
+REPO = HERE / "repo"                       # legacy single-repo default
 WT = HERE / "wt"
 RAW = HERE / "raw"
+
+#: corpus label -> clone. A task carries its own label so worktrees and graphs
+#: cannot be attributed to the wrong repository when corpora are merged.
+REPO_PATHS = {
+    "requests": HERE / "repo",
+    "flask": HERE / "repo-flask",
+    "express": HERE / "repo-express",
+}
+
+
+def repo_for(task: dict) -> Path:
+    return REPO_PATHS.get(str(task.get("repo", "requests")), REPO)
+
+
+def wt_for(task: dict) -> Path:
+    """Worktree path. Namespaced by repo — short SHAs collide across repos."""
+    return WT / f"{task.get('repo', 'requests')}-{task['commit'][:8]}"
 
 STOCK = "C:/Users/SISABenjaminDavid/AppData/Local/Programs/Python/Python312/Scripts/graphify.EXE"
 EXT = "C:/projects/graphifyrebuild/.venv/Scripts/graphify-ext.exe"
@@ -66,11 +83,11 @@ def run(cmd: list[str], cwd: Path) -> str:
 # --------------------------------------------------------------------------
 
 def prepare(task: dict, rebuild: bool = False) -> tuple[Path, float]:
-    wt = WT / task["commit"][:8]
+    wt = wt_for(task)
     if not wt.exists():
         subprocess.run(
             ["git", "worktree", "add", "-f", str(wt), task["parent"]],
-            cwd=REPO, capture_output=True, check=True,
+            cwd=repo_for(task), capture_output=True, check=True,
         )
     graph = wt / "graphify-out" / "graph.json"
     build_s = 0.0
@@ -121,10 +138,22 @@ def resolve_entry(data: dict, task: dict) -> str | None:
 # arms
 # --------------------------------------------------------------------------
 
+def _globs(task: dict) -> list[str]:
+    """Search globs matching the languages this task's ground truth lives in.
+
+    Hardcoding ``*.py`` silently handed the grep arm an empty result set on a
+    JavaScript repo, which scores as "grep found nothing" rather than "the
+    harness never looked" — a baseline that loses because it was never run is
+    worse than no baseline.
+    """
+    exts = {Path(f).suffix for f in task["by_file"]}
+    return [g for e in sorted(exts) if e for g in ("-g", f"*{e}")]
+
+
 def arm_grep(wt: Path, task: dict) -> tuple[set[tuple[str, int]], str]:
     """Agent with no graph: ripgrep the entry symbol's leaf name across the tree."""
     leaf = task["entry"].split(".")[-1]
-    text = run(["rg", "-n", "--no-heading", "-g", "*.py", "-g", "!graphify-out",
+    text = run(["rg", "-n", "--no-heading", *_globs(task), "-g", "!graphify-out",
                 r"\b" + leaf + r"\b", "."], wt)
     found: set[tuple[str, int]] = set()
     tables: dict[str, list[dict]] = {}
@@ -135,7 +164,7 @@ def arm_grep(wt: Path, task: dict) -> tuple[set[tuple[str, int]], str]:
         rel = parts[0].replace("\\", "/").lstrip("./")
         try:
             if rel not in tables:
-                tables[rel] = symbol_table((wt / rel).read_bytes())
+                tables[rel] = symbol_table((wt / rel).read_bytes(), rel)
         except OSError:
             continue
         nm = enclosing(tables[rel], int(parts[1]))
@@ -224,7 +253,7 @@ def main() -> int:
     rows = []
 
     for i, task in enumerate(tasks, 1):
-        sha = task["commit"][:8]
+        sha = f"{task.get('repo', 'requests')}/{task['commit'][:8]}"
         wt, build_s = prepare(task, args.rebuild)
         data = load_graph_json(wt)
         seed = resolve_entry(data, task)
@@ -233,14 +262,15 @@ def main() -> int:
                         if s["name"] == g.split("::", 1)[1]))
                   for g in task["discover"]}
 
-        row = {"commit": sha, "subject": task["subject"], "entry": task["entry"],
+        row = {"commit": task["commit"][:8], "repo": task.get("repo", "requests"),
+               "task": sha, "subject": task["subject"], "entry": task["entry"],
                "seed_node": seed, "n_discover": len(target),
                "graph_nodes": len(data["nodes"]), "build_s": round(build_s, 2),
                "arms": {}}
 
         f, t = arm_grep(wt, task)
         row["arms"]["grep"] = score(f, target, toks(t), t)
-        (RAW / f"{sha}.grep.txt").write_text(t, encoding="utf-8")
+        (RAW / f"{sha.replace(chr(47), chr(45))}.grep.txt").write_text(t, encoding="utf-8")
 
         if seed is None:
             row["error"] = "entry symbol has no graph node"
@@ -266,7 +296,7 @@ def main() -> int:
             row["arms"][name]["delivers_code"] = (name == "ext-context")
             if name == "ext-context":
                 row["arms"][name]["files_to_open"] = 0
-            (RAW / f"{sha}.{name}.txt").write_text(t, encoding="utf-8")
+            (RAW / f"{sha.replace(chr(47), chr(45))}.{name}.txt").write_text(t, encoding="utf-8")
 
         rows.append(row)
         r = {k: v.get("recall") for k, v in row["arms"].items()}

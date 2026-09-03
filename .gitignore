@@ -10,3 +10,10 @@ __pycache__/
 /crg/sandbox-flask/
 /bench/sandbox-a/
 /bench/sandbox-big/
+/bench/agentctx/repo/
+/bench/agentctx/repo-express/
+/bench/agentctx/repo-flask/
+/bench/agentctx/wt/
+
+# e2e test scratch dir (self-contained mini git repo, regenerated per test run)
+/.e2e-tmp/

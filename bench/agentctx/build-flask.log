@@ -1,0 +1,24 @@
+selected 20 tasks; skipped {'no_gt': 27, 'single_symbol': 72, 'no_entry': 69, 'revert': 0, 'duplicate_entry': 2}
+flask/a411a2434b  E=AppContext.session             |G|=3 |D|=2  add back opening session on context push
+flask/c77a520343  E=App.should_ignore_error        |G|=3 |D|=2  deprecate should_ignore_error
+flask/eca5fd1dfd  E=redirect                       |G|=2 |D|=1  redirect defaults to 303
+flask/daf1510a4b  E=App.template_filter            |G|=6 |D|=5  use template_filter without parens
+flask/9822a03515  E=stream_with_context            |G|=2 |D|=1  refactor stream_with_context for async views
+flask/d718ecf6d3  E=Flask                          |G|=2 |D|=1  Provide a configuration option to control au
+flask/72c85e80c8  E=Blueprint                      |G|=3 |D|=2  Provide an extendable merge blueprint funcs 
+flask/4256fc6304  E=locked_cached_property         |G|=4 |D|=3  deprecate locked_cached_property
+flask/2a33c17854  E=Flask.got_first_request        |G|=2 |D|=1  deprecate got_first_request property
+flask/5d8e35653f  E=DispatchingApp                 |G|=10 |D|=9  refactor lazy loading
+flask/095651be9e  E=has_app_context                |G|=2 |D|=1  fix has_app_context and has_request_context
+flask/58f3536a8f  E=render_template                |G|=2 |D|=1  error for render_template outside app contex
+flask/c2810ffdd2  E=send_file                      |G|=3 |D|=2  remove deprecated send_file argument names
+flask/9e686d93b6  E=RequestContext.g               |G|=2 |D|=1  remove deprecated RequestContext.g
+flask/5544d09477  E=Flask.run                      |G|=2 |D|=1  re-add flag to skip unguarded app.run from C
+flask/c9e000b9ce  E=with_appcontext                |G|=4 |D|=3  with_appcontext lasts for the lifetime of th
+flask/45174bf9a1  E=MethodView                     |G|=4 |D|=3  use __init_subclass__ instead of metaclass f
+flask/96c97dec09  E=Flask.before_first_request     |G|=6 |D|=5  deprecate before_first_request
+flask/3351a8677e  E=Scaffold.errorhandler          |G|=4 |D|=3  add errorhandler type check tests
+flask/a406c297aa  E=setupmethod                    |G|=8 |D|=7  apply setupmethod consistently
+
+wrote bench/agentctx/tasks-flask.json
+flask exit=0

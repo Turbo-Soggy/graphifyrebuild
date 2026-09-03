@@ -1,0 +1,3 @@
+current, d3 b12000 maxn=800 : 0.494  (original: 0.565)
+current, d3 b12000 maxn=1200: 0.494
+exit=0

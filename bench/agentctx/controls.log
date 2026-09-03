@@ -1,0 +1,9 @@
+
+POSITIVE (every GT symbol contains a changed line): 251 ok, 0 fail
+NEGATIVE (no non-GT symbol contains a changed line): 2544 ok, 0 fail
+
+per repo  pos_ok/pos_fail  neg_ok/neg_fail
+  express     119/0         612/0
+  flask        74/0        1156/0
+  requests     58/0         776/0
+exit=0

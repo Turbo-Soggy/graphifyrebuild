@@ -1,0 +1,14 @@
+selected 10 tasks; skipped {'no_gt': 2032, 'single_symbol': 219, 'no_entry': 39, 'revert': 14, 'duplicate_entry': 5}
+express/a01326adac  E=param                          |G|=2 |D|=1  Catch errors in multiple req.param(name, fn)
+express/f41d09a3cf  E=Router                         |G|=7 |D|=6  remove app.router and refactor middleware pr
+express/8050308706  E=error                          |G|=2 |D|=1  Remove socket error handler if file was sent
+express/75054e17cf  E=Route                          |G|=5 |D|=4  Refactored Route to use a single array of ca
+express/80e9ffbf5d  E=router                         |G|=8 |D|=7  Refactored router. Closes #639
+express/ae1078944c  E=View                           |G|=2 |D|=1  Fixed view hints
+express/2ff991bfcf  E=renderPartial.render           |G|=2 |D|=1  refactored res.render()
+express/760d9e3341  E=hash                           |G|=2 |D|=1  Fixed error page hash iteration
+express/6232c1a8f3  E=client                         |G|=2 |D|=1  Several fixes to http client
+express/faaef54b42  E=render                         |G|=3 |D|=2  Pre-caching views in memory. Closes #253
+
+wrote bench/agentctx/tasks-express.json
+exit=0

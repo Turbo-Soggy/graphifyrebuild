@@ -1,0 +1,6 @@
+Isolating the two variables at d3 / b12000 / maxn=800:
+  0.565  legacy rank + alphabetical tie-break (original)
+  0.565  score rank + alphabetical tie-break
+  0.494  legacy rank + degree/id tie-break
+  0.494  score rank + degree/id tie-break (shipped)
+exit=0

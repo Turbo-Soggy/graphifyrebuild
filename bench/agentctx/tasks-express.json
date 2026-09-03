@@ -1,0 +1,1400 @@
+[
+  {
+    "repo": "express",
+    "commit": "59e205a57a04fced6bb7b8ec0b5dec29461a9996",
+    "parent": "b3004cb8c825321279efa48d6ad115d91a6c1b83",
+    "subject": "Upgrade `content-disposition` (#7233)",
+    "entry": "res.attachment",
+    "ground_truth": [
+      "lib/response.js::res.download",
+      "lib/response.js::res.attachment"
+    ],
+    "discover": [
+      "lib/response.js::res.download"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.download",
+          "kind": "function",
+          "start": 433,
+          "end": 482
+        },
+        {
+          "name": "res.attachment",
+          "kind": "function",
+          "start": 604,
+          "end": 612
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "723b5451bbcbab69bc8ded50ccd6545a79b8fe64",
+    "parent": "ee40a881f5d8cb4ce71bc45262fde8e4b7640d05",
+    "subject": "Throw on invalid status codes (#4212)",
+    "entry": "res.status",
+    "ground_truth": [
+      "lib/response.js::res.status",
+      "lib/response.js::res.send",
+      "lib/response.js::res.sendStatus",
+      "lib/response.js::res.redirect"
+    ],
+    "discover": [
+      "lib/response.js::res.send",
+      "lib/response.js::res.sendStatus",
+      "lib/response.js::res.redirect"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.status",
+          "kind": "function",
+          "start": 67,
+          "end": 73
+        },
+        {
+          "name": "res.send",
+          "kind": "function",
+          "start": 111,
+          "end": 211
+        },
+        {
+          "name": "res.sendStatus",
+          "kind": "function",
+          "start": 314,
+          "end": 321
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "start": 819,
+          "end": 858
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "a0276c6c91b3b119acc045640e8f4e0616734526",
+    "parent": "3d05e85b0cfe76ed0c70f842dbdbf27d9a7c8d39",
+    "subject": "Use mime-types for file to content type mapping",
+    "entry": "res.type",
+    "ground_truth": [
+      "lib/response.js::res.type",
+      "lib/response.js::res.header",
+      "lib/utils.js::exports.normalizeType"
+    ],
+    "discover": [
+      "lib/response.js::res.header",
+      "lib/utils.js::exports.normalizeType"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.type",
+          "kind": "function",
+          "start": 471,
+          "end": 477
+        },
+        {
+          "name": "res.header",
+          "kind": "function",
+          "start": 631,
+          "end": 655
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.normalizeType",
+          "kind": "function",
+          "start": 53,
+          "end": 57
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "715401478516c39ea9b2f855d4109d7d6e1131e0",
+    "parent": "628438d8d890f3707b8eecf57aeff7d0da348e8e",
+    "subject": "Add \"escape json\" setting for res.json and res.jsonp",
+    "entry": "res.json",
+    "ground_truth": [
+      "lib/response.js::res.json",
+      "lib/response.js::res.jsonp",
+      "lib/response.js::stringify"
+    ],
+    "discover": [
+      "lib/response.js::res.jsonp",
+      "lib/response.js::stringify"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.json",
+          "kind": "function",
+          "start": 239,
+          "end": 267
+        },
+        {
+          "name": "res.jsonp",
+          "kind": "function",
+          "start": 281,
+          "end": 334
+        },
+        {
+          "name": "stringify",
+          "kind": "function",
+          "start": 1105,
+          "end": 1111
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "081b811b100a54e26e46aec64e0effd12cdd5053",
+    "parent": "1f71fae23be00f44bdfef212cc16868dd8cd5954",
+    "subject": "perf: add fast match path for \"*\" route",
+    "entry": "Layer.prototype.match",
+    "ground_truth": [
+      "lib/router/layer.js::Layer",
+      "lib/router/layer.js::Layer.prototype.match"
+    ],
+    "discover": [
+      "lib/router/layer.js::Layer"
+    ],
+    "by_file": {
+      "lib/router/layer.js": [
+        {
+          "name": "Layer",
+          "kind": "function",
+          "start": 33,
+          "end": 50
+        },
+        {
+          "name": "Layer.prototype.match",
+          "kind": "function",
+          "start": 110,
+          "end": 149
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "76eaa326ee8c4dda05568c6452286a16adb84c0b",
+    "parent": "c12cc8839277dcb3956558865f0cd241e8d08883",
+    "subject": "Encode URL in res.location/res.redirect if not already encoded",
+    "entry": "res.location",
+    "ground_truth": [
+      "lib/response.js::res.location",
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.text"
+    ],
+    "discover": [
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.text"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.location",
+          "kind": "function",
+          "start": 826,
+          "end": 837
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "start": 857,
+          "end": 902
+        },
+        {
+          "name": "res.redirect.text",
+          "kind": "function",
+          "start": 879,
+          "end": 881
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "1e2951a832d1307ab40ef8c45202e02524991816",
+    "parent": "3a1f27fcde4a4399ab2afab74aeb1baad513cd08",
+    "subject": "Remove app.param(fn) signature",
+    "entry": "proto.param",
+    "ground_truth": [
+      "lib/router/index.js::module.exports",
+      "lib/router/index.js::proto.param"
+    ],
+    "discover": [
+      "lib/router/index.js::module.exports"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "module.exports",
+          "kind": "function",
+          "start": 42,
+          "end": 60
+        },
+        {
+          "name": "proto.param",
+          "kind": "function",
+          "start": 96,
+          "end": 123
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f5a240636d71781c7875191d2048279efce5ad56",
+    "parent": "10502480d0f286442654852dba4ec57f8d3391fd",
+    "subject": "perf: isolate app.render try block",
+    "entry": "app.render",
+    "ground_truth": [
+      "lib/application.js::app.render",
+      "lib/application.js::logerror"
+    ],
+    "discover": [
+      "lib/application.js::logerror"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.render",
+          "kind": "function",
+          "start": 531,
+          "end": 597
+        },
+        {
+          "name": "logerror",
+          "kind": "function",
+          "start": 632,
+          "end": 635
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "a8a8564459688bdc0b2653da2f28a4fefde7dfdb",
+    "parent": "0634e7e189a0ea12261b8fa81c7ca7234994b26d",
+    "subject": "perf: remove argument reassignments in View",
+    "entry": "View",
+    "ground_truth": [
+      "lib/view.js::View",
+      "lib/view.js::View.prototype.render",
+      "lib/view.js::View.prototype.resolve"
+    ],
+    "discover": [
+      "lib/view.js::View.prototype.render",
+      "lib/view.js::View.prototype.resolve"
+    ],
+    "by_file": {
+      "lib/view.js": [
+        {
+          "name": "View",
+          "kind": "function",
+          "start": 51,
+          "end": 62
+        },
+        {
+          "name": "View.prototype.render",
+          "kind": "function",
+          "start": 101,
+          "end": 104
+        },
+        {
+          "name": "View.prototype.resolve",
+          "kind": "function",
+          "start": 114,
+          "end": 134
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f7e94a30bce66ba4de1b6388910bfdd8b1e6edd1",
+    "parent": "8da51e3acc0520f67daa92309e294a72a6256726",
+    "subject": "Use array-flatten module for flattening arrays",
+    "entry": "exports.flatten",
+    "ground_truth": [
+      "lib/router/index.js::proto.use",
+      "lib/router/route.js::Route.prototype.all",
+      "lib/router/route.js::Route.prototype[method]",
+      "lib/utils.js::exports.flatten"
+    ],
+    "discover": [
+      "lib/router/index.js::proto.use",
+      "lib/router/route.js::Route.prototype.all",
+      "lib/router/route.js::Route.prototype[method]"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "proto.use",
+          "kind": "function",
+          "start": 419,
+          "end": 465
+        }
+      ],
+      "lib/router/route.js": [
+        {
+          "name": "Route.prototype.all",
+          "kind": "function",
+          "start": 143,
+          "end": 160
+        },
+        {
+          "name": "Route.prototype[method]",
+          "kind": "function",
+          "start": 163,
+          "end": 182
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.flatten",
+          "kind": "function",
+          "start": 79,
+          "end": 90
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "0e5f2f84eacd085438fcdb83ad0a47d3a86a5dae",
+    "parent": "b1d0c19ca16c8f302fb674bc51a19af484170b0c",
+    "subject": "Use path.resolve in view lookup",
+    "entry": "View.prototype.lookup",
+    "ground_truth": [
+      "lib/view.js::View.prototype.lookup",
+      "lib/view.js::View.prototype.render"
+    ],
+    "discover": [
+      "lib/view.js::View.prototype.render"
+    ],
+    "by_file": {
+      "lib/view.js": [
+        {
+          "name": "View.prototype.lookup",
+          "kind": "function",
+          "start": 55,
+          "end": 65
+        },
+        {
+          "name": "View.prototype.render",
+          "kind": "function",
+          "start": 75,
+          "end": 77
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "4d1ee23f84de64a4f317384f61d1cd9925849107",
+    "parent": "0e5613363f3b136e5fa1c159520bdd6e7cd4db99",
+    "subject": "Use etag module to generate ETag headers",
+    "entry": "exports.etag",
+    "ground_truth": [
+      "lib/utils.js::exports.etag",
+      "lib/utils.js::exports.wetag"
+    ],
+    "discover": [
+      "lib/utils.js::exports.wetag"
+    ],
+    "by_file": {
+      "lib/utils.js": [
+        {
+          "name": "exports.etag",
+          "kind": "function",
+          "start": 27,
+          "end": 38
+        },
+        {
+          "name": "exports.wetag",
+          "kind": "function",
+          "start": 49,
+          "end": 60
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "2a0c35a10862c00b7d95ff1a088956ac8de2dac6",
+    "parent": "d4de82b853ad5daa387b8853ed697134d9dbac28",
+    "subject": "Invoke callback for sendfile when client aborts",
+    "entry": "res.sendfile",
+    "ground_truth": [
+      "lib/response.js::res.sendFile",
+      "lib/response.js::res.sendFile.onerror",
+      "lib/response.js::res.sendFile.onstream",
+      "lib/response.js::res.sendFile.cleanup",
+      "lib/response.js::res.sendfile",
+      "lib/response.js::res.sendfile.error",
+      "lib/response.js::res.sendfile.stream",
+      "lib/response.js::res.sendfile.cleanup",
+      "lib/response.js::res.render"
+    ],
+    "discover": [
+      "lib/response.js::res.sendFile",
+      "lib/response.js::res.sendFile.onerror",
+      "lib/response.js::res.sendFile.onstream",
+      "lib/response.js::res.sendFile.cleanup",
+      "lib/response.js::res.sendfile.error",
+      "lib/response.js::res.sendfile.stream",
+      "lib/response.js::res.sendfile.cleanup",
+      "lib/response.js::res.render"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.sendFile",
+          "kind": "function",
+          "start": 346,
+          "end": 420
+        },
+        {
+          "name": "res.sendFile.onerror",
+          "kind": "function",
+          "start": 371,
+          "end": 383
+        },
+        {
+          "name": "res.sendFile.onstream",
+          "kind": "function",
+          "start": 386,
+          "end": 390
+        },
+        {
+          "name": "res.sendFile.cleanup",
+          "kind": "function",
+          "start": 393,
+          "end": 395
+        },
+        {
+          "name": "res.sendfile",
+          "kind": "function",
+          "start": 463,
+          "end": 529
+        },
+        {
+          "name": "res.sendfile.error",
+          "kind": "function",
+          "start": 481,
+          "end": 493
+        },
+        {
+          "name": "res.sendfile.stream",
+          "kind": "function",
+          "start": 496,
+          "end": 500
+        },
+        {
+          "name": "res.sendfile.cleanup",
+          "kind": "function",
+          "start": 503,
+          "end": 505
+        },
+        {
+          "name": "res.render",
+          "kind": "function",
+          "start": 933,
+          "end": 955
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "17cea29013c64b169e3fa8ddde903e05ce533ab0",
+    "parent": "8449f23f0d74b0f3159f8652a6bc019cb3678847",
+    "subject": "Support mounted app as any argument to app.use()",
+    "entry": "app.use",
+    "ground_truth": [
+      "lib/application.js::app.use",
+      "lib/application.js::app[method]",
+      "lib/application.js::app.all"
+    ],
+    "discover": [
+      "lib/application.js::app[method]",
+      "lib/application.js::app.all"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.use",
+          "kind": "function",
+          "start": 152,
+          "end": 196
+        },
+        {
+          "name": "app[method]",
+          "kind": "function",
+          "start": 411,
+          "end": 419
+        },
+        {
+          "name": "app.all",
+          "kind": "function",
+          "start": 432,
+          "end": 442
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "a01326adac588006a823746238ca90ade63e4580",
+    "parent": "76e8bfa1dcb7b29389c55d55d2072491edbccd91",
+    "subject": "Catch errors in multiple req.param(name, fn) handlers",
+    "entry": "proto.process_params.param",
+    "ground_truth": [
+      "lib/router/index.js::proto.process_params.param",
+      "lib/router/index.js::proto.process_params.paramCallback"
+    ],
+    "discover": [
+      "lib/router/index.js::proto.process_params.paramCallback"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "proto.process_params.param",
+          "kind": "function",
+          "start": 316,
+          "end": 361
+        },
+        {
+          "name": "proto.process_params.paramCallback",
+          "kind": "function",
+          "start": 364,
+          "end": 380
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "7f26cfca91f29a6a870be4c00d9507970efa6d51",
+    "parent": "b89a597029c8e0c7fe5e97d326853f7acacf0f77",
+    "subject": "Fix handling when route.all is only route",
+    "entry": "Route.prototype.all",
+    "ground_truth": [
+      "lib/router/route.js::Route",
+      "lib/router/route.js::Route.prototype.dispatch",
+      "lib/router/route.js::Route.prototype.all",
+      "lib/router/route.js::Route.prototype[method]"
+    ],
+    "discover": [
+      "lib/router/route.js::Route",
+      "lib/router/route.js::Route.prototype.dispatch",
+      "lib/router/route.js::Route.prototype[method]"
+    ],
+    "by_file": {
+      "lib/router/route.js": [
+        {
+          "name": "Route",
+          "kind": "function",
+          "start": 22,
+          "end": 29
+        },
+        {
+          "name": "Route.prototype.dispatch",
+          "kind": "function",
+          "start": 48,
+          "end": 108
+        },
+        {
+          "name": "Route.prototype.all",
+          "kind": "function",
+          "start": 138,
+          "end": 160
+        },
+        {
+          "name": "Route.prototype[method]",
+          "kind": "function",
+          "start": 163,
+          "end": 190
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "9c731f1883a837ca2f46ddcf476bfdce60e82fb3",
+    "parent": "5a4e9125decbc6391fc0fa931b9a87b4930b1bab",
+    "subject": "deprecate things with depd module",
+    "entry": "exports.deprecate",
+    "ground_truth": [
+      "lib/response.js::res.json",
+      "lib/response.js::res.jsonp",
+      "lib/utils.js::exports.deprecate"
+    ],
+    "discover": [
+      "lib/response.js::res.json",
+      "lib/response.js::res.jsonp"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.json",
+          "kind": "function",
+          "start": 193,
+          "end": 219
+        },
+        {
+          "name": "res.jsonp",
+          "kind": "function",
+          "start": 243,
+          "end": 284
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.deprecate",
+          "kind": "function",
+          "start": 33,
+          "end": 45
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f433b7c7cfd39aaa64a336f3fe1cce41c52b32ee",
+    "parent": "a94278abd1bab96607fae4bc08ba2b344070673e",
+    "subject": "replace utils.escape with html-escape",
+    "entry": "exports.escape",
+    "ground_truth": [
+      "lib/response.js::res.redirect.html",
+      "lib/utils.js::exports.escape"
+    ],
+    "discover": [
+      "lib/response.js::res.redirect.html"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.redirect.html",
+          "kind": "function",
+          "start": 746,
+          "end": 749
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.escape",
+          "kind": "function",
+          "start": 333,
+          "end": 339
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f14e39d4515c81c1e5c980b7ce31566eeeb84734",
+    "parent": "084f5d891b4dd413caca21283a3127bb28f9069d",
+    "subject": "set proper charset in content-type for res.send",
+    "entry": "res.send",
+    "ground_truth": [
+      "lib/response.js::res.send",
+      "lib/utils.js::exports.compileTrust"
+    ],
+    "discover": [
+      "lib/utils.js::exports.compileTrust"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.send",
+          "kind": "function",
+          "start": 83,
+          "end": 157
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.compileTrust",
+          "kind": "function",
+          "start": 350,
+          "end": 369
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "4ac7474e4e83c3b5f8557e591bae9da54e4420d8",
+    "parent": "bdb3bb98f681a2cfdb705a4b1773e9a5031a91bc",
+    "subject": "trim_prefix causing --use-strict flag to fail",
+    "entry": "proto.handle.trim_prefix",
+    "ground_truth": [
+      "lib/router/index.js::proto.handle.trim_prefix",
+      "lib/router/index.js::proto.handle"
+    ],
+    "discover": [
+      "lib/router/index.js::proto.handle"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "proto.handle.trim_prefix",
+          "kind": "function",
+          "start": 201,
+          "end": 230
+        },
+        {
+          "name": "proto.handle",
+          "kind": "function",
+          "start": 110,
+          "end": 235
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "bad55f797721fcce2c1879165d4b498a735f37e0",
+    "parent": "3cf7b2e39ee42bf6f3a195dc3275193c40ac1c77",
+    "subject": "move setHeader charset patch to .set",
+    "entry": "res.setHeader",
+    "ground_truth": [
+      "lib/response.js::res.header",
+      "lib/response.js::res.setHeader"
+    ],
+    "discover": [
+      "lib/response.js::res.header"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.header",
+          "kind": "function",
+          "start": 524,
+          "end": 535
+        },
+        {
+          "name": "res.setHeader",
+          "kind": "function",
+          "start": 794,
+          "end": 802
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f8b954bcd9a6aeaa5d445a1ea1bbcb37e089f3ef",
+    "parent": "caa25b506dcfb3a2b95898e31995b5af5e0c09e1",
+    "subject": "make express.Router() return a Router function instance",
+    "entry": "Router",
+    "ground_truth": [
+      "lib/router/index.js::Router",
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/index.js::Router.prototype.handle",
+      "lib/router/index.js::Router.prototype.process_params",
+      "lib/router/index.js::Router.prototype.use",
+      "lib/router/index.js::Router.prototype.route",
+      "lib/router/index.js::Router.prototype.all",
+      "lib/router/index.js::Router.prototype[method]"
+    ],
+    "discover": [
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/index.js::Router.prototype.handle",
+      "lib/router/index.js::Router.prototype.process_params",
+      "lib/router/index.js::Router.prototype.use",
+      "lib/router/index.js::Router.prototype.route",
+      "lib/router/index.js::Router.prototype.all",
+      "lib/router/index.js::Router.prototype[method]"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "Router",
+          "kind": "function",
+          "start": 25,
+          "end": 36
+        },
+        {
+          "name": "Router.prototype.param",
+          "kind": "function",
+          "start": 72,
+          "end": 102
+        },
+        {
+          "name": "Router.prototype.handle",
+          "kind": "function",
+          "start": 110,
+          "end": 237
+        },
+        {
+          "name": "Router.prototype.process_params",
+          "kind": "function",
+          "start": 245,
+          "end": 300
+        },
+        {
+          "name": "Router.prototype.use",
+          "kind": "function",
+          "start": 320,
+          "end": 344
+        },
+        {
+          "name": "Router.prototype.route",
+          "kind": "function",
+          "start": 359,
+          "end": 372
+        },
+        {
+          "name": "Router.prototype.all",
+          "kind": "function",
+          "start": 384,
+          "end": 389
+        },
+        {
+          "name": "Router.prototype[method]",
+          "kind": "function",
+          "start": 393,
+          "end": 397
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "d42d8f5b078eb8136d9fc645d43cdbbf17873854",
+    "parent": "143e72dd8507701d243fb21b03823be8e21c973d",
+    "subject": "move support for multiple `res.cookie` calls to lib/response",
+    "entry": "res.cookie",
+    "ground_truth": [
+      "lib/patch.js::ServerResponse.prototype.setHeader",
+      "lib/response.js::res.cookie"
+    ],
+    "discover": [
+      "lib/patch.js::ServerResponse.prototype.setHeader"
+    ],
+    "by_file": {
+      "lib/patch.js": [
+        {
+          "name": "ServerResponse.prototype.setHeader",
+          "kind": "function",
+          "start": 32,
+          "end": 53
+        }
+      ],
+      "lib/response.js": [
+        {
+          "name": "res.cookie",
+          "kind": "function",
+          "start": 587,
+          "end": 602
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f41d09a3cf0592b65a1359495b65d3d7cf949c50",
+    "parent": "4bf9cfd4779c614d05c9c0983ee4a7427df38216",
+    "subject": "remove app.router and refactor middleware processing",
+    "entry": "Router.this.middleware",
+    "ground_truth": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/application.js::app.use",
+      "lib/application.js::app.use.fn",
+      "lib/application.js::app.param",
+      "lib/application.js::app.path",
+      "lib/application.js::app[method]",
+      "lib/application.js::app.all",
+      "lib/express.js::createApplication",
+      "lib/router/index.js::Router",
+      "lib/router/index.js::Router.this.middleware",
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype._dispatch.nextRoute",
+      "lib/router/index.js::Router.prototype._dispatch.param",
+      "lib/router/index.js::Router.prototype._dispatch.paramCallback",
+      "lib/router/index.js::Router.prototype._dispatch.callbacks",
+      "lib/router/index.js::Router.prototype._options",
+      "lib/router/index.js::Router.prototype._optionsFor",
+      "lib/router/index.js::Router.prototype.matchRequest",
+      "lib/router/index.js::Router.prototype.match",
+      "lib/router/index.js::Router.prototype.route",
+      "lib/router/index.js::Router.prototype.all",
+      "lib/router/index.js::Router.prototype[method]",
+      "lib/router/route.js::Route",
+      "lib/router/route.js::Route.prototype.match"
+    ],
+    "discover": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/application.js::app.use",
+      "lib/application.js::app.use.fn",
+      "lib/application.js::app.param",
+      "lib/application.js::app.path",
+      "lib/application.js::app[method]",
+      "lib/application.js::app.all",
+      "lib/express.js::createApplication",
+      "lib/router/index.js::Router",
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype._dispatch.nextRoute",
+      "lib/router/index.js::Router.prototype._dispatch.param",
+      "lib/router/index.js::Router.prototype._dispatch.paramCallback",
+      "lib/router/index.js::Router.prototype._dispatch.callbacks",
+      "lib/router/index.js::Router.prototype._options",
+      "lib/router/index.js::Router.prototype._optionsFor",
+      "lib/router/index.js::Router.prototype.matchRequest",
+      "lib/router/index.js::Router.prototype.match",
+      "lib/router/index.js::Router.prototype.route",
+      "lib/router/index.js::Router.prototype.all",
+      "lib/router/index.js::Router.prototype[method]",
+      "lib/router/route.js::Route",
+      "lib/router/route.js::Route.prototype.match"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.defaultConfiguration",
+          "kind": "function",
+          "start": 43,
+          "end": 87
+        },
+        {
+          "name": "app.use",
+          "kind": "function",
+          "start": 99,
+          "end": 130
+        },
+        {
+          "name": "app.use.fn",
+          "kind": "function",
+          "start": 111,
+          "end": 118
+        },
+        {
+          "name": "app.param",
+          "kind": "function",
+          "start": 205,
+          "end": 228
+        },
+        {
+          "name": "app.path",
+          "kind": "function",
+          "start": 268,
+          "end": 272
+        },
+        {
+          "name": "app[method]",
+          "kind": "function",
+          "start": 341,
+          "end": 355
+        },
+        {
+          "name": "app.all",
+          "kind": "function",
+          "start": 368,
+          "end": 374
+        }
+      ],
+      "lib/express.js": [
+        {
+          "name": "createApplication",
+          "kind": "function",
+          "start": 34,
+          "end": 41
+        }
+      ],
+      "lib/router/index.js": [
+        {
+          "name": "Router",
+          "kind": "function",
+          "start": 24,
+          "end": 35
+        },
+        {
+          "name": "Router.this.middleware",
+          "kind": "function",
+          "start": 32,
+          "end": 34
+        },
+        {
+          "name": "Router.prototype.param",
+          "kind": "function",
+          "start": 46,
+          "end": 72
+        },
+        {
+          "name": "Router.prototype._dispatch",
+          "kind": "function",
+          "start": 83,
+          "end": 174
+        },
+        {
+          "name": "Router.prototype._dispatch.nextRoute",
+          "kind": "function",
+          "start": 99,
+          "end": 101
+        },
+        {
+          "name": "Router.prototype._dispatch.param",
+          "kind": "function",
+          "start": 120,
+          "end": 143
+        },
+        {
+          "name": "Router.prototype._dispatch.paramCallback",
+          "kind": "function",
+          "start": 148,
+          "end": 152
+        },
+        {
+          "name": "Router.prototype._dispatch.callbacks",
+          "kind": "function",
+          "start": 155,
+          "end": 172
+        },
+        {
+          "name": "Router.prototype._options",
+          "kind": "function",
+          "start": 184,
+          "end": 189
+        },
+        {
+          "name": "Router.prototype._optionsFor",
+          "kind": "function",
+          "start": 199,
+          "end": 210
+        },
+        {
+          "name": "Router.prototype.matchRequest",
+          "kind": "function",
+          "start": 223,
+          "end": 250
+        },
+        {
+          "name": "Router.prototype.match",
+          "kind": "function",
+          "start": 264,
+          "end": 267
+        },
+        {
+          "name": "Router.prototype.route",
+          "kind": "function",
+          "start": 279,
+          "end": 304
+        },
+        {
+          "name": "Router.prototype.all",
+          "kind": "function",
+          "start": 306,
+          "end": 313
+        },
+        {
+          "name": "Router.prototype[method]",
+          "kind": "function",
+          "start": 316,
+          "end": 320
+        }
+      ],
+      "lib/router/route.js": [
+        {
+          "name": "Route",
+          "kind": "function",
+          "start": 30,
+          "end": 39
+        },
+        {
+          "name": "Route.prototype.match",
+          "kind": "function",
+          "start": 50,
+          "end": 79
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "cec0c06a70c874298761282984573475293c0071",
+    "parent": "476f8deb07d48aac146a94262ea65b7991d840be",
+    "subject": "refactor req.is and req.accepts*",
+    "entry": "req.is",
+    "ground_truth": [
+      "lib/request.js::req.accepts",
+      "lib/request.js::req.acceptsEncoding",
+      "lib/request.js::req.acceptsCharset",
+      "lib/request.js::req.acceptsLanguage",
+      "lib/request.js::req.is",
+      "lib/utils.js::exports.acceptsArray",
+      "lib/utils.js::exports.accepts",
+      "lib/utils.js::exports.accept",
+      "lib/utils.js::paramsEqual",
+      "lib/utils.js::exports.parseAccept",
+      "lib/utils.js::exports.parseParams"
+    ],
+    "discover": [
+      "lib/request.js::req.accepts",
+      "lib/request.js::req.acceptsEncoding",
+      "lib/request.js::req.acceptsCharset",
+      "lib/request.js::req.acceptsLanguage",
+      "lib/utils.js::exports.acceptsArray",
+      "lib/utils.js::exports.accepts",
+      "lib/utils.js::exports.accept",
+      "lib/utils.js::paramsEqual",
+      "lib/utils.js::exports.parseAccept",
+      "lib/utils.js::exports.parseParams"
+    ],
+    "by_file": {
+      "lib/request.js": [
+        {
+          "name": "req.accepts",
+          "kind": "function",
+          "start": 102,
+          "end": 105
+        },
+        {
+          "name": "req.acceptsEncoding",
+          "kind": "function",
+          "start": 115,
+          "end": 117
+        },
+        {
+          "name": "req.acceptsCharset",
+          "kind": "function",
+          "start": 128,
+          "end": 133
+        },
+        {
+          "name": "req.acceptsLanguage",
+          "kind": "function",
+          "start": 144,
+          "end": 149
+        },
+        {
+          "name": "req.is",
+          "kind": "function",
+          "start": 322,
+          "end": 335
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.acceptsArray",
+          "kind": "function",
+          "start": 122,
+          "end": 138
+        },
+        {
+          "name": "exports.accepts",
+          "kind": "function",
+          "start": 150,
+          "end": 153
+        },
+        {
+          "name": "exports.accept",
+          "kind": "function",
+          "start": 164,
+          "end": 169
+        },
+        {
+          "name": "paramsEqual",
+          "kind": "function",
+          "start": 180,
+          "end": 184
+        },
+        {
+          "name": "exports.parseAccept",
+          "kind": "function",
+          "start": 198,
+          "end": 207
+        },
+        {
+          "name": "exports.parseParams",
+          "kind": "function",
+          "start": 219,
+          "end": 233
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "e218377a3d9d5c37790823f4e346a4f83b733e7d",
+    "parent": "7d1aed4955706ea6ea3d401486b13a3e1219a7c2",
+    "subject": "check existence of jsonp callback",
+    "entry": "res.jsonp",
+    "ground_truth": [
+      "lib/response.js::res.jsonp",
+      "lib/response.js::res.vary"
+    ],
+    "discover": [
+      "lib/response.js::res.vary"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.jsonp",
+          "kind": "function",
+          "start": 215,
+          "end": 249
+        },
+        {
+          "name": "res.vary",
+          "kind": "function",
+          "start": 737,
+          "end": 764
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "e4907ce8e8c4fb53be9cccd086e326cf5faf14bb",
+    "parent": "33eaa8329cbcec28acc0a806e52561a524ef91d9",
+    "subject": "add http verbs methods to Router",
+    "entry": "Router.prototype.route",
+    "ground_truth": [
+      "lib/application.js::app[method]",
+      "lib/router/index.js::Router.prototype.route"
+    ],
+    "discover": [
+      "lib/application.js::app[method]"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app[method]",
+          "kind": "function",
+          "start": 404,
+          "end": 410
+        }
+      ],
+      "lib/router/index.js": [
+        {
+          "name": "Router.prototype.route",
+          "kind": "function",
+          "start": 239,
+          "end": 262
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "6bebe0837fea2eda552495878ff45e945804b129",
+    "parent": "ff1c6f0cfa6787d71468b57c724310b31d79d0e0",
+    "subject": "refactor res.render() to prevent clobbering \"locals\"",
+    "entry": "res.render",
+    "ground_truth": [
+      "lib/application.js::app.render",
+      "lib/response.js::res.render"
+    ],
+    "discover": [
+      "lib/application.js::app.render"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.render",
+          "kind": "function",
+          "start": 455,
+          "end": 508
+        }
+      ],
+      "lib/response.js": [
+        {
+          "name": "res.render",
+          "kind": "function",
+          "start": 656,
+          "end": 678
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "8050308706a4a62b148ba70dd8ea6ccc07495c48",
+    "parent": "07b6c9f5638d46c2784e6721ed5ccb594b0777dd",
+    "subject": "Remove socket error handler if file was sent successfully.",
+    "entry": "res.sendfile.error",
+    "ground_truth": [
+      "lib/response.js::res.sendfile.error",
+      "lib/response.js::res.sendfile.stream",
+      "lib/response.js::res.sendfile"
+    ],
+    "discover": [
+      "lib/response.js::res.sendfile.stream",
+      "lib/response.js::res.sendfile"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.sendfile.error",
+          "kind": "function",
+          "start": 188,
+          "end": 204
+        },
+        {
+          "name": "res.sendfile.stream",
+          "kind": "function",
+          "start": 207,
+          "end": 211
+        },
+        {
+          "name": "res.sendfile",
+          "kind": "function",
+          "start": 171,
+          "end": 221
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "accd6180c17b6c63abbb3bd4a0ea7c75c003c166",
+    "parent": "e770b674ffd1d9dd2b9a012066a8bdd768663fba",
+    "subject": "rename matchReq -> matchRequest",
+    "entry": "Router.prototype.matchReq",
+    "ground_truth": [
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype.matchReq",
+      "lib/router/index.js::Router.prototype.match"
+    ],
+    "discover": [
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype.match"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "Router.prototype._dispatch",
+          "kind": "function",
+          "start": 83,
+          "end": 174
+        },
+        {
+          "name": "Router.prototype.matchReq",
+          "kind": "function",
+          "start": 222,
+          "end": 249
+        },
+        {
+          "name": "Router.prototype.match",
+          "kind": "function",
+          "start": 263,
+          "end": 267
+        }
+      ]
+    }
+  }
+]

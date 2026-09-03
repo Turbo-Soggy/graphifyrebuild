@@ -1,0 +1,11 @@
+baseline depth-major:
+  d2 b6000: 0.494
+  d4 b12000: 0.565
+
+weighted score, by decay:
+  decay   d2 b6000   d4 b12000
+    0.5      0.494       0.494
+    0.7      0.494       0.494
+   0.85      0.494       0.494
+   0.95      0.494       0.494
+exit=0

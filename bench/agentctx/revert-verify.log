@@ -1,0 +1,6 @@
+config             now   target   verdict
+d2 b6000         0.494    0.494        OK
+d4 b12000        0.494    0.565     DRIFT
+d1 b6000         0.387    0.387        OK
+d3 b6000         0.494    0.494        OK
+exit=0

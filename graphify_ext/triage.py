@@ -140,7 +140,7 @@ def triage_one(data: dict, vuln: dict, *, depth: int = 2, max_nodes: int = 300,
             "cross_repo": "if this code is a shared library, query the global graph "
                           "(graphify global path / merge-graphs) — repos must be "
                           "pre-registered via 'graphify global add'",
-            "post_fix": "after editing, run 'graphify-ext verify-fix check' to diff "
+            "post_fix": "after editing, run 'graphify-ext edge-diff check' to diff "
                         "this node's edges against the pre-fix snapshot",
         },
     }

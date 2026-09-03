@@ -15,8 +15,9 @@ Requirement 2:
   graphify-ext config-scan [path] [--graph P] [--dry-run]
   graphify-ext reapply [--out DIR]
   graphify-ext triage report.json [--depth N] [--max-nodes N] [--graph P] [--out P]
-  graphify-ext verify-fix snapshot --node X [--node Y ...] [--out DIR]
-  graphify-ext verify-fix check [--out DIR] [--json]
+  graphify-ext edge-diff snapshot --node X [--node Y ...] [--out DIR]
+  graphify-ext edge-diff check [--out DIR] [--json]
+      (was `verify-fix`; that name is reserved for SAST+test verification)
 """
 from __future__ import annotations
 
@@ -130,7 +131,15 @@ def main(argv: list[str] | None = None) -> int:
     trp.add_argument("--out", help="write full contexts JSON here (default: stdout summary only)")
     _graph_arg(trp)
 
-    vfp = sub.add_parser("verify-fix", help="pre/post fix edge diff for target nodes")
+    # Renamed from `verify-fix` 2026-09-03. This command diffs a node's GRAPH
+    # EDGES before and after a change; it runs no scanner and no tests. The name
+    # `verify-fix` is being reserved for the customer-facing guarantee (re-run
+    # the SAST finding, delta-scan the diff, run the tests), which is a
+    # different and stronger claim. Two commands under one name is how someone
+    # ends up believing a graph diff cleared a vulnerability.
+    vfp = sub.add_parser("edge-diff", aliases=["verify-fix"],
+                         help="pre/post change edge diff for target nodes "
+                              "(graph-only; runs no scanner and no tests)")
     vfp.add_argument("action", choices=["snapshot", "check"])
     vfp.add_argument("--node", action="append", default=[],
                      help="target node (repeatable; required for snapshot)")
@@ -224,6 +233,11 @@ def main(argv: list[str] | None = None) -> int:
                   f"source could be recovered for {args.node!r} itself.")
         print(f"\n--- {len(pack['included'])} symbol(s), {pack['tokens_used']} "
               f"tokens of {pack['budget']} ({pack['token_method']})")
+        if pack["unmodelled"]:
+            print(f"--- {len(pack['unmodelled'])} symbol(s) present in the source "
+                  f"but ABSENT FROM THE GRAPH, inside the code above:")
+            for u in pack["unmodelled"][:10]:
+                print(f"      {u['name']} {u['file']}:{u['def_line']} — {u['reason']}")
         if pack["unresolved"]:
             print(f"--- {len(pack['unresolved'])} unresolved (no slice emitted):")
             for u in pack["unresolved"][:10]:
@@ -305,8 +319,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"full contexts written to {args.out}")
         return 0
 
-    if args.cmd == "verify-fix":
+    if args.cmd in ("edge-diff", "verify-fix"):
         from graphify_ext import verify_fix
+        if args.cmd == "verify-fix":
+            print("warning: 'verify-fix' is deprecated, use 'edge-diff'. This "
+                  "command diffs graph edges only — it does not re-run a "
+                  "scanner or your tests.", file=sys.stderr)
         if args.action == "snapshot":
             if not args.node:
                 sys.exit("error: snapshot requires at least one --node")

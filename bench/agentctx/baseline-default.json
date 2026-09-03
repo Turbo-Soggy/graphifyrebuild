@@ -1,0 +1,581 @@
+{
+  "config": "default",
+  "config_detail": {
+    "depth": 2,
+    "budget": 6000,
+    "max_nodes": 800,
+    "direction": "both",
+    "relations": [
+      "calls",
+      "indirect_call",
+      "references",
+      "imports",
+      "imports_from",
+      "dynamic_import",
+      "re_exports",
+      "inherits",
+      "extends",
+      "implements",
+      "uses",
+      "mixes_in",
+      "embeds",
+      "requires",
+      "method",
+      "contains"
+    ],
+    "order": "current"
+  },
+  "corpus_size": 70,
+  "repos": [
+    "express",
+    "flask",
+    "requests"
+  ],
+  "tasks": {
+    "requests/3816cfa1": {
+      "recall": 0.6667,
+      "precision": 0.0588,
+      "returned": 34,
+      "omitted": 34,
+      "omitted_high_rank": 31,
+      "unmodelled": 5,
+      "unresolved": 23
+    },
+    "requests/aa1461b6": {
+      "recall": 0.5,
+      "precision": 0.04,
+      "returned": 25,
+      "omitted": 25,
+      "omitted_high_rank": 21,
+      "unmodelled": 1,
+      "unresolved": 6
+    },
+    "requests/99b3b492": {
+      "recall": 1.0,
+      "precision": 0.087,
+      "returned": 23,
+      "omitted": 23,
+      "omitted_high_rank": 23,
+      "unmodelled": 0,
+      "unresolved": 9
+    },
+    "requests/db575eee": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 32,
+      "omitted": 1,
+      "omitted_high_rank": 1,
+      "unmodelled": 1,
+      "unresolved": 6
+    },
+    "requests/bd100472": {
+      "recall": 0.5,
+      "precision": 0.0312,
+      "returned": 32,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 1,
+      "unresolved": 5
+    },
+    "requests/bf4a8133": {
+      "recall": 1.0,
+      "precision": 0.5,
+      "returned": 2,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 3
+    },
+    "requests/c3367d18": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 24,
+      "omitted": 3,
+      "omitted_high_rank": 3,
+      "unmodelled": 0,
+      "unresolved": 4
+    },
+    "requests/f002b730": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 24,
+      "omitted": 109,
+      "omitted_high_rank": 95,
+      "unmodelled": 2,
+      "unresolved": 28
+    },
+    "requests/31b35ab8": {
+      "recall": 1.0,
+      "precision": 0.0323,
+      "returned": 31,
+      "omitted": 9,
+      "omitted_high_rank": 4,
+      "unmodelled": 5,
+      "unresolved": 6
+    },
+    "requests/9e9d2c65": {
+      "recall": 1.0,
+      "precision": 0.25,
+      "returned": 4,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 2
+    },
+    "requests/3e3fc768": {
+      "recall": 1.0,
+      "precision": 1.0,
+      "returned": 3,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 3
+    },
+    "requests/36093e69": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 26,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 4
+    },
+    "requests/8ed941fa": {
+      "recall": 0.25,
+      "precision": 0.037,
+      "returned": 27,
+      "omitted": 6,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 5
+    },
+    "requests/dfa41afd": {
+      "recall": 0.75,
+      "precision": 0.0732,
+      "returned": 41,
+      "omitted": 27,
+      "omitted_high_rank": 27,
+      "unmodelled": 2,
+      "unresolved": 18
+    },
+    "requests/b4a7906b": {
+      "recall": 1.0,
+      "precision": 0.037,
+      "returned": 27,
+      "omitted": 170,
+      "omitted_high_rank": 10,
+      "unmodelled": 0,
+      "unresolved": 21
+    },
+    "requests/7815953c": {
+      "recall": 1.0,
+      "precision": 0.6667,
+      "returned": 6,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 8
+    },
+    "requests/59c8d813": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 26,
+      "omitted": 13,
+      "omitted_high_rank": 5,
+      "unmodelled": 0,
+      "unresolved": 6
+    },
+    "requests/c15a8f8a": {
+      "recall": 1.0,
+      "precision": 0.05,
+      "returned": 40,
+      "omitted": 147,
+      "omitted_high_rank": 146,
+      "unmodelled": 1,
+      "unresolved": 23
+    },
+    "requests/0caa2432": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 33,
+      "omitted": 101,
+      "omitted_high_rank": 101,
+      "unmodelled": 1,
+      "unresolved": 26
+    },
+    "requests/1d42d9d2": {
+      "recall": 1.0,
+      "precision": 0.0417,
+      "returned": 24,
+      "omitted": 21,
+      "omitted_high_rank": 21,
+      "unmodelled": 2,
+      "unresolved": 12
+    },
+    "flask/a411a243": {
+      "recall": 0.5,
+      "precision": 0.0455,
+      "returned": 22,
+      "omitted": 27,
+      "omitted_high_rank": 19,
+      "unmodelled": 1,
+      "unresolved": 6
+    },
+    "flask/c77a5203": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 29,
+      "omitted": 16,
+      "omitted_high_rank": 15,
+      "unmodelled": 10,
+      "unresolved": 9
+    },
+    "flask/eca5fd1d": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 17,
+      "omitted": 31,
+      "omitted_high_rank": 25,
+      "unmodelled": 1,
+      "unresolved": 21
+    },
+    "flask/daf1510a": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 26,
+      "omitted": 53,
+      "omitted_high_rank": 52,
+      "unmodelled": 6,
+      "unresolved": 11
+    },
+    "flask/9822a035": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "flask/d718ecf6": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 22,
+      "omitted": 221,
+      "omitted_high_rank": 209,
+      "unmodelled": 0,
+      "unresolved": 58
+    },
+    "flask/72c85e80": {
+      "recall": 0.5,
+      "precision": 0.037,
+      "returned": 27,
+      "omitted": 89,
+      "omitted_high_rank": 5,
+      "unmodelled": 17,
+      "unresolved": 37
+    },
+    "flask/4256fc63": {
+      "recall": 1.0,
+      "precision": 0.1154,
+      "returned": 26,
+      "omitted": 117,
+      "omitted_high_rank": 83,
+      "unmodelled": 9,
+      "unresolved": 23
+    },
+    "flask/2a33c178": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 25,
+      "omitted": 54,
+      "omitted_high_rank": 41,
+      "unmodelled": 4,
+      "unresolved": 12
+    },
+    "flask/5d8e3565": {
+      "recall": 0.6667,
+      "precision": 0.3158,
+      "returned": 19,
+      "omitted": 17,
+      "omitted_high_rank": 15,
+      "unmodelled": 9,
+      "unresolved": 13
+    },
+    "flask/095651be": {
+      "recall": 1.0,
+      "precision": 0.0833,
+      "returned": 12,
+      "omitted": 15,
+      "omitted_high_rank": 15,
+      "unmodelled": 15,
+      "unresolved": 15
+    },
+    "flask/58f3536a": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 26,
+      "omitted": 15,
+      "omitted_high_rank": 12,
+      "unmodelled": 18,
+      "unresolved": 27
+    },
+    "flask/c2810ffd": {
+      "recall": 0.5,
+      "precision": 0.0769,
+      "returned": 13,
+      "omitted": 17,
+      "omitted_high_rank": 17,
+      "unmodelled": 15,
+      "unresolved": 20
+    },
+    "flask/9e686d93": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "flask/5544d094": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 23,
+      "omitted": 70,
+      "omitted_high_rank": 57,
+      "unmodelled": 6,
+      "unresolved": 14
+    },
+    "flask/c9e000b9": {
+      "recall": 0.3333,
+      "precision": 0.0526,
+      "returned": 19,
+      "omitted": 14,
+      "omitted_high_rank": 13,
+      "unmodelled": 8,
+      "unresolved": 13
+    },
+    "flask/45174bf9": {
+      "recall": 0.6667,
+      "precision": 0.125,
+      "returned": 16,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 8,
+      "unresolved": 10
+    },
+    "flask/96c97dec": {
+      "recall": 0.4,
+      "precision": 0.0833,
+      "returned": 24,
+      "omitted": 91,
+      "omitted_high_rank": 35,
+      "unmodelled": 7,
+      "unresolved": 15
+    },
+    "flask/3351a867": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 27,
+      "omitted": 17,
+      "omitted_high_rank": 16,
+      "unmodelled": 11,
+      "unresolved": 7
+    },
+    "flask/a406c297": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 26,
+      "omitted": 41,
+      "omitted_high_rank": 40,
+      "unmodelled": 7,
+      "unresolved": 34
+    },
+    "express/59e205a5": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/723b5451": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/a0276c6c": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/71540147": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/081b811b": {
+      "recall": 1.0,
+      "precision": 0.2,
+      "returned": 5,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 1
+    },
+    "express/76eaa326": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/1e2951a8": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/f5a24063": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/a8a85644": {
+      "recall": 1.0,
+      "precision": 0.5,
+      "returned": 4,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 3
+    },
+    "express/f7e94a30": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 12,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 11
+    },
+    "express/0e5f2f84": {
+      "recall": 1.0,
+      "precision": 0.5,
+      "returned": 2,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 1
+    },
+    "express/4d1ee23f": {
+      "recall": 1.0,
+      "precision": 0.0588,
+      "returned": 17,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 1,
+      "unresolved": 10
+    },
+    "express/2a0c35a1": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/17cea290": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/a01326ad": {
+      "recall": 1.0,
+      "precision": 0.1429,
+      "returned": 7,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 5
+    },
+    "express/7f26cfca": {
+      "recall": 0.6667,
+      "precision": 0.6667,
+      "returned": 3,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 1
+    },
+    "express/9c731f18": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 22,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 1,
+      "unresolved": 14
+    },
+    "express/f433b7c7": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 19,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 1,
+      "unresolved": 11
+    },
+    "express/f14e39d4": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/4ac7474e": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 3,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 5
+    },
+    "express/bad55f79": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/f8b954bc": {
+      "recall": 0.8571,
+      "precision": 0.6667,
+      "returned": 9,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 4,
+      "unresolved": 7
+    },
+    "express/d42d8f5b": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/f41d09a3": {
+      "recall": 0.375,
+      "precision": 1.0,
+      "returned": 9,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 4,
+      "unresolved": 1
+    },
+    "express/cec0c06a": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/e218377a": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/e4907ce8": {
+      "recall": 0.0,
+      "precision": 0.0,
+      "returned": 6,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 4,
+      "unresolved": 1
+    },
+    "express/6bebe083": {
+      "recall": null,
+      "reason": "entry symbol has no graph node"
+    },
+    "express/80503087": {
+      "recall": 0.5,
+      "precision": 0.3333,
+      "returned": 3,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 0,
+      "unresolved": 3
+    },
+    "express/accd6180": {
+      "recall": 1.0,
+      "precision": 0.25,
+      "returned": 8,
+      "omitted": 0,
+      "omitted_high_rank": 0,
+      "unmodelled": 4,
+      "unresolved": 1
+    }
+  }
+}

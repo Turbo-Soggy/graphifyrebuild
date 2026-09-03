@@ -54,7 +54,7 @@ TOOL_NAMES = (
     "context_tool",
     "overrides_tool",
     "triage_tool",
-    "verify_fix_tool",
+    "edge_diff_tool",
     "list_relations_tool",
 )
 
@@ -202,7 +202,8 @@ def build_server():
             summary = (f"{len(pack['included'])} symbol(s), "
                        f"{pack['tokens_used']}/{pack['budget']} tokens, "
                        f"{len(pack['unresolved'])} unresolved, "
-                       f"{len(pack['omitted'])} omitted")
+                       f"{len(pack['omitted'])} omitted, "
+                       f"{len(pack['unmodelled'])} absent from graph")
             if not pack["seed_resolved"]:
                 summary = (f"SEED NOT SLICED ({pack['seed_unresolved_reason']}) — "
                            "no source for the requested symbol; " + summary)
@@ -266,7 +267,7 @@ def build_server():
             return _err(str(exc))
 
     @mcp.tool()
-    def verify_fix_tool(action: str, nodes: Optional[list[str]] = None,
+    def edge_diff_tool(action: str, nodes: Optional[list[str]] = None,
                         out: Optional[str] = None) -> dict:
         """Pre/post-fix structural edge diff for target nodes.
 

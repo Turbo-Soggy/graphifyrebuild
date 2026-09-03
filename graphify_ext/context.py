@@ -132,6 +132,7 @@ def build_context(
     per_symbol_cap: int = 80,
     max_nodes: int = 200,
     decay: float = DEFAULT_DECAY,
+    order: str = "current",
 ) -> dict:
     """Seed symbol + neighbourhood, as source, within ``budget`` tokens."""
     rel = relations or _br.DEFAULT_RELATIONS
@@ -171,15 +172,56 @@ def build_context(
 
     scores = {str(n["id"]): _score(n) for n in radius["nodes"]}
 
-    ranked = sorted(
-        radius["nodes"],
-        key=lambda n: (
-            0 if str(n["id"]) == seed else 1,      # the seed is never displaced
-            -scores[str(n["id"])],                 # then relevance, descending
-            degree.get(str(n["id"]), 0),           # then specific before hub
-            str(n["id"]),                          # then stable, never arbitrary
-        ),
-    )
+    # Depth stays the primary key. A weighted score (relation_weight x
+    # decay**depth) was tried as the primary key and MEASURED WORSE: identical
+    # recall at depths 1-3 and any budget, and -0.071 at depth 4 / budget 12k
+    # (0.494 vs 0.565). Sweeping decay 0.5 -> 0.95 never recovered it, which
+    # rules out the depth penalty as the cause and leaves the relation weights
+    # themselves: ranking `contains` below `calls` loses on a corpus whose
+    # ground truth is reached THROUGH containment chains. See
+    # bench/agentctx/decay-sweep.log and plans/04-correctness-roadmap.md.
+    #
+    # What survives from that attempt, because neither depends on the scoring
+    # hypothesis: the score orders symbols WITHIN a depth (strictly better than
+    # the alphabetical tie-break it replaces), and the tie-break below is
+    # deterministic and disclosed rather than arbitrary.
+    # `order="legacy"` reproduces the pre-2026-09-03 key exactly, so any
+    # ordering change can be A/B'd against it under matched conditions instead
+    # of against a reconstructed baseline. Reconstructing one is how three
+    # separate config mismatches got stacked into a single bogus comparison.
+    if order == "legacy":
+        _LEGACY_RANK = {"calls": 0, "indirect_call": 0, "method": 1, "contains": 1,
+                        "extends": 2, "inherits": 2, "implements": 2,
+                        "mixes_in": 2, "embeds": 2, "references": 3, "uses": 3,
+                        "imports": 4, "imports_from": 4, "dynamic_import": 4,
+                        "re_exports": 4, "requires": 4}
+        ranked = sorted(
+            radius["nodes"],
+            key=lambda n: (
+                0 if str(n["id"]) == seed else 1,
+                int(n.get("blast_depth", 0)),
+                _LEGACY_RANK.get(via.get(str(n["id"]), ""), 5),
+                str(n.get("label", "")),
+            ),
+        )
+    else:
+        ranked = sorted(
+            radius["nodes"],
+            key=lambda n: (
+                0 if str(n["id"]) == seed else 1,  # the seed is never displaced
+                int(n.get("blast_depth", 0)),      # depth first — measured best
+                -scores[str(n["id"])],             # relation weight within a depth
+                # Members before non-members. This is the ONLY part of the sort
+                # that moved recall: degree-ascending scored 0.494 and
+                # degree-descending 0.530 against 0.565 here, at d3/b12k.
+                # The original alphabetical tie-break hit 0.565 by accident —
+                # graphify labels methods ".name()", and "." sorts before every
+                # letter, so sorting by label WAS a members-first rule. Making
+                # it explicit keeps the measured behaviour and states the reason.
+                0 if str(n.get("label", "")).startswith(".") else 1,
+                str(n["id"]),                      # then stable, never arbitrary
+            ),
+        )
 
 
 
@@ -244,6 +286,44 @@ def build_context(
     # neighbours, or the seed itself could not be sliced. Collapsing them into
     # "0 symbols" would hand the agent the same missing-vs-absent ambiguity this
     # module exists to remove, so say which it was.
+    # ---- disclose what the GRAPH does not contain -----------------------
+    # The gaps above (`unresolved`, `omitted`) are things the graph knows about
+    # and this pack chose not to emit. This is the other kind: symbols that are
+    # really there in the source and have no node at all, so nothing downstream
+    # could ever mention them. Measured on 14 checkouts of psf/requests: 610 of
+    # 610 functions nested inside another function have no node (a graphify
+    # design choice), and every remaining non-dunder miss was an id collision.
+    # An agent told "here is the context" while a closure inside the very
+    # function it is editing is invisible has been misled by omission.
+    graph_lines: dict[str, set[int]] = {}
+    for n in graphio.nodes(data):
+        loc = str(n.get("source_location") or "")
+        if loc.startswith("L") and loc[1:].isdigit() and n.get("source_file"):
+            graph_lines.setdefault(str(n["source_file"]), set()).add(int(loc[1:]))
+
+    unmodelled: list[dict] = []
+    spans: dict[str, list[tuple[int, int]]] = {}
+    for i in included:
+        spans.setdefault(str(i["file"]), []).append((i["lines"][0], i["lines"][1]))
+    for f, ranges in spans.items():
+        defs = symbols.definitions_in(root, f)
+        if defs is None:
+            continue
+        known = graph_lines.get(f, set())
+        for sym in defs:
+            if sym.def_line in known:
+                continue
+            if not any(lo <= sym.def_line <= hi for lo, hi in ranges):
+                continue                      # outside what the agent was shown
+            unmodelled.append({
+                "name": sym.name, "kind": sym.kind, "file": sym.file,
+                "lines": [sym.start, sym.end], "def_line": sym.def_line,
+                "signature": sym.signature,
+                "reason": ("nested inside another definition — graphify emits no "
+                           "node for these" if sym.name.count(".") >= 1
+                           else "present in source but absent from the graph"),
+            })
+
     # Severity is only knowable once everything that fitted is known, so it is
     # assigned here rather than at drop time.
     kept = [i["score"] for i in included if i["id"] != seed]
@@ -266,11 +346,12 @@ def build_context(
         "direction": direction,
         "budget": budget,
         "decay": decay,
-        "ranking": "relation_weight * decay**depth",
+        "ranking": "depth, then relation_weight * decay**depth within depth",
         "high_rank_floor": floor,
         "tokens_used": used,
         "token_method": _token_method(),
         "included": included,
+        "unmodelled": unmodelled,
         "unresolved": unresolved,
         "omitted": omitted,
         "text": "\n".join(chunks),
