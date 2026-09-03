@@ -79,18 +79,24 @@ def is_pkg_source(path: str, prefixes: tuple[str, ...]) -> bool:
 # --------------------------------------------------------------------------
 
 def symbol_table(source: bytes, path: str = "x.py") -> list[dict]:
-    """Every definition in ``source`` with its true extent.
+    """Every definition in ``source``, with BOTH line numbers kept separate.
 
     Delegates to ``graphify_ext.symbols`` — the SAME walker the product uses to
     slice code — so the benchmark's notion of "a symbol" cannot drift away from
     the thing being measured. ``path`` selects the grammar.
+
+    ``def_line`` is the JOIN KEY to a graph node (graphify records the ``def``
+    line). ``extent_start``..``end`` is the CONTAINMENT range. These were one
+    field, and that defect fired: a changed ``@decorator`` line sits above
+    ``def_line``, so it fell outside its own symbol. Measured on the frozen
+    flask corpus: 13 hunk lines mis-attributed, and one decorated module-level
+    function whose change vanished from the ground truth entirely.
     """
     syms = symbols.definitions_from_source(source, path)
     if syms is None:
         return []
-    return [{"name": s.name, "kind": s.kind,
-             "start": s.def_line,      # match on the DEFINITION line, as graphify records
-             "end": s.end} for s in syms]
+    return [{"name": s.name, "kind": s.kind, "def_line": s.def_line,
+             "extent_start": s.start, "end": s.end} for s in syms]
 
 
 def enclosing(syms: list[dict], line: int) -> str | None:
@@ -102,8 +108,9 @@ def enclosing(syms: list[dict], line: int) -> str | None:
     """
     best: dict | None = None
     for s in syms:
-        if s["start"] <= line <= s["end"]:
-            if best is None or (s["end"] - s["start"]) < (best["end"] - best["start"]):
+        if s["extent_start"] <= line <= s["end"]:
+            span = s["end"] - s["extent_start"]
+            if best is None or span < (best["end"] - best["extent_start"]):
                 best = s
     return best["name"] if best else None
 
@@ -115,9 +122,10 @@ def enclosing(syms: list[dict], line: int) -> str | None:
 HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@")
 
 
-def changed_old_lines(repo: Path, commit: str,
-                      prefixes: tuple[str, ...]) -> dict[str, list[int]]:
-    """Map file -> old-side line numbers the commit touched.
+def changed_old_lines(repo: Path, commit: str, prefixes: tuple[str, ...]):
+    """-> (modified_lines_by_file, insertion_anchors_by_file).
+
+    Map file -> old-side line numbers the commit touched.
 
     ``-U0`` keeps hunks tight so the ground truth is the symbols actually edited
     rather than everything within three lines of an edit. Pure insertions have an
@@ -129,6 +137,7 @@ def changed_old_lines(repo: Path, commit: str,
         "--diff-filter=M", commit,
     )
     per_file: dict[str, list[int]] = {}
+    inserts: dict[str, list[int]] = {}
     current: str | None = None
     for line in diff.splitlines():
         if line.startswith("--- a/"):
@@ -144,10 +153,15 @@ def changed_old_lines(repo: Path, commit: str,
             start = int(m.group(1))
             count = int(m.group(2)) if m.group(2) is not None else 1
             if count == 0:
-                per_file.setdefault(current, []).append(start)
+                # `@@ -N,0` means "inserted AFTER old line N". Anchoring on N
+                # alone attributed a pure insertion BETWEEN two symbols to
+                # whichever symbol ended at N — a symbol the commit never
+                # touched. Record the gap so the caller can require that both
+                # sides fall inside one symbol before attributing it.
+                inserts.setdefault(current, []).append(start)
             else:
                 per_file.setdefault(current, []).extend(range(start, start + count))
-    return per_file
+    return per_file, inserts
 
 
 def ground_truth(repo: Path, commit: str,
@@ -160,24 +174,42 @@ def ground_truth(repo: Path, commit: str,
     ``source_location`` is exactly tree-sitter's start line.
     """
     parent = git(repo, "rev-parse", f"{commit}^").strip()
-    per_file = changed_old_lines(repo, commit, prefixes)
+    per_file, inserts = changed_old_lines(repo, commit, prefixes)
     by_file: dict[str, list[dict]] = {}
     flat: list[str] = []
-    for path, lines in per_file.items():
+    for path in sorted(set(per_file) | set(inserts)):
         try:
             src = git_bytes(repo, "show", f"{parent}:{path}")
         except subprocess.CalledProcessError:
             continue  # file did not exist at P (add), nothing to resolve against
         syms = symbol_table(src, path)
-        by_name = {s["name"]: s for s in syms}
-        names: list[str] = []
-        for ln in lines:
+        hits: list[str] = []
+        for ln in per_file.get(path, []):
             nm = enclosing(syms, ln)
-            if nm and nm not in names:
-                names.append(nm)
-        if names:
-            by_file[path] = [dict(by_name[n]) for n in names]
-            flat.extend(f"{path}::{n}" for n in names)
+            if nm and nm not in hits:
+                hits.append(nm)
+        for anchor in inserts.get(path, []):
+            # Attribute a pure insertion only when BOTH sides of the insertion
+            # point sit inside the same symbol. An insertion between two
+            # definitions belongs to neither.
+            before, after = enclosing(syms, anchor), enclosing(syms, anchor + 1)
+            if before and before == after and before not in hits:
+                hits.append(before)
+        if hits:
+            # Duplicate qualified names keep the entry whose extent actually
+            # contains a changed line; a name-keyed dict silently kept the last.
+            touched = set(per_file.get(path, [])) | set(inserts.get(path, []))
+            chosen = []
+            for n in hits:
+                cands = [s for s in syms if s["name"] == n]
+                best = next((c for c in cands
+                             if any(c["extent_start"] <= l <= c["end"]
+                                    for l in touched)), cands[0] if cands else None)
+                if best:
+                    chosen.append(dict(best))
+            if chosen:
+                by_file[path] = chosen
+                flat.extend(f"{path}::{c['name']}" for c in chosen)
     return by_file, flat
 
 
@@ -195,8 +227,7 @@ STOPWORDS = {
 }
 
 
-def pick_entry(message: str, gt_flat: list[str], repo: Path,
-               parent: str) -> "str | None":
+def pick_entry(message: str, gt_flat: list[str]) -> "str | None":
     """Symbol named in the commit message, preferring one that is in ``G``.
 
     Preferring a ``G`` member is not score-fitting: a real report names the
@@ -251,13 +282,14 @@ def followup_commits(repo: Path, commit: str, by_file: dict[str, list[dict]],
             continue
         for later in log.split():
             try:
-                lines = changed_old_lines(repo, later, (path,)).get(path, [])
+                mods, ins = changed_old_lines(repo, later, (path,))
+                lines = mods.get(path, []) + ins.get(path, [])
             except subprocess.CalledProcessError:
                 continue
             if not lines:
                 continue
             for s in syms:
-                if any(s["start"] <= ln <= s["end"] for ln in lines):
+                if any(s["extent_start"] <= ln <= s["end"] for ln in lines):
                     if later not in hits:
                         hits.append(later)
                     break
@@ -306,7 +338,7 @@ def build(repo: Path, prefixes: tuple[str, ...], repo_name: str,
             continue
 
         parent = git(repo, "rev-parse", f"{sha}^").strip()
-        entry = pick_entry(message, flat, repo, parent)
+        entry = pick_entry(message, flat)
         if entry is None:
             skipped["no_entry"] += 1
             continue

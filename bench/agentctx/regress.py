@@ -64,7 +64,7 @@ def targets(task: dict) -> set[tuple[str, int]]:
     for g in task["discover"]:
         path, name = g.split("::", 1)
         sym = next(s for s in task["by_file"][path] if s["name"] == name)
-        out.add((path, sym["start"]))
+        out.add((path, sym["def_line"]))
     return out
 
 

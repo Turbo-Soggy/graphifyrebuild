@@ -295,32 +295,48 @@ def build_context(
     # design choice), and every remaining non-dunder miss was an id collision.
     # An agent told "here is the context" while a closure inside the very
     # function it is editing is invisible has been misled by omission.
-    graph_lines: dict[str, set[int]] = {}
+    graph_syms: dict[str, set[tuple[int, str]]] = {}
     for n in graphio.nodes(data):
         loc = str(n.get("source_location") or "")
         if loc.startswith("L") and loc[1:].isdigit() and n.get("source_file"):
-            graph_lines.setdefault(str(n["source_file"]), set()).add(int(loc[1:]))
+            leaf = str(n.get("label") or "").strip().lstrip(".").rstrip("()")
+            graph_syms.setdefault(str(n["source_file"]), set()).add(
+                (int(loc[1:]), leaf))
 
     unmodelled: list[dict] = []
-    spans: dict[str, list[tuple[int, int]]] = {}
+    shown: dict[str, list[tuple[int, int]]] = {}
     for i in included:
-        spans.setdefault(str(i["file"]), []).append((i["lines"][0], i["lines"][1]))
-    for f, ranges in spans.items():
+        shown.setdefault(str(i["file"]), []).append((i["lines"][0], i["lines"][1]))
+    for f, ranges in shown.items():
         defs = symbols.definitions_in(root, f)
         if defs is None:
             continue
-        known = graph_lines.get(f, set())
+        known = graph_syms.get(f, set())
+        known_lines = {ln for ln, _ in known}
+        kinds = {s.name: s.kind for s in defs}
         for sym in defs:
-            if sym.def_line in known:
+            leaf = sym.name.split(".")[-1]
+            # Suppress on (line AND name), not line alone. graphify emits
+            # doc/rationale nodes that share a line with real code, so a
+            # line-only check let an unrelated node hide a genuine gap.
+            if (sym.def_line, leaf) in known:
                 continue
-            if not any(lo <= sym.def_line <= hi for lo, hi in ranges):
-                continue                      # outside what the agent was shown
+            if sym.def_line in known_lines and leaf in {
+                    lf for ln, lf in known if ln == sym.def_line}:
+                continue
+            inside = any(lo <= sym.def_line <= hi for lo, hi in ranges)
+            nested = symbols.is_nested_in_function(sym.name, kinds)
             unmodelled.append({
                 "name": sym.name, "kind": sym.kind, "file": sym.file,
                 "lines": [sym.start, sym.end], "def_line": sym.def_line,
                 "signature": sym.signature,
-                "reason": ("nested inside another definition — graphify emits no "
-                           "node for these" if sym.name.count(".") >= 1
+                # Whether the gap sits in code the agent was shown, or elsewhere
+                # in a file it was shown. Restricting to the former dropped the
+                # case this feature was built for: a sibling top-level
+                # `res.json = function(){}` next to an included `res.send`.
+                "within_shown_code": inside,
+                "reason": ("nested inside another function — graphify emits no "
+                           "node for these" if nested
                            else "present in source but absent from the graph"),
             })
 

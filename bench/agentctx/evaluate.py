@@ -122,7 +122,7 @@ def resolve_entry(data: dict, task: dict) -> str | None:
     for path, syms in task["by_file"].items():
         for s in syms:
             if s["name"] == task["entry"]:
-                want = (path, s["start"])
+                want = (path, s["def_line"])   # graph records the def line
     if want is None:
         return None
     cands = [n for n in data["nodes"] if node_key(n) == want]
@@ -171,7 +171,7 @@ def arm_grep(wt: Path, task: dict) -> tuple[set[tuple[str, int]], str]:
         if nm:
             sym = next((s for s in tables[rel] if s["name"] == nm), None)
             if sym:
-                found.add((rel, sym["start"]))
+                found.add((rel, sym["def_line"]))
     return found, text
 
 
@@ -258,7 +258,7 @@ def main() -> int:
         data = load_graph_json(wt)
         seed = resolve_entry(data, task)
         target = {(g.split("::", 1)[0],
-                   next(s["start"] for s in task["by_file"][g.split("::", 1)[0]]
+                   next(s["def_line"] for s in task["by_file"][g.split("::", 1)[0]]
                         if s["name"] == g.split("::", 1)[1]))
                   for g in task["discover"]}
 

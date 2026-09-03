@@ -457,15 +457,39 @@ def test_symbols_the_graph_does_know_are_not_reported_as_gaps(tmp_path):
     assert pack["unmodelled"] == []
 
 
-def test_gaps_outside_the_emitted_code_are_not_reported(tmp_path):
-    """Only gaps inside what the agent was actually shown are its problem."""
-    (tmp_path / "m.py").write_text(
-        NESTED_SRC + "\n\ndef unrelated():\n    def hidden():\n        pass\n",
-        encoding="utf-8")
+EXTRA_SRC = """
+
+def unrelated():
+    def hidden():
+        pass
+"""
+
+
+def test_gaps_are_reported_file_wide_and_flagged_by_scope(tmp_path):
+    """Gaps anywhere in a shown FILE are reported, flagged by whether the
+    agent actually saw that code.
+
+    This replaces an earlier contract that reported gaps only *inside* an
+    included symbol's extent. That narrowing dropped the case the feature was
+    built for: on expressjs/express a sibling top-level `res.json = function(){}`
+    beside an included `res.send` was never mentioned, though neither is in the
+    graph. Silence about a sibling in a file the agent is editing is the failure
+    this module exists to prevent, so the scope widened and the flag carries the
+    distinction instead of the scope hiding it.
+    """
+    (tmp_path / "m.py").write_text(NESTED_SRC + EXTRA_SRC, encoding="utf-8")
     graph = {"nodes": [{"id": "outer", "label": "outer()", "source_file": "m.py",
                         "source_location": "L1"}], "links": []}
     pack = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
-    assert [u["name"] for u in pack["unmodelled"]] == ["outer.inner"]
+    by = {u["name"]: u for u in pack["unmodelled"]}
+    assert by["outer.inner"]["within_shown_code"] is True
+    assert by["unrelated"]["within_shown_code"] is False
+    assert by["unrelated.hidden"]["within_shown_code"] is False
+    # A file the pack never touched is still never invented.
+    (tmp_path / "other.py").write_text(
+        "def far():" + chr(10) + "    return 1" + chr(10), encoding="utf-8")
+    pack2 = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
+    assert not any(u["file"] == "other.py" for u in pack2["unmodelled"])
 
 
 # --------------------------------------------------------------------------
