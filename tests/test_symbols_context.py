@@ -116,9 +116,9 @@ def test_line_with_no_definition_resolves_to_nothing(tree):
 
 
 def test_unsupported_language_reports_none_rather_than_guessing(tree):
-    (tree / "pkg" / "thing.rb").write_text("def foo\nend\n", encoding="utf-8")
-    assert symbols.language_for("pkg/thing.rb") is None
-    assert symbols.resolve(tree, "pkg/thing.rb", 1) is None
+    (tree / "pkg" / "thing.zig").write_text("fn foo() void {}\n", encoding="utf-8")
+    assert symbols.language_for("pkg/thing.zig") is None
+    assert symbols.resolve(tree, "pkg/thing.zig", 1) is None
 
 
 def test_missing_file_resolves_to_nothing(tree):
@@ -214,8 +214,8 @@ def test_each_failure_mode_reports_its_own_code(tree):
     "probably a docstring node", which is a guess presented as a refusal.
     """
     # unsupported language
-    (tree / "pkg" / "thing.rb").write_text("def foo\nend\n", encoding="utf-8")
-    u = symbols.resolve_detail(tree, "pkg/thing.rb", 1)
+    (tree / "pkg" / "thing.zig").write_text("fn foo() void {}\n", encoding="utf-8")
+    u = symbols.resolve_detail(tree, "pkg/thing.zig", 1)
     assert u.code == symbols.UNSUPPORTED_LANGUAGE
 
     # file that is not there
@@ -240,7 +240,7 @@ def test_each_failure_mode_reports_its_own_code(tree):
 def test_resolve_never_returns_a_bare_none_from_detail(tree):
     """`resolve_detail` is total: always a Symbol or a typed Unresolved."""
     for path, line in (("pkg/mod.py", 4), ("pkg/mod.py", 5),
-                       ("pkg/absent.py", 1), ("pkg/thing.rb", 1)):
+                       ("pkg/absent.py", 1), ("pkg/thing.zig", 1)):
         got = symbols.resolve_detail(tree, path, line)
         assert isinstance(got, (symbols.Symbol, symbols.Unresolved))
         assert got is not None
@@ -364,7 +364,9 @@ def test_shipped_ordering_is_depth_first_then_relation_weight(tmp_path):
     assertion held on `score_node` in isolation while the pack ordered the
     opposite way, so it described code that had been removed.
     """
-    (tmp_path / "m.py").write_text(BIG_SRC, encoding="utf-8")
+    # Labels must name the function really defined at the line: a node whose
+    # label disagrees with the source is refused as a stale-graph mismatch.
+    (tmp_path / "m.py").write_text(_named_src("a", "b"), encoding="utf-8")
     graph = {"nodes": [
         {"id": "seed", "label": "seed()", "source_file": "m.py", "source_location": "L1"},
         {"id": "nearimp", "label": "a()", "source_file": "m.py",
@@ -391,7 +393,7 @@ def test_tiebreak_is_members_first_then_id_not_label(tmp_path):
     and so pinned nothing. This picks a case where the two genuinely disagree:
     same depth, same relation, label order opposite to id order.
     """
-    (tmp_path / "m.py").write_text(BIG_SRC, encoding="utf-8")
+    (tmp_path / "m.py").write_text(_named_src("zebra", "alpha"), encoding="utf-8")
     graph = {"nodes": [
         {"id": "seed", "label": "seed()", "source_file": "m.py", "source_location": "L1"},
         {"id": "aaa", "label": "zebra()", "source_file": "m.py",
@@ -432,7 +434,18 @@ def test_omitted_severity_distinguishes_inversions_from_tail(tmp_path):
         links.append({"source": "seed", "target": f"n{i}",
                       "relation": "calls" if i % 2 == 0 else "imports"})
     graph = {"nodes": nodes, "links": links}
-    pack = context.build_context(graph, "seed", tmp_path, depth=1, budget=260)
+    # Size the budget from the tokenizer actually in use: the seed plus the
+    # four `calls` callees, with no room for any of the `imports`. A fixed
+    # literal budget made this test pass under tiktoken and fail under the
+    # chars/4 fallback (where only the seed fitted, so `floor` was None and
+    # every drop was labelled high_rank).
+    per = [context._count(context._render(
+        symbols.resolve(tmp_path, "m.py", ln), "RELATED", 1, "calls", 80)[0])
+        for ln in BIG_LINES]
+    seed_cost = context._count(context._render(
+        symbols.resolve(tmp_path, "m.py", 1), "SEED", 0, None, 80)[0])
+    budget = seed_cost + sum(per[0::2]) + min(per) // 2
+    pack = context.build_context(graph, "seed", tmp_path, depth=1, budget=budget)
     assert pack["included"], "fixture must fit more than nothing"
     assert pack["omitted"], "fixture must overflow the budget"
     sev = {o["severity"] for o in pack["omitted"]}
@@ -472,6 +485,17 @@ BIG_LINES = []
 for _i in range(8):
     BIG_LINES.append(BIG_SRC.count(chr(10)) + 1)
     BIG_SRC += _BLOCK.format(i=_i)
+
+
+
+def _named_src(*names: str) -> str:
+    """BIG_SRC with its first functions renamed, so a fixture's labels can be
+    made to match the definitions at BIG_LINES without lying to the resolver."""
+    out = BIG_SRC
+    for i, nm in enumerate(names):
+        out = out.replace(f"def f{i}(", f"def {nm}(")
+    return out
+
 
 NESTED_SRC = '''\
 def outer(a):

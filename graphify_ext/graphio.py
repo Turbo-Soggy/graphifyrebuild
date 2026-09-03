@@ -68,6 +68,26 @@ def nodes(data: dict) -> list[dict]:
     return data.setdefault("nodes", [])
 
 
+def is_file_node(node: dict) -> bool:
+    """True for the node that stands for a whole file.
+
+    graphify labels a file node with its basename -- EXCEPT index-style files,
+    which get the parent directory too (``router/index.js`` for
+    ``lib/router/index.js``), so that a repo with twenty ``index.js`` files has
+    twenty distinguishable labels. Matching on the bare basename alone missed
+    every one of those, and with it every definition the supplement should
+    have materialised in them (express ``lib/router/index.js``: 0 of 12).
+    """
+    f = node.get("source_file")
+    if not f or str(node.get("source_location") or "") != "L1":
+        return False
+    if node.get("_callable") or str(node.get("label", "")).endswith("()"):
+        return False
+    label = str(node.get("label", "")).replace("\\", "/")
+    path = str(f).replace("\\", "/")
+    return label == Path(path).name or (bool(label) and path.endswith("/" + label)) or label == path
+
+
 def node_index(data: dict) -> dict[str, dict]:
     return {str(n.get("id")): n for n in nodes(data) if n.get("id") is not None}
 
@@ -101,27 +121,68 @@ def _bare(label: str) -> str:
     return label[:-2] if label.endswith("()") else label
 
 
-def resolve_node(data: dict, query: str) -> str | None:
-    """Resolve a user query (id, label, bare name, or source path) to one node id.
+def _leaf(label: str) -> str:
+    """The name a person types: no callable parens, no member dot.
+
+    graphify labels a method ``.parse()``; upstream's ladder compares the bare
+    form ``.parse`` against the query ``parse`` and never matches, so a method
+    could only ever be reached by id or by substring -- and the substring step
+    then reported ``parse`` as ambiguous against ``parser_count_tokens``.
+    """
+    return _bare(label).lstrip(".")
+
+
+# `path/to/file.py:123` or `path/to/file.py:L123` -- the shape a stack trace,
+# a SAST finding or a failing test names a location in.
+_FILE_LINE_RE = re.compile(r"^(?P<file>[^:\n]+?\.[A-Za-z0-9_]+):L?(?P<line>\d+)$")
+
+
+def resolve_node(data: dict, query: str, root: "Path | None" = None) -> str | None:
+    """Resolve a user query (id, label, bare name, source path, or ``file:line``)
+    to one node id.
 
     Port of upstream affected.resolve_seed's resolution ladder (exact id →
     exact label → bare callable name → source_file → unique substring), kept
     behaviorally aligned so ext commands and stock commands agree on what a
-    name means.
+    name means. Two additions the stock ladder lacks:
+
+    * ``file:line`` resolves through :func:`resolve_by_location` -- a bug
+      report names a location far more often than it names a node id.
+    * ``qualified_name`` is matched exactly after the label. Only supplement
+      nodes carry it (``res.json``, ``Widget.build``); it lets a caller ask for
+      a member by the name the source uses rather than by its bare leaf, which
+      is what disambiguates twenty ``send`` leaves across one Node codebase.
+
+    Returns ``None`` when nothing matches OR when several do; use
+    :func:`candidates` to see which, rather than guessing.
     """
     idx = node_index(data)
     if query in idx:
         return query
+    m = _FILE_LINE_RE.match(query.strip())
+    if m:
+        return resolve_by_location(data, m.group("file"), int(m.group("line")),
+                                   root=root)
     q = _norm(query.rstrip("/\\") or query)
 
     exact = [i for i, n in idx.items() if _norm(str(n.get("label", ""))) == q]
     if len(exact) == 1:
         return exact[0]
 
+    qual = [i for i, n in idx.items()
+            if n.get("qualified_name") and _norm(str(n["qualified_name"])) == q]
+    if len(qual) == 1:
+        return qual[0]
+
     qb = _bare(q)
     bare = [i for i, n in idx.items() if _bare(str(n.get("label", ""))) == qb]
     if len(bare) == 1:
         return bare[0]
+
+    ql = _leaf(q)
+    leaf = [i for i, n in idx.items() if _leaf(str(n.get("label", ""))) == ql]
+    if len(leaf) == 1:
+        return leaf[0]
 
     qpath = _norm(Path(query).as_posix())
     by_file = [i for i, n in idx.items() if _norm(str(n.get("source_file", ""))) == qpath]
@@ -136,6 +197,56 @@ def resolve_node(data: dict, query: str) -> str | None:
     if len(contains) == 1:
         return contains[0]
     return None
+
+
+def candidates(data: dict, query: str, limit: int = 25) -> list[dict]:
+    """Every node a query could mean, best match first.
+
+    :func:`resolve_node` answers "the one node" or nothing; an agent whose seed
+    came back as nothing needs to see WHY -- twenty ``send`` methods, or zero.
+    Ranking: exact label/qualified-name match, then bare-name match, then
+    substring on label / qualified name / id / source path. Callables before
+    non-callables at equal rank, then a stable id order. Each row carries the
+    fields needed to pick one: id, label, qualified_name, file, line, whether
+    it is callable, and its origin (extractor vs supplement).
+    """
+    q = _norm(str(query).strip())
+    qb = _bare(q)
+    ql = _leaf(q)
+    if not q:
+        return []
+    rows: list[tuple[tuple, dict]] = []
+    for nid, n in node_index(data).items():
+        label = _norm(str(n.get("label", "")))
+        qual = _norm(str(n.get("qualified_name") or ""))
+        path = _norm(str(n.get("source_file") or ""))
+        # "alpha", "alpha()" and ".alpha()" are the same name; the parens and
+        # the dot are graphify's callable/member markers, not part of what a
+        # person types.
+        if (label == q or _bare(label) == qb or _leaf(label) == ql
+                or (qual and qual == q) or nid == query):
+            rank = 0
+        elif qual and qual.split(".")[-1] == ql:
+            rank = 1
+        elif q in label or (qual and q in qual):
+            rank = 2
+        elif q in _norm(nid) or q in path:
+            rank = 3          # id/path substrings are the loosest signal
+        else:
+            continue
+        is_callable = bool(n.get("_callable")) or label.endswith("()")
+        rows.append(((rank, 0 if is_callable else 1, nid), {
+            "id": nid,
+            "label": n.get("label"),
+            "qualified_name": n.get("qualified_name"),
+            "file": n.get("source_file"),
+            "location": n.get("source_location"),
+            "callable": is_callable,
+            "origin": n.get("origin") or n.get("_origin") or "ast",
+            "match": ("exact", "bare-name", "substring", "id-or-path")[rank],
+        }))
+    rows.sort(key=lambda r: r[0])
+    return [r for _, r in rows[:limit]]
 
 
 _LOC_RE = re.compile(r"L(\d+)")

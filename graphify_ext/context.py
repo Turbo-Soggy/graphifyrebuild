@@ -120,6 +120,37 @@ def _render(sym: symbols.Symbol, role: str, depth: int, relation: str | None,
     return f"{header}\n{body}{tail}\n", truncated
 
 
+def _render_class_summary(sym: symbols.Symbol, role: str, depth: int,
+                          relation: str | None, root: Path,
+                          confidence: str | None = None) -> str:
+    """A RELATED class as signature + member index, not as a body.
+
+    A class body is the sum of its methods, each of which is its own node and
+    competes for the same budget on its own merits. Emitting the body too
+    spends the budget twice on the same lines -- flask's ``Flask`` class alone
+    is ~1,500 lines -- and measured on the corpus it was the single largest
+    consumer of body-tier tokens on the tasks that scored zero.
+    """
+    mark = (f" [{confidence}]"
+            if confidence and confidence not in ("EXTRACTED", "") else "")
+    via = f" via {relation}{mark}" if relation else ""
+    header = (f"=== {role} (depth {depth}{via}) "
+              f"{sym.file}:{sym.start}-{sym.end}  {sym.name} ===")
+    lines = [header, sym.signature or sym.source.splitlines()[0]]
+    defs = symbols.definitions_in(root, sym.file) or []
+    prefix_matches = [d for d in defs
+                      if d.start >= sym.start and d.end <= sym.end
+                      and d.name != sym.name
+                      and d.name.count(".") == sym.name.count(".") + 1]
+    if prefix_matches:
+        lines.append(f"    # {len(prefix_matches)} member(s); bodies are separate symbols:")
+        for d in prefix_matches[:40]:
+            lines.append(f"    L{d.def_line}  {d.signature[:100]}")
+        if len(prefix_matches) > 40:
+            lines.append(f"    ... and {len(prefix_matches) - 40} more")
+    return "\n".join(lines) + "\n"
+
+
 def build_context(
     data: dict,
     seed: str,
@@ -133,10 +164,42 @@ def build_context(
     max_nodes: int = 200,
     decay: float = DEFAULT_DECAY,
     order: str = "current",
+    manifest: dict | None = None,
+    index_budget: int = 0,
+    index_extra_depth: int = 1,
+    index_dynamic: bool = True,
 ) -> dict:
-    """Seed symbol + neighbourhood, as source, within ``budget`` tokens."""
+    """Seed symbol + neighbourhood, as source, within ``budget`` tokens.
+
+    Two tiers share ``budget``. **Bodies**: full source for the best-ranked
+    symbols within ``depth`` hops, until ``budget - index_budget`` is spent.
+    **Index**: one line each (``file:line  signature``) for everything else the
+    walk reached -- body-tier symbols that did not fit, plus symbols
+    ``index_extra_depth`` hops further out -- until ``index_budget`` is spent.
+    Measured motivation (70-task corpus, depth 2 / 6k): of 175 ground-truth
+    symbols, 37 were reachable one hop beyond the walk and 17 were reached but
+    dropped for budget; nothing was unreachable. An index line costs ~25 tokens
+    against ~300 for a body, so the tail of the ranking is far cheaper to
+    *name* than to *show*, and naming it is enough for an agent to open it.
+    ``index_budget=0`` disables the tier and reproduces the single-tier pack.
+
+    With ``index_dynamic`` (the default) ``index_budget`` is a RESERVE, not a
+    fixed share: bodies may spend up to ``budget - index_budget``, and the index
+    then gets everything bodies left unspent -- measured mean body usage is
+    ~4.4k of 6k, so a fixed 1,200 split wasted ~400 tokens per pack while
+    still costing one task its bodies. The sweep behind this is in
+    ``plans/04-correctness-roadmap.md``.
+
+    ``manifest`` is graphify's own ``manifest.json`` (``{path: {ast_hash,...}}``,
+    MD5 of file content at extraction time). When given, every file the pack
+    slices is re-hashed and any mismatch is reported in ``stale_files``: the
+    line numbers the graph holds for that file were true of a different
+    version of it. Omit it and the check is skipped, not faked -- ``stale_check``
+    says which happened.
+    """
     rel = relations or _br.DEFAULT_RELATIONS
-    radius = _br.blast_radius(data, seed, depth=depth, relations=rel,
+    walk_depth = depth + (index_extra_depth if index_budget > 0 else 0)
+    radius = _br.blast_radius(data, seed, depth=walk_depth, relations=rel,
                               direction=direction, max_nodes=max_nodes)
 
     by_id = {str(n["id"]): n for n in graphio.nodes(data)}
@@ -230,13 +293,40 @@ def build_context(
     unresolved: list[dict] = []
     omitted: list[dict] = []
     pending_omitted: list[dict] = []
+    index_candidates: list[tuple[dict, symbols.Symbol, dict, str]] = []
+    index_unsliceable = 0
     used = 0
+    body_budget = max(0, budget - index_budget)
 
     for n in ranked:
         nid = str(n["id"])
         node = by_id.get(nid, n)
+        node_depth = int(n.get("blast_depth", 0))
+        # A containment walk reaches the FILE node, which has no body to slice.
+        # It is not a failure, so it does not get a failure's reason code.
+        loc = str(node.get("source_location") or "")
+        if graphio.is_file_node(node):
+            if node_depth > depth and nid != seed:
+                index_unsliceable += 1
+                continue
+            unresolved.append({
+                "id": nid, "label": node.get("label"),
+                "file": node.get("source_file"), "location": loc,
+                "reason_code": "file_node",
+                "reason": "this is the file itself, not a definition; its "
+                          "members are reached via contains edges",
+                "is_seed": nid == seed,
+            })
+            continue
         got = symbols.resolve_node_detail(root, node)
         if isinstance(got, symbols.Unresolved):
+            if node_depth > depth and nid != seed:
+                # Reached only by the index tier's extra hop. It would never
+                # have been shown as a body, so it is not a failure of this
+                # pack; listing every rationale/module node three hops out as
+                # "unresolved" tripled that list and buried the real ones.
+                index_unsliceable += 1
+                continue
             # The reason is the one symbols.py actually hit, never inferred
             # here: an unreadable file and a docstring node are different
             # failures, and telling the agent the wrong one is a guess wearing
@@ -253,19 +343,29 @@ def build_context(
             continue
         sym = got
 
+        entry_meta = {
+            "id": nid, "label": node.get("label"),
+            "file": sym.file, "lines": [sym.start, sym.end],
+            "def_line": sym.def_line, "signature": sym.signature,
+            "depth": node_depth, "via": via.get(nid),
+            "score": round(scores.get(nid, 0.0), 5),
+        }
+        # Beyond the body depth: index tier only, never a body.
+        if node_depth > depth and nid != seed:
+            index_candidates.append((entry_meta, sym, node, "depth"))
+            continue
+
         role = "SEED" if nid == seed else "RELATED"
-        text, truncated = _render(sym, role, int(n.get("blast_depth", 0)),
-                                  via.get(nid), per_symbol_cap,
-                                  via_conf.get(nid))
+        if sym.kind == "class" and nid != seed:
+            text = _render_class_summary(sym, role, node_depth, via.get(nid),
+                                         root, via_conf.get(nid))
+            truncated = False
+        else:
+            text, truncated = _render(sym, role, node_depth, via.get(nid),
+                                      per_symbol_cap, via_conf.get(nid))
         cost = _count(text)
-        if used + cost > budget and nid != seed:
-            sc = scores.get(nid, 0.0)
-            pending_omitted.append({
-                "id": nid, "label": node.get("label"),
-                "file": sym.file, "lines": [sym.start, sym.end],
-                "reason": "budget",
-                "score": round(sc, 5),
-            })
+        if used + cost > body_budget and nid != seed:
+            index_candidates.append((entry_meta, sym, node, "budget"))
             continue
         chunks.append(text)
         used += cost
@@ -275,12 +375,45 @@ def build_context(
             # own line — the one graphify stores, and the only stable join key
             # back to graph nodes or to a tree-sitter symbol table.
             "lines": [sym.start, sym.end], "def_line": sym.def_line,
-            "depth": int(n.get("blast_depth", 0)),
+            "depth": node_depth,
             "via": via.get(nid), "via_confidence": via_conf.get(nid),
             "score": round(scores.get(nid, 0.0), 5),
             "signature": sym.signature,
             "truncated": truncated,
+            # Provenance of the NODE, distinct from the edge's confidence: an
+            # extractor node and one materialised by `supplement` from source
+            # are equally real, but an agent should be able to tell which
+            # layer it is trusting.
+            "origin": node.get("origin") or node.get("_origin") or "ast",
+            "qualified_name": node.get("qualified_name"),
         })
+
+    # ---- index tier ----------------------------------------------------
+    # Ranked order is preserved: body-tier overflow first (it outranked the
+    # deeper nodes), then the extra hop. Each line is name + location +
+    # signature -- enough to open the symbol, cheap enough to list dozens.
+    index: list[dict] = []
+    index_lines: list[str] = []
+    index_used = 0
+    index_cap = (max(index_budget, budget - used) if (index_dynamic and index_budget > 0)
+                 else index_budget)
+    for meta, sym, node, why in index_candidates:
+        line = f"  {sym.file}:L{sym.def_line}  {sym.signature[:120]}"
+        cost = _count(line + "\n")
+        if index_budget <= 0 or index_used + cost > index_cap:
+            pending_omitted.append({**meta, "reason": why if why == "budget"
+                                    else "index_budget"})
+            continue
+        index_used += cost
+        index_lines.append(line)
+        index.append({**meta, "kind": sym.kind, "tier_reason": why,
+                      "origin": node.get("origin") or node.get("_origin") or "ast",
+                      "qualified_name": node.get("qualified_name")})
+    if index_lines:
+        head = (f"--- index: {len(index_lines)} more symbol(s) reached "
+                f"(depth <= {walk_depth}); open by file:line ---")
+        chunks.append(head + "\n" + "\n".join(index_lines) + "\n")
+        used += _count(head + "\n") + index_used
 
     # An empty pack has two very different causes — the seed resolved but has no
     # neighbours, or the seed itself could not be sliced. Collapsing them into
@@ -314,6 +447,7 @@ def build_context(
         known = graph_syms.get(f, set())
         known_lines = {ln for ln, _ in known}
         kinds = {s.name: s.kind for s in defs}
+        extents = {s.name: (s.start, s.end) for s in defs}
         for sym in defs:
             leaf = sym.name.split(".")[-1]
             # Suppress on (line AND name), not line alone. graphify emits
@@ -325,7 +459,8 @@ def build_context(
                     lf for ln, lf in known if ln == sym.def_line}:
                 continue
             inside = any(lo <= sym.def_line <= hi for lo, hi in ranges)
-            nested = symbols.is_nested_in_function(sym.name, kinds)
+            nested = symbols.is_nested_in_function(sym.name, kinds,
+                                                   sym.def_line, extents)
             unmodelled.append({
                 "name": sym.name, "kind": sym.kind, "file": sym.file,
                 "lines": [sym.start, sym.end], "def_line": sym.def_line,
@@ -339,6 +474,83 @@ def build_context(
                            "node for these" if nested
                            else "present in source but absent from the graph"),
             })
+
+    # ---- tests that touch this context --------------------------------
+    # An autonomous fix ends with "run the tests that exercise this". The
+    # graph already knows which test files import/call/reference the symbols
+    # shown (`tests` edges when coverage or the heuristic was injected, and the
+    # extractor's own edges from files under tests/ otherwise). Collect them
+    # per shown symbol, with the relation and its confidence, so the agent can
+    # tell a coverage-measured link from an import.
+    from . import test_link as _tl
+    shown_ids = {i["id"] for i in included} | {i["id"] for i in index}
+    related_tests: list[dict] = []
+    seen_tests: set[tuple[str, str, str]] = set()
+    _NOT_A_TEST_LINK = {"contains", "method", "rationale_for", "embeds"}
+    for e in graphio.edges(data):
+        s_id, t_id = str(e.get("source")), str(e.get("target"))
+        rel_name = str(e.get("relation", ""))
+        if rel_name in _NOT_A_TEST_LINK:
+            continue          # structure/doc edges say nothing about exercising code
+        for test_end, code_end in ((s_id, t_id), (t_id, s_id)):
+            # A test that the walk itself pulled in (it calls the seed) is
+            # still a test to run afterwards, so being shown does not exclude
+            # it -- only being the very symbol it touches does.
+            if code_end not in shown_ids or test_end == code_end:
+                continue
+            tn = by_id.get(test_end)
+            if tn is None or not _tl.is_test_path(str(tn.get("source_file") or "")):
+                continue
+            key = (test_end, code_end, rel_name)
+            if key in seen_tests:
+                continue
+            seen_tests.add(key)
+            related_tests.append({
+                "test_id": test_end, "test_label": tn.get("label"),
+                "test_file": tn.get("source_file"),
+                "test_location": tn.get("source_location"),
+                "relation": rel_name,
+                "confidence": e.get("confidence") or ("EXTRACTED" if rel_name != "tests" else None),
+                "detail": e.get("detail"),
+                "touches": code_end,
+                "touches_label": by_id.get(code_end, {}).get("label"),
+            })
+    related_tests.sort(key=lambda r: (0 if r["touches"] == seed else 1,
+                                      0 if r["relation"] == "tests" else 1,
+                                      str(r["test_file"]), str(r["test_label"])))
+
+    # ---- disclose files the graph is STALE for ---------------------------
+    # graphify's manifest records an MD5 of each file at extraction. A file
+    # whose current hash differs has been edited since: every line number the
+    # graph holds for it is suspect, and a slice keyed on one may already have
+    # been refused above as `definition_mismatch`. Report the file itself, so
+    # the agent knows to re-extract rather than to distrust one symbol at a
+    # time. Files the pack did not touch are not checked -- this is a
+    # statement about what was shown, not about the repository.
+    stale_files: list[dict] = []
+    touched = set(shown) | {str(u["file"]) for u in unresolved if u.get("file")}
+    if manifest is not None:
+        import hashlib
+        for f in sorted(touched):
+            entry = manifest.get(f) if isinstance(manifest, dict) else None
+            if not isinstance(entry, dict):
+                stale_files.append({"file": f, "reason": "not in manifest",
+                                    "manifest_hash": None, "current_hash": None})
+                continue
+            recorded = str(entry.get("ast_hash") or entry.get("hash") or "")
+            try:
+                h = hashlib.md5(usedforsecurity=False)
+                h.update((Path(root) / f).read_bytes())
+                current = h.hexdigest()
+            except OSError:
+                stale_files.append({"file": f, "reason": "file unreadable",
+                                    "manifest_hash": recorded or None,
+                                    "current_hash": None})
+                continue
+            if recorded and recorded != current:
+                stale_files.append({"file": f, "reason": "edited since extraction",
+                                    "manifest_hash": recorded,
+                                    "current_hash": current})
 
     # Severity is only knowable once everything that fitted is known, so it is
     # assigned here rather than at drop time.
@@ -359,6 +571,9 @@ def build_context(
         "seed_resolved": seed_failure is None,
         "seed_unresolved_reason": seed_failure["reason_code"] if seed_failure else None,
         "depth": depth,
+        "index_depth": walk_depth,
+        "index_budget": index_budget,
+        "index_cap": index_cap,
         "direction": direction,
         "budget": budget,
         "decay": decay,
@@ -367,8 +582,13 @@ def build_context(
         "tokens_used": used,
         "token_method": _token_method(),
         "included": included,
+        "index": index,
+        "index_unsliceable": index_unsliceable,
+        "related_tests": related_tests,
         "unmodelled": unmodelled,
         "unresolved": unresolved,
         "omitted": omitted,
+        "stale_check": "manifest" if manifest is not None else "skipped (no manifest given)",
+        "stale_files": stale_files,
         "text": "\n".join(chunks),
     }

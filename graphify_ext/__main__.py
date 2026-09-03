@@ -18,6 +18,14 @@ Requirement 2:
   graphify-ext edge-diff snapshot --node X [--node Y ...] [--out DIR]
   graphify-ext edge-diff check [--out DIR] [--json]
       (was `verify-fix`; that name is reserved for SAST+test verification)
+  graphify-ext search "<query>" [--limit N] [--graph P] [--json]
+      every node a query could mean, when a seed does not resolve uniquely
+  graphify-ext supplement [--dry-run] [--graph P] [--json]
+      materialise definitions the extractor has no node for (assignment-bound
+      JS members, id-collision victims); opts the slot in to re-application
+
+Seeds (`<node>`) accept a node id, a label, a bare name, a source path, a
+qualified name (`res.json`, `Widget.build`) or a location (`lib/response.js:239`).
 """
 from __future__ import annotations
 
@@ -33,6 +41,46 @@ OUT_DEFAULT = os.environ.get("GRAPHIFY_OUT", "graphify-out")
 def _graph_arg(p: argparse.ArgumentParser):
     p.add_argument("--graph", default=str(Path(OUT_DEFAULT) / "graph.json"),
                    help="path to graph.json (default: %(default)s)")
+
+
+def _seed(data: dict, query: str, graph_path: str) -> str:
+    """Resolve a seed or exit with the candidates, never with a bare failure.
+
+    "no unique node match" told an agent nothing it could act on. Listing what
+    the query COULD have meant -- or that it meant nothing -- is the difference
+    between a retry with a better name and a dead end.
+    """
+    from graphify_ext import graphio
+    root = graphio.repo_root_for(graph_path)
+    nid = graphio.resolve_node(data, query, root=root)
+    if nid is not None:
+        return nid
+    cands = graphio.candidates(data, query, limit=15)
+    if not cands:
+        sys.exit(f"error: nothing in the graph matches {query!r} "
+                 f"(try `graphify-ext search` with a shorter name, or "
+                 f"`graphify-ext supplement` if the symbol is defined by "
+                 f"assignment or shadowed by an id collision)")
+    lines = [f"error: {query!r} is ambiguous -- {len(cands)} candidate(s); "
+             f"pass an id, a qualified name or file:line:"]
+    for c in cands:
+        loc = f"{c['file']}:{c['location']}" if c.get("file") else "-"
+        qual = f"  ({c['qualified_name']})" if c.get("qualified_name") else ""
+        lines.append(f"  {c['id']:<50} {c['label']!s:<28} {loc}{qual}")
+    sys.exit("\n".join(lines))
+
+
+def _manifest_for(graph_path: str) -> dict | None:
+    """graphify's manifest.json next to graph.json, if present."""
+    from graphify_ext import graphio
+    mp = Path(graph_path).parent / "manifest.json"
+    if not mp.exists():
+        return None
+    try:
+        m = graphio.read_json(mp)
+        return m if isinstance(m, dict) else None
+    except Exception:
+        return None
 
 
 def _load_graph(path: str) -> dict:
@@ -89,8 +137,25 @@ def main(argv: list[str] | None = None) -> int:
                           "depth 2, improves precision 0.131 -> 0.146, regresses "
                           "0/14 tasks, and pulls in only ~24%% of the seed's own "
                           "file. Turn it off to match blast-radius' narrower walk")
+    ctx.add_argument("--index-budget", type=int, default=300,
+                     help="tokens RESERVED (out of --budget) for the index tier -- one "
+                          "file:line+signature line per symbol that did not fit as a "
+                          "body or sits one hop beyond --depth; the index also spends "
+                          "whatever the bodies leave unused. 0 disables it. Default 300: "
+                          "in the budget-matched sweep on the 70-task corpus (d2/6k) it "
+                          "left bodies-only recall unchanged (0.629, 0 tasks regressed) "
+                          "and lifted named-symbol recall 0.629 -> 0.723; 600 and 1200 "
+                          "reached 0.744 and 0.782 but each cost one task its bodies")
     ctx.add_argument("--json", action="store_true", dest="as_json")
     _graph_arg(ctx)
+
+    rfp = sub.add_parser("refresh",
+                         help="incremental graph update for edited files (default: "
+                              "every file whose manifest hash changed), then re-apply "
+                              "supplement and injected edges")
+    rfp.add_argument("paths", nargs="*", help="repo-relative files that changed")
+    rfp.add_argument("--out", default=OUT_DEFAULT)
+    rfp.add_argument("--json", action="store_true", dest="as_json")
 
     ovp = sub.add_parser("overrides", help="overriding implementations of a method")
     ovp.add_argument("node")
@@ -146,6 +211,21 @@ def main(argv: list[str] | None = None) -> int:
     vfp.add_argument("--out", default=OUT_DEFAULT)
     vfp.add_argument("--json", action="store_true", dest="as_json")
 
+    srp = sub.add_parser("search", help="every node a query could mean, best first")
+    srp.add_argument("query")
+    srp.add_argument("--limit", type=int, default=25)
+    srp.add_argument("--json", action="store_true", dest="as_json")
+    _graph_arg(srp)
+
+    sup = sub.add_parser("supplement",
+                         help="materialise definitions the extractor has no node "
+                              "for, and opt this slot in to re-applying that after "
+                              "every rebuild")
+    sup.add_argument("--dry-run", action="store_true",
+                     help="report what would be added; write nothing")
+    sup.add_argument("--json", action="store_true", dest="as_json")
+    _graph_arg(sup)
+
     args = ap.parse_args(argv)
 
     if args.cmd == "hook":
@@ -172,9 +252,7 @@ def main(argv: list[str] | None = None) -> int:
             for rel, n in counts.most_common():
                 print(f"  {rel:20} {n:>7}  {'yes' if rel in default else 'no'}")
             return 0
-        nid = graphio.resolve_node(data, args.node)
-        if nid is None:
-            sys.exit(f"error: no unique node match for {args.node!r}")
+        nid = _seed(data, args.node, args.graph)
         # Empty --relation means "use the default set", matching stock
         # graphify's `affected --relation` (graphify/cli.py:1386).
         relations = tuple(args.relation) if args.relation else br.DEFAULT_RELATIONS
@@ -204,9 +282,7 @@ def main(argv: list[str] | None = None) -> int:
         from graphify_ext import context as ctxmod
         from graphify_ext import graphio
         data = _load_graph(args.graph)
-        nid = graphio.resolve_node(data, args.node)
-        if nid is None:
-            sys.exit(f"error: no unique node match for {args.node!r}")
+        nid = _seed(data, args.node, args.graph)
         # repo_root_for, never Path.resolve(): graphify-out may be a symlink into
         # the per-branch cache, and resolving it would point source lookups at
         # the cache directory instead of the working tree.
@@ -221,18 +297,37 @@ def main(argv: list[str] | None = None) -> int:
         pack = ctxmod.build_context(
             data, nid, root, depth=args.depth, direction=args.direction,
             budget=args.budget, per_symbol_cap=args.per_symbol_cap,
-            relations=rels,
+            relations=rels, manifest=_manifest_for(args.graph),
+            index_budget=args.index_budget,
         )
         if args.as_json:
             json.dump(pack, sys.stdout, indent=2)
             print()
             return 0
         print(pack["text"], end="")
+        if pack["stale_files"]:
+            print(f"!!! GRAPH STALE for {len(pack['stale_files'])} file(s) shown "
+                  f"above -- line numbers may be wrong; run `graphify update .`:")
+            for st in pack["stale_files"][:10]:
+                print(f"      {st['file']} -- {st['reason']}")
         if not pack["seed_resolved"]:
             print(f"!!! SEED NOT SLICED ({pack['seed_unresolved_reason']}): no "
                   f"source could be recovered for {args.node!r} itself.")
-        print(f"\n--- {len(pack['included'])} symbol(s), {pack['tokens_used']} "
-              f"tokens of {pack['budget']} ({pack['token_method']})")
+        print(f"\n--- {len(pack['included'])} symbol(s) as source"
+              + (f" + {len(pack['index'])} in the index" if pack["index"] else "")
+              + f", {pack['tokens_used']} tokens of {pack['budget']} ({pack['token_method']})")
+        if pack["related_tests"]:
+            print(f"--- {len(pack['related_tests'])} test link(s) into this context "
+                  f"(run these after the fix):")
+            for t in pack["related_tests"][:12]:
+                conf = f" [{t['confidence']}]" if t.get("confidence") not in (None, "EXTRACTED") else ""
+                print(f"      {t['test_file']}:{t['test_location']} {t['test_label']} "
+                      f"--{t['relation']}{conf}--> {t['touches_label']}")
+            if len(pack["related_tests"]) > 12:
+                print(f"      ... and {len(pack['related_tests']) - 12} more")
+        else:
+            print("--- no test file in the graph links to anything shown; "
+                  "run `graphify-ext test-link` with coverage, or search tests by name")
         if pack["unmodelled"]:
             print(f"--- {len(pack['unmodelled'])} symbol(s) present in the source "
                   f"but ABSENT FROM THE GRAPH, inside the code above:")
@@ -251,9 +346,7 @@ def main(argv: list[str] | None = None) -> int:
         from graphify_ext import blast_radius as br
         from graphify_ext import graphio
         data = _load_graph(args.graph)
-        nid = graphio.resolve_node(data, args.node)
-        if nid is None:
-            sys.exit(f"error: no unique node match for {args.node!r}")
+        nid = _seed(data, args.node, args.graph)
         overrides = br.overrides_of(data, nid)
         if not overrides:
             print("No overriding implementations found.")
@@ -317,6 +410,82 @@ def main(argv: list[str] | None = None) -> int:
         if args.out:
             Path(args.out).write_text(json.dumps(contexts, indent=2), encoding="utf-8")
             print(f"full contexts written to {args.out}")
+        return 0
+
+    if args.cmd == "refresh":
+        from graphify_ext import refresh as rf
+        rep = rf.refresh(Path(args.out), paths=args.paths or None)
+        if args.as_json:
+            json.dump(rep, sys.stdout, indent=2)
+            print()
+        else:
+            print(rf.format_report(rep))
+        return 0 if rep.get("ok") else 1
+
+    if args.cmd == "search":
+        from graphify_ext import graphio
+        data = _load_graph(args.graph)
+        cands = graphio.candidates(data, args.query, limit=args.limit)
+        if args.as_json:
+            json.dump(cands, sys.stdout, indent=2)
+            print()
+            return 0 if cands else 1
+        if not cands:
+            print(f"nothing in the graph matches {args.query!r}")
+            return 1
+        print(f"{len(cands)} candidate(s) for {args.query!r}:")
+        for c in cands:
+            loc = f"{c['file']}:{c['location']}" if c.get("file") else "-"
+            qual = f"  ({c['qualified_name']})" if c.get("qualified_name") else ""
+            org = "" if c["origin"] == "ast" else f"  [{c['origin']}]"
+            print(f"  {c['match']:<10} {c['id']:<50} {c['label']!s:<28} {loc}{qual}{org}")
+        return 0
+
+    if args.cmd == "supplement":
+        from graphify_ext import graphio, supplement
+        gp = Path(args.graph)
+        if not gp.exists():
+            sys.exit(f"error: graph not found at {gp}")
+        root = graphio.repo_root_for(gp)
+        if args.dry_run:
+            data = graphio.load(gp)
+            supplement.strip(data)
+            res = supplement.compute(data, root, manifest=_manifest_for(str(gp)))
+            report = {"would_add_nodes": len(res["nodes"]),
+                      "would_add_edges": len(res["edges"]),
+                      "nodes": res["nodes"], "edges": res["edges"],
+                      "skipped": res["skipped"], "stale_files": res["stale_files"],
+                      "stats": res["stats"]}
+        else:
+            report = supplement.apply(gp, root=root)
+            supplement.enable(gp.parent)
+        if args.as_json:
+            json.dump(report, sys.stdout, indent=2)
+            print()
+            return 0
+        if args.dry_run:
+            print(f"supplement (dry run): would add {report['would_add_nodes']} node(s), "
+                  f"{report['would_add_edges']} edge(s); "
+                  f"{len(report['skipped'])} definition(s) skipped")
+            for n in report["nodes"][:20]:
+                print(f"  + {n['label']:<28} {n['source_file']}:{n['source_location']}"
+                      f"  ({n['qualified_name']}; {n['supplement_reason']})")
+            if len(report["nodes"]) > 20:
+                print(f"  ... and {len(report['nodes']) - 20} more")
+        else:
+            print(f"supplement: added {report['added_nodes']} node(s), "
+                  f"{report['added_edges']} edge(s) "
+                  f"(replaced {report['removed_previous_nodes']} previous); "
+                  f"by reason: {report['by_reason']}; edges: {report['edges_by_relation']}")
+            print(f"  {report['stats']}")
+            print(f"  {len(report['skipped'])} nested definition(s) left to disclosure")
+            print("  re-application after rebuilds is now ON for this slot "
+                  f"({supplement.MARKER_NAME})")
+        if report.get("stale_files"):
+            print(f"!!! {len(report['stale_files'])} file(s) REFUSED as stale -- the graph "
+                  f"predates edits to them; run `graphify update .` then re-run:")
+            for st in report["stale_files"][:10]:
+                print(f"      {st['file']} -- {st['reason']}")
         return 0
 
     if args.cmd in ("edge-diff", "verify-fix"):

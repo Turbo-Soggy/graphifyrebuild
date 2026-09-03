@@ -414,6 +414,124 @@ formats.
 
 ---
 
+## Phase 0 result and the supplement pass — **MEASURED 2026-09-04**
+
+The 70-task corpus (20 requests, 20 flask, 30 express) exposed something the
+14-task requests corpus could not: **17 of 70 tasks were unscoreable because the
+entry symbol had no graph node at all** — 15 of 30 on express, 2 of 20 on flask.
+Two upstream causes, verified in source: assignment-bound JavaScript members
+(``res.json = function json(obj)``; the #1077 guard materialises only
+``this.x``/``exports.x``/``Foo.prototype.x``, so express's entire public API is
+absent — ``lib/response.js`` had 10 nodes and none of its 20 methods) and id
+collisions (``@overload`` stubs of ``stream_with_context`` beat the real body;
+#3302 again).
+
+Disclosure (``unmodelled``) can only say *that* these are missing. A symbol
+with no node cannot be a seed, so for those tasks the agent could not even ask.
+``graphify-ext supplement`` (``graphify_ext/supplement.py``) materialises them
+from source — node in the extractor's schema, owner edge, INFERRED calls under
+unambiguous name match, extractor nodes untouched, nested functions declined,
+stale files refused whole, idempotent, opt-in per slot.
+
+Budget-matched A/B at the ``default`` config (depth 2, budget 6,000,
+containment on, ``max_nodes`` 800), re-derived by
+``bench/agentctx/compare_configs.py`` from the two captured baselines:
+
+| | stock graph | + supplement |
+|---|---|---|
+| scoreable tasks | 53 / 70 | **68 / 70** |
+| per-task movement | | **7 improved, 15 newly scoreable, 0 regressed, 46 unchanged** |
+| mean recall on the same 53 tasks | 0.512 | 0.585 |
+| mean precision on the same 53 tasks | 0.158 | 0.129 |
+| mean recall, all scoreable | 0.512 (n=53) | 0.622 (n=68) |
+| express | 0.628 (n=15) | 0.829 (n=29) |
+| flask | 0.309 (n=18) | 0.293 (n=19; the new task scores 0) |
+| requests | 0.608 (n=20) | 0.633 (n=20) |
+
+Caveats, inline as the rules require: n is 70 with |G_discover| of 1–7, so
+±0.05 on a mean is noise; precision drops because packs return more symbols
+(more `contains` siblings become reachable); the supplement's ``calls`` edges
+are name matches and are labelled as such. The stock ``default`` baseline was
+**reproduced exactly on a second machine and a newer graphify (0.9.48) before
+any comparison was made** — no per-task change across 70 tasks — which is the
+control rule 6 asks for.
+
+The two remaining unscoreable tasks are disclosed limits, not defects:
+``flask/72c85e80`` (entry nested inside a function — by design) and
+``express/4f7c4d10`` (a four-segment ``exports.locals.locals.use`` binding).
+
+**Also shipped alongside, each with tests:** seeds by ``file:line`` and by
+qualified name; ``search`` / ``search_tool`` returning ranked candidates instead
+of a bare "no unique match"; ``definition_mismatch`` — a graph line that now
+holds a different definition is refused, never served under the wrong name;
+``stale_files`` from the manifest hash on every pack; file nodes reported as
+``file_node`` rather than as resolution failures; and the Phase 0.5 regression
+test (a heuristic ``tests`` edge can never be EXTRACTED) that this document
+said was missing.
+
+**What this does not change.** Flask is still the unsolved shape (10 of 19 at
+zero), and the binding constraint there is reach at a 6k budget, not node
+presence. Phases 3, 4 and 5 remain unbuilt and their claims unmade.
+
+### Second pass, same day: where the remaining misses are, and the two-tier pack
+
+`bench/agentctx/diagnose.py` classifies every ground-truth symbol mechanically.
+On the supplemented graph at d2/6k, 175 symbols decompose as: **105 included,
+37 reachable one hop beyond the walk, 17 reached but dropped for budget, 16
+with no node -- and 0 unreachable.** All 16 no-node cases are functions nested
+inside functions (checked one by one): the upstream design choice, already
+disclosed as `unmodelled`. So the remaining lever is not extraction and not
+connectivity; it is what the budget is spent on.
+
+Two changes, each measured alone against the column before it, same total
+budget (`compare_configs.py`, baselines under `bench/agentctx/`):
+
+1. **Related classes as signature + member list, not body.** Flask's `Flask`
+   class body was the largest single consumer of body tokens on zero-scoring
+   tasks, and its methods are separate nodes competing for the same budget.
+   Effect: 1 task improved (`requests/012f0334` 0.5 -> 1.0), 0 regressed, on
+   both the supplemented and the stock `default` config (default baseline
+   re-captured after this change; its per-task diff was exactly that one task).
+2. **Index tier.** Bodies for the best-ranked symbols; one `file:line
+   signature` line for everything else the walk reached, including one hop
+   further out. Reported as a *separate* recall (`recall_index`): a named symbol
+   still has to be opened, so it is never summed with bodies.
+
+Fit of the index share (rule 8), all at total budget 6,000, d2, containment on,
+vs. bodies-only 0.629:
+
+| index share | bodies recall | named recall | tasks whose bodies regressed |
+|---|---|---|---|
+| fixed 600 | 0.622 | 0.740 | 1 |
+| fixed 1,200 | 0.614 | 0.782 | 1 |
+| fixed 2,000 | 0.583 | 0.802 | 3 |
+| fixed 3,000 | 0.535 | 0.817 | 8 |
+| **dynamic, reserve 300** | **0.629** | **0.723** | **0** |
+| dynamic, reserve 600 | 0.622 | 0.744 | 1 |
+| dynamic, reserve 1,200 | 0.614 | 0.782 | 1 |
+
+"Dynamic" means the reserve bounds the bodies and the index then also spends
+what the bodies left unused (mean body usage was 4.4k of 6k, so a fixed split
+wasted the difference). The shipped default is **dynamic, reserve 300**: the
+only setting that names 0.094 more of the ground truth while regressing no
+task's bodies. Larger reserves buy more names at the cost of bodies on a few
+tasks; the CLI and MCP expose the knob.
+
+### Also shipped in the second pass
+
+- `related_tests`: test-path nodes linked (by any non-structural edge) to
+  anything shown, with relation and confidence -- the "what do I run after the
+  fix" answer, in the same call.
+- `graphify-ext refresh` / `refresh_tool`: incremental update of the files
+  whose manifest hash changed, then supplement and injected edges re-applied.
+  Closes the edit -> re-query loop that `stale_files` only diagnosed.
+- Extents and call collection for Go, Java, Rust, Ruby, PHP, Kotlin and C#
+  (the grammars graphify itself depends on), verified against a stock graphify
+  extraction of a polyglot fixture: every node's `source_location` landed on a
+  definition the walker found.
+- Method leaf names resolve as seeds (`parse` finds `.parse()`); id/path
+  substrings rank below label matches in `search`.
+
 ## Phase 5 — Cross-pillar integration
 
 Unchanged. Single ranking function arbitrating across all four pillars, not four

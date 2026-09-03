@@ -38,6 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from evaluate import load_graph_json, prepare, resolve_entry  # noqa: E402
 from graphify_ext import blast_radius as br  # noqa: E402
 from graphify_ext import context as ctxmod  # noqa: E402
+from graphify_ext import graphio, supplement  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 CORPUS = HERE / "corpus.json"
@@ -49,14 +50,63 @@ _CONTAINMENT = tuple(dict.fromkeys(br.DEFAULT_RELATIONS + br.MEMBER_RELATIONS))
 #: than remembered.
 CONFIGS = {
     "default": dict(depth=2, budget=6000, max_nodes=800, direction="both",
-                    relations=_CONTAINMENT, order="current"),
+                    relations=_CONTAINMENT, order="current", supplement=False),
     "d3-12k": dict(depth=3, budget=12000, max_nodes=800, direction="both",
-                   relations=_CONTAINMENT, order="current"),
+                   relations=_CONTAINMENT, order="current", supplement=False),
     "no-containment": dict(depth=2, budget=6000, max_nodes=800, direction="both",
-                           relations=br.DEFAULT_RELATIONS, order="current"),
+                           relations=br.DEFAULT_RELATIONS, order="current",
+                           supplement=False),
     "legacy-order": dict(depth=2, budget=6000, max_nodes=800, direction="both",
-                         relations=_CONTAINMENT, order="legacy"),
+                         relations=_CONTAINMENT, order="legacy", supplement=False),
+    # Same as `default` but with `graphify-ext supplement` applied to the task
+    # graph first. The ONLY variable is the supplement, so a per-task diff
+    # against `default` isolates what materialising missing definitions buys
+    # (tasks whose entry symbol had no node become scoreable) and costs
+    # (crowding on tasks that already scored).
+    "supplement": dict(depth=2, budget=6000, max_nodes=800, direction="both",
+                       relations=_CONTAINMENT, order="current", supplement=True),
+    "supplement-d3-12k": dict(depth=3, budget=12000, max_nodes=800, direction="both",
+                              relations=_CONTAINMENT, order="current", supplement=True),
+    # Same TOTAL budget as `supplement` (6,000), but 1,200 of it carved out for
+    # the index tier (one line per symbol: file:line + signature), which also
+    # walks one hop further. Budget-matched by construction, so the per-task
+    # diff against `supplement` isolates the tiering alone.
+    "supplement-index": dict(depth=2, budget=6000, max_nodes=800, direction="both",
+                             relations=_CONTAINMENT, order="current", supplement=True,
+                             index_budget=1200),
 }
+# Budget-matched sweep of the index share (rule 8: a parameter is fitted, not
+# asserted). Total stays 6,000; only the split moves.
+for _ib in (600, 2000, 3000):
+    CONFIGS[f"supplement-index-{_ib}"] = dict(
+        depth=2, budget=6000, max_nodes=800, direction="both",
+        relations=_CONTAINMENT, order="current", supplement=True, index_budget=_ib,
+        index_dynamic=False)
+CONFIGS["supplement-index"]["index_dynamic"] = False
+# Dynamic variant: `index_budget` is only a reserve; the index also gets what
+# the bodies left unspent. Same total budget.
+for _ib in (300, 600, 1200):
+    CONFIGS[f"supplement-index-dyn{_ib}"] = dict(
+        depth=2, budget=6000, max_nodes=800, direction="both",
+        relations=_CONTAINMENT, order="current", supplement=True, index_budget=_ib,
+        index_dynamic=True)
+
+
+def _graph_for(wt: Path, want_supplement: bool) -> dict:
+    """The task graph, with or without the supplement -- never a mix.
+
+    The supplemented graph lives in a sibling file so the stock graph the other
+    configs score against is never rewritten in place; both are derived from
+    the same extraction.
+    """
+    stock = wt / "graphify-out" / "graph.json"
+    if not want_supplement:
+        return load_graph_json(wt)
+    sup = wt / "graphify-out" / "graph.supplemented.json"
+    if not sup.exists() or sup.stat().st_mtime < stock.stat().st_mtime:
+        sup.write_text(stock.read_text(encoding="utf-8"), encoding="utf-8")
+        supplement.apply(sup, root=wt)
+    return graphio.load(sup)
 
 
 def targets(task: dict) -> set[tuple[str, int]]:
@@ -70,7 +120,7 @@ def targets(task: dict) -> set[tuple[str, int]]:
 
 def score_task(task: dict, cfg: dict) -> dict | None:
     wt, _ = prepare(task)
-    data = load_graph_json(wt)
+    data = _graph_for(wt, bool(cfg.get("supplement")))
     seed = resolve_entry(data, task)
     if seed is None:
         return {"recall": None, "reason": "entry symbol has no graph node"}
@@ -79,14 +129,25 @@ def score_task(task: dict, cfg: dict) -> dict | None:
         data, seed, wt, depth=cfg["depth"], direction=cfg["direction"],
         budget=cfg["budget"], relations=cfg["relations"],
         max_nodes=cfg["max_nodes"], order=cfg["order"],
+        index_budget=int(cfg.get("index_budget", 0)),
+        index_dynamic=bool(cfg.get("index_dynamic", False)),
     )
     found = {(str(i["file"]), int(i["def_line"])) for i in pack["included"]
              if str(i["id"]) != seed}
+    indexed = {(str(i["file"]), int(i["def_line"])) for i in pack["index"]}
     hit = found & tgt
+    hit_idx = (found | indexed) & tgt
     return {
+        # `recall` is BODIES only -- source the agent can read without opening
+        # a file. `recall_index` adds symbols the index tier NAMED (file:line +
+        # signature); the agent still has to open those, so the two are
+        # reported side by side and never summed into one number.
         "recall": round(len(hit) / len(tgt), 4) if tgt else None,
+        "recall_index": round(len(hit_idx) / len(tgt), 4) if tgt else None,
         "precision": round(len(hit) / len(found), 4) if found else 0.0,
         "returned": len(found),
+        "indexed": len(indexed),
+        "tokens_used": pack["tokens_used"],
         "omitted": len(pack["omitted"]),
         "omitted_high_rank": sum(1 for o in pack["omitted"]
                                  if o.get("severity") == "truncated_high_rank"),
@@ -127,6 +188,10 @@ def aggregate(rows: dict) -> dict:
 
 
 def compare(base: dict, now: dict) -> int:
+    base["config_detail"].setdefault("supplement", False)
+    for d in (base["config_detail"], now["config_detail"]):
+        d.setdefault("index_budget", 0)
+        d.setdefault("index_dynamic", False)
     if base["config_detail"] != now["config_detail"]:
         print("REFUSING TO COMPARE — configuration differs from the baseline:")
         for k in sorted(set(base["config_detail"]) | set(now["config_detail"])):

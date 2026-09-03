@@ -62,8 +62,12 @@ def wt_for(task: dict) -> Path:
     """Worktree path. Namespaced by repo — short SHAs collide across repos."""
     return WT / f"{task.get('repo', 'requests')}-{task['commit'][:8]}"
 
-STOCK = "C:/Users/SISABenjaminDavid/AppData/Local/Programs/Python/Python312/Scripts/graphify.EXE"
-EXT = "C:/projects/graphifyrebuild/.venv/Scripts/graphify-ext.exe"
+# Resolved from PATH so the harness runs on any machine that has both
+# entry points installed; the old hardcoded per-user paths made it silently
+# unrunnable anywhere but the machine that captured the first baseline.
+import shutil as _shutil
+STOCK = _shutil.which("graphify") or "graphify"
+EXT = _shutil.which("graphify-ext") or "graphify-ext"
 
 ENC = tiktoken.get_encoding("cl100k_base")
 DEPTH = 2

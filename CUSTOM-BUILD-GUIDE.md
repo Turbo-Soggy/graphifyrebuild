@@ -88,13 +88,18 @@ run without further setup.
 | Detached HEAD | no stable key | dedicated scratch slot, always rebuilt |
 | Graph schema/version drift | no field to check | version stamp in a slot sidecar → full rebuild on mismatch |
 | Transitive blast radius | none (only point-to-point `path A B`) | `blast-radius --depth N`, relation-filterable, reports `estimated_tokens` |
+| Symbol source for the agent | none (graph.json has no extents or code) | `context`: seed + neighbours as source within a token budget, gaps disclosed (`omitted`/`unresolved`/`unmodelled`/`stale_files`) |
+| Seeds by location / qualified name | id, label, bare name, path | plus `file:line` and `res.json`-style names; `search` lists candidates |
+| Definitions the extractor misses | absent (assignment-bound JS members, id-collision victims) | `supplement` materialises them; 53 → 68 of 70 corpus tasks scoreable |
 | Overrides of a base method | `inherits` edges exist, no query | `overrides` command |
 | Taint reachability | **none** | `inject --semgrep` → `taints` / `reaches_sink` edges |
 | Test-coverage edges | **none** | `test-link --coverage` (coverage.py) or `--heuristic` |
 | Config/env linkage | **none** | `config-scan` → `reads_config` edges |
 | Post-fix edge diff | **none** | `verify-fix snapshot` / `check` |
 | Cross-repo | `global add` / `merge-graphs` | unchanged (documented, not re-implemented) |
-| Agent transport | CLI only | MCP server (`graphify-ext-mcp`), five tools over stdio or HTTP |
+| Agent transport | CLI only | MCP server (`graphify-ext-mcp`), nine tools over stdio or HTTP |
+| Graph refresh after an edit | `graphify update .` by hand | `refresh`: stale files detected from the manifest, incremental update, ext layer re-applied |
+| Languages sliced to source | n/a | py, js, ts, go, java, rs, rb, php, kt, cs |
 
 Injected edges carry `confidence: "EXTERNAL"` and `origin: "graphify-ext"`, so
 they are idempotent to re-apply and never confusable with extractor output
@@ -138,6 +143,65 @@ single most common relation in a graph (4,256 of 6,944 edges on the connected
 repo), so following it by default floods every radius. `--list-relations`
 prints what a given graph actually contains and which relations are followed by
 default.
+
+```bash
+graphify-ext context "<node>" [--depth N] [--direction up|down|both] [--budget TOKENS]
+                              [--per-symbol-cap LINES] [--relation REL ...]
+                              [--no-containment] [--graph PATH] [--json]
+```
+The agent-facing command. Returns the seed symbol's **source** plus its
+neighbours' source, ordered and cut to a token budget, with every gap named:
+`omitted` (budget, with `truncated_high_rank`/`truncated_low_rank` severity),
+`unresolved` (with a reason code — `definition_mismatch` means the graph's line
+for that symbol now holds a different definition, i.e. the graph is stale),
+`unmodelled` (definitions in the shown code that have no graph node at all) and
+`stale_files` (files whose content hash no longer matches graphify's
+`manifest.json`). Containment is ON by default here, unlike `blast-radius`.
+
+**Seeds.** Every `<node>` argument accepts a node id, a label, a bare name, a
+source path, a qualified name (`res.json`, `Widget.build`) or a location
+(`lib/response.js:239`, the shape a stack trace or a SAST finding uses). An
+ambiguous seed exits with the candidate list instead of a bare failure.
+
+`--index-budget` (default 300) reserves part of `--budget` for an **index
+tier**: one `file:line signature` line per symbol that did not fit as a body
+or sits one hop beyond `--depth`; the index also spends whatever the bodies
+leave unused. Related classes are rendered as signature + member list. The
+pack ends with the **tests** whose nodes link to anything shown (relation and
+confidence per link), so "what do I run afterwards" is answered in the same
+call. Extents are sliced for Python, JavaScript, TypeScript, Go, Java, Rust,
+Ruby, PHP, Kotlin and C#.
+
+```bash
+graphify-ext refresh [PATH ...] [--out DIR] [--json]
+```
+Incremental graphify update for the given files (default: every file whose
+`manifest.json` hash no longer matches the tree), then re-application of the
+supplement and injected edges. Never a full rebuild. Run it after editing and
+before re-querying; `!!! GRAPH STALE` in a context pack is the cue.
+
+```bash
+graphify-ext search "<query>" [--limit N] [--graph PATH] [--json]
+```
+Every node a query could mean, best first (exact → bare name → substring;
+callables before non-callables), with file, line, qualified name and origin.
+
+```bash
+graphify-ext supplement [--dry-run] [--graph PATH] [--json]
+```
+Materialise definitions the extractor has **no node for**, so they become
+queryable: JavaScript members bound by assignment (`res.json = function …`,
+`proto.param = function …` — express binds its whole public API this way and
+stock graphify emits none of it) and definitions lost to id collisions
+(`@overload` stubs, `_get_x` vs `get_x`; upstream #3302). Each gets a node in
+the extractor's own schema (`origin: "graphify-ext:supplement"`, plus
+`qualified_name` and `supplement_reason`), a `contains`/`method` edge from its
+owner, and conservative **INFERRED** `calls` edges (unambiguous name match
+only; same file first). Extractor nodes are never modified. Functions nested
+inside functions are declined (graphify omits them by design; the pack
+discloses them). Files the graph is stale for are **refused whole** and
+listed. Idempotent; running it once opts the output slot in to re-application
+by the hooks after every rebuild. Measured effect: see `README.md`.
 
 ```bash
 graphify-ext overrides "<node>" [--graph PATH]
@@ -187,10 +251,11 @@ Per-vulnerability agent context. Input is `[{"id","description","file","line"}]`
 writes the full context JSON.
 
 ```bash
-graphify-ext verify-fix snapshot --node X [--node Y ...] [--out DIR]
-graphify-ext verify-fix check [--out DIR] [--json]
+graphify-ext edge-diff snapshot --node X [--node Y ...] [--out DIR]
+graphify-ext edge-diff check [--out DIR] [--json]
 ```
-Pre/post-fix structural edge diff. `check` exits 2 on an unexpected delta.
+Pre/post-fix structural edge diff (was `verify-fix`, kept as a warning alias;
+it runs no scanner and no tests). `check` exits 2 on an unexpected delta.
 Community/cluster attributes are excluded, so clustering churn is never a
 false positive.
 
@@ -204,8 +269,9 @@ graphify-ext-mcp --http --host 127.0.0.1 --port 5599
 graphify-ext-mcp --list-tools
 ```
 
-Exposes five tools — `blast_radius_tool`, `overrides_tool`, `triage_tool`,
-`verify_fix_tool`, `list_relations_tool` — so an agent calls a tool in-loop
+Exposes nine tools — `search_tool`, `context_tool`, `blast_radius_tool`,
+`overrides_tool`, `triage_tool`, `edge_diff_tool`, `supplement_tool`,
+`refresh_tool`, `list_relations_tool` — so an agent calls a tool in-loop
 instead of shelling out and re-parsing stdout. Structure is copied from
 `code-review-graph`'s own server, so both builds behave the same for a client:
 plain-dict returns, errors returned as data (`{"status": "error", ...}`) rather

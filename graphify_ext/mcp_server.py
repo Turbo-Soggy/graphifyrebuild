@@ -56,6 +56,9 @@ TOOL_NAMES = (
     "triage_tool",
     "edge_diff_tool",
     "list_relations_tool",
+    "search_tool",
+    "supplement_tool",
+    "refresh_tool",
 )
 
 
@@ -92,19 +95,39 @@ def build_server():
         "graphify-ext",
         version=__version__,
         instructions=(
-            "AppSec fix-context over a graphify knowledge graph. Returns "
-            "scoped, token-bounded subgraphs for a coding agent: blast radius, "
-            "overrides, taint-exposed subsets, test coverage, config "
-            "dependencies, and post-fix edge diffs. Prefer relation-filtered "
-            "queries — an unfiltered 2-hop bidirectional radius on a hot node "
-            "can cost ~15k tokens, the same walk narrowed to 'calls' ~4k."
+            "Fix-context over a graphify knowledge graph for a coding agent. "
+            "Workflow: search_tool to find the symbol (seeds also accept "
+            "file:line and qualified names); context_tool for its source plus "
+            "neighbourhood within a token budget -- read `unresolved`, "
+            "`unmodelled`, `omitted` and `stale_files` before trusting the pack "
+            "is complete; blast_radius_tool for who is affected; "
+            "overrides_tool before editing a base method; edge_diff_tool "
+            "snapshot/check around the edit. Run supplement_tool once per "
+            "repo if symbols bound by assignment (JS members) or shadowed by "
+            "id collisions are missing. Prefer relation-filtered queries — an "
+            "unfiltered 2-hop bidirectional radius on a hot node can cost "
+            "~15k tokens, the same walk narrowed to 'calls' ~4k."
         ),
     )
 
-    def _resolve(data: dict, node: str) -> str:
-        nid = graphio.resolve_node(data, node)
+    def _resolve(data: dict, node: str, path: Optional[Path] = None) -> str:
+        root = graphio.repo_root_for(path) if path is not None else None
+        nid = graphio.resolve_node(data, node, root=root)
         if nid is None:
-            raise LookupError(f"no unique node match for {node!r}")
+            # Hand back what the name COULD have meant. An agent that gets a
+            # bare "no match" has nothing to retry with; one that sees twenty
+            # `send` candidates with files and lines picks the right one.
+            cands = graphio.candidates(data, node, limit=15)
+            if not cands:
+                raise LookupError(f"nothing in the graph matches {node!r}; try "
+                                  "search_tool with a shorter name, or "
+                                  "supplement_tool if the symbol is bound by "
+                                  "assignment or lost to an id collision")
+            raise LookupError(
+                f"{node!r} is ambiguous ({len(cands)} candidates); pass an id, a "
+                "qualified name or file:line -- "
+                + "; ".join(f"{c['id']} [{c['label']}] {c['file']}:{c['location']}"
+                            for c in cands))
         return nid
 
     @mcp.tool()
@@ -132,8 +155,8 @@ def build_server():
             graph: Path to graph.json. Defaults to graphify-out/graph.json.
         """
         try:
-            data, _ = _load(graph)
-            nid = _resolve(data, node)
+            data, path = _load(graph)
+            nid = _resolve(data, node, path)
             rels = tuple(relations) if relations else br.DEFAULT_RELATIONS
             if include_containment:
                 rels = tuple(dict.fromkeys(rels + br.MEMBER_RELATIONS))
@@ -157,6 +180,7 @@ def build_server():
         per_symbol_cap: int = 80,
         include_containment: bool = True,
         relations: Optional[list[str]] = None,
+        index_budget: int = 300,
         graph: Optional[str] = None,
     ) -> dict:
         """Fix-ready context: the symbol's SOURCE plus its neighbourhood.
@@ -179,31 +203,51 @@ def build_server():
                 because co-changed symbols are frequently siblings or members
                 (see AGENT-CONTEXT-COMPARISON.md §6).
             relations: Override the relation set entirely.
+            index_budget: Tokens RESERVED (out of `budget`) for the index tier
+                -- one file:line + signature line per symbol that did not fit
+                as a body or sits one hop beyond `depth`; the index also gets
+                what the bodies leave unspent. 0 disables it. Read `index` for
+                what to open next and `related_tests` for what to run after
+                the fix.
             graph: Path to graph.json.
         """
         try:
             from graphify_ext import context as ctxmod
             data, path = _load(graph)
-            nid = _resolve(data, node)
+            nid = _resolve(data, node, path)
             rels = tuple(relations) if relations else br.DEFAULT_RELATIONS
             if include_containment and not relations:
                 rels = tuple(dict.fromkeys(rels + br.MEMBER_RELATIONS))
-            from graphify_ext import graphio
+            manifest = None
+            mp = path.parent / "manifest.json"
+            if mp.exists():
+                try:
+                    m = graphio.read_json(mp)
+                    manifest = m if isinstance(m, dict) else None
+                except Exception:
+                    manifest = None
             pack = ctxmod.build_context(
                 data, nid, graphio.repo_root_for(path), depth=depth,
                 direction=direction, budget=budget,
                 per_symbol_cap=per_symbol_cap, relations=rels,
+                manifest=manifest, index_budget=index_budget,
             )
             # A seed that could not be sliced is a partial result, not an "ok"
             # one: the agent asked for this symbol's code and did not get it.
             # Saying "0 symbols" would leave it unable to tell that from a
             # symbol that simply has no neighbours.
             status = "ok" if pack["seed_resolved"] else "partial"
-            summary = (f"{len(pack['included'])} symbol(s), "
+            summary = (f"{len(pack['included'])} symbol(s) as source, "
+                       f"{len(pack['index'])} indexed, "
                        f"{pack['tokens_used']}/{pack['budget']} tokens, "
                        f"{len(pack['unresolved'])} unresolved, "
                        f"{len(pack['omitted'])} omitted, "
-                       f"{len(pack['unmodelled'])} absent from graph")
+                       f"{len(pack['unmodelled'])} absent from graph, "
+                       f"{len(pack['related_tests'])} test link(s)")
+            if pack["stale_files"]:
+                status_note = (f"GRAPH STALE for {len(pack['stale_files'])} file(s) "
+                               "shown -- line numbers may be wrong, re-extract; ")
+                summary = status_note + summary
             if not pack["seed_resolved"]:
                 summary = (f"SEED NOT SLICED ({pack['seed_unresolved_reason']}) — "
                            "no source for the requested symbol; " + summary)
@@ -223,8 +267,8 @@ def build_server():
             graph: Path to graph.json.
         """
         try:
-            data, _ = _load(graph)
-            nid = _resolve(data, node)
+            data, path = _load(graph)
+            nid = _resolve(data, node, path)
             overrides = br.overrides_of(data, nid)
             return {"status": "ok",
                     "summary": f"{len(overrides)} override(s) of {node}",
@@ -321,6 +365,101 @@ def build_server():
             return {"status": "ok",
                     "summary": f"{len(rels)} relation(s) in this graph",
                     "relations": rels}
+        except Exception as exc:
+            return _err(str(exc))
+
+    @mcp.tool()
+    def search_tool(query: str, limit: int = 25, graph: Optional[str] = None) -> dict:
+        """Every node a name could mean, best match first.
+
+        Use when a seed did not resolve, or before choosing one: returns id,
+        label, qualified name (for supplement nodes such as `res.json`), file,
+        line, whether it is callable, and which layer produced it.
+
+        Args:
+            query: Label, bare name, qualified name, id fragment or path fragment.
+            limit: Max rows.
+            graph: Path to graph.json.
+        """
+        try:
+            data, _ = _load(graph)
+            rows = graphio.candidates(data, query, limit=limit)
+            return {"status": "ok",
+                    "summary": f"{len(rows)} candidate(s) for {query!r}",
+                    "candidates": rows}
+        except Exception as exc:
+            return _err(str(exc))
+
+    @mcp.tool()
+    def supplement_tool(dry_run: bool = False, graph: Optional[str] = None) -> dict:
+        """Materialise definitions the extractor has no node for.
+
+        Assignment-bound members (`res.json = function ...`) and definitions
+        lost to id collisions (`@overload` stubs, `_get_x` vs `get_x`) get a
+        real node, a contains/method edge from their owner, and conservative
+        INFERRED `calls` edges. Existing nodes are never modified. Running it
+        (not dry) also opts this output slot in to re-application after every
+        rebuild. Idempotent.
+
+        Args:
+            dry_run: Report what would be added without writing.
+            graph: Path to graph.json.
+        """
+        try:
+            from graphify_ext import supplement
+            path = _graph_path(graph)
+            if not path.exists():
+                return _err(f"no graph at {path}")
+            root = graphio.repo_root_for(path)
+            if dry_run:
+                data = graphio.load(path)
+                supplement.strip(data)
+                manifest = None
+                mp = path.parent / "manifest.json"
+                if mp.exists():
+                    try:
+                        m = graphio.read_json(mp)
+                        manifest = m if isinstance(m, dict) else None
+                    except Exception:
+                        manifest = None
+                res = supplement.compute(data, root, manifest=manifest)
+                return {"status": "ok",
+                        "summary": (f"would add {len(res['nodes'])} node(s), "
+                                    f"{len(res['edges'])} edge(s); "
+                                    f"{len(res['stale_files'])} stale file(s) refused"),
+                        "nodes": res["nodes"], "edges": res["edges"],
+                        "skipped": res["skipped"], "stale_files": res["stale_files"],
+                        "stats": res["stats"]}
+            rep = supplement.apply(path, root=root)
+            supplement.enable(path.parent)
+            return {"status": "ok",
+                    "summary": (f"added {rep['added_nodes']} node(s), "
+                                f"{rep['added_edges']} edge(s); re-application "
+                                "enabled for this slot"),
+                    **rep}
+        except Exception as exc:
+            return _err(str(exc))
+
+    @mcp.tool()
+    def refresh_tool(paths: Optional[list[str]] = None, out: Optional[str] = None) -> dict:
+        """Bring the graph up to date after editing, without leaving the tool.
+
+        Runs graphify's incremental update for `paths` (default: every file
+        whose manifest hash no longer matches the working tree), then
+        re-applies the supplement (if enabled) and injected edges. Call it
+        after an edit and before re-reading context; `stale_files` in a
+        context result is the signal. Never performs a full rebuild.
+
+        Args:
+            paths: Repo-relative files that changed. Omit to detect them.
+            out: Output directory. Defaults to graphify-out.
+        """
+        try:
+            from graphify_ext import refresh as rf
+            rep = rf.refresh(Path(out) if out else Path(DEFAULT_OUT),
+                             paths=list(paths) if paths else None)
+            return {"status": "ok" if rep.get("ok") else "error",
+                    "summary": rf.format_report(rep).splitlines()[0], **rep}
         except Exception as exc:
             return _err(str(exc))
 

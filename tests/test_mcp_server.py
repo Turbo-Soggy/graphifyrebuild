@@ -112,7 +112,9 @@ class TestMcpServer:
                 return _unwrap(r)
         out = _run(go())
         assert out["status"] == "error"
-        assert "no unique node match" in out["error"]
+        # the miss names what to do next (search / supplement), not a bare "no match"
+        assert "nothing in the graph matches" in out["error"]
+        assert "search_tool" in out["error"]
 
     def test_list_relations_tool_reports_default_membership(self, graph_file):
         async def go():

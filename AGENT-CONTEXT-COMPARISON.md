@@ -335,3 +335,20 @@ is wide and the means are not precise to more than about ±0.1. Co-change is a p
 "context needed to fix", not a definition of it; a symbol an agent should have read but did not
 need to edit is invisible to this scoring. Every number here traces to a file in
 `bench/agentctx/`.
+
+---
+
+## 10. Addendum (2026-09-04) — the 70-task corpus and the supplement pass
+
+This document's 14 tasks were all Python. Phase 0 of the roadmap widened the
+corpus to 70 tasks across requests, flask and express, and the first thing it
+showed was outside the reach of any ranking work: **17 tasks had no graph node
+for the entry symbol at all** (express members bound by assignment; flask
+`@overload` id collisions). §8's collision defect was one instance of a larger
+absence. `graphify-ext supplement` now materialises those definitions; at the
+same depth-2 / 6k-token config used throughout this document, 15 of the 17
+become scoreable, 7 previously scored tasks improve, and none regress. The
+per-task table and its caveats live in `plans/04-correctness-roadmap.md`
+("Phase 0 result") and are re-derivable with
+`bench/agentctx/compare_configs.py`.
+

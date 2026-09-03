@@ -48,6 +48,33 @@ _DEF_TYPES = {
     "typescript": ("function_declaration", "class_declaration", "method_definition",
                    "generator_function_declaration", "interface_declaration",
                    "abstract_class_declaration"),
+    # The grammars below are graphify's own hard dependencies, so they are
+    # always installed wherever the graph was built. Each entry was verified
+    # against the grammar's actual node types (see tests/test_symbols_langs.py);
+    # a type not listed here is a type this module does not claim to slice.
+    "go": ("function_declaration", "method_declaration", "type_spec"),
+    "java": ("class_declaration", "interface_declaration", "enum_declaration",
+             "record_declaration", "method_declaration", "constructor_declaration"),
+    "rust": ("function_item", "function_signature_item", "struct_item", "enum_item",
+             "trait_item", "union_item"),
+    "ruby": ("class", "module", "method", "singleton_method"),
+    "php": ("class_declaration", "interface_declaration", "trait_declaration",
+            "enum_declaration", "function_definition", "method_declaration"),
+    "kotlin": ("class_declaration", "object_declaration", "function_declaration"),
+    "c_sharp": ("class_declaration", "interface_declaration", "struct_declaration",
+                "record_declaration", "enum_declaration", "method_declaration",
+                "constructor_declaration"),
+}
+
+# Node types that are a TYPE-LIKE container rather than a callable.
+_TYPE_KINDS = ("class", "interface", "struct", "enum", "trait", "record", "module",
+               "object", "type_spec", "union")
+
+# Anonymous scopes whose children should be qualified by a name taken from a
+# field: Rust's `impl Foo { fn m() }` has no name of its own but its methods
+# are `Foo.m` to any reader, and Go/Java/C# have nothing comparable.
+_SCOPE_TYPES = {
+    "rust": {"impl_item": "type"},
 }
 
 _EXT_LANG = {
@@ -55,6 +82,13 @@ _EXT_LANG = {
     ".js": "javascript", ".jsx": "javascript", ".mjs": "javascript",
     ".cjs": "javascript",
     ".ts": "typescript", ".mts": "typescript", ".cts": "typescript",
+    ".go": "go",
+    ".java": "java",
+    ".rs": "rust",
+    ".rb": "ruby",
+    ".php": "php",
+    ".kt": "kotlin", ".kts": "kotlin",
+    ".cs": "c_sharp",
 }
 
 # Wrappers that own a definition and carry the parts an agent needs to see —
@@ -126,6 +160,12 @@ def _parser(lang: str):
     elif lang == "typescript":
         import tree_sitter_typescript as m
         raw = m.language_typescript()
+    elif lang == "php":
+        import tree_sitter_php as m
+        raw = m.language_php()
+    elif lang in ("go", "java", "rust", "ruby", "kotlin", "c_sharp"):
+        m = __import__(f"tree_sitter_{lang}")
+        raw = m.language()
     else:
         raise KeyError(lang)
     p = Parser(Language(raw))
@@ -147,6 +187,13 @@ class Symbol:
     def_line: int       # the line a graph records in source_location
     signature: str
     source: str
+    # Leaf names of the calls made DIRECTLY in this body -- `foo(...)`,
+    # `obj.foo(...)`, `new Foo(...)` -- excluding anything inside a nested
+    # definition, which owns its own calls. Names only, never resolved here:
+    # resolution needs the graph, and this module deliberately knows nothing
+    # about it. Used by `supplement` to give a materialised definition the
+    # call edges the extractor could not emit for a node it never created.
+    calls: tuple[str, ...] = ()
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -179,6 +226,13 @@ NO_DEFINITION_AT_LINE = "no_definition_at_line"
 BAD_SOURCE_LOCATION = "bad_source_location"
 MISSING_SOURCE_FILE = "missing_source_file"
 AMBIGUOUS_DEFINITION = "ambiguous_definition"
+# The one definition at the graph's line is not the symbol the graph named.
+# This is what a STALE graph looks like from the inside: the file was edited
+# after extraction, lines shifted, and the node's `source_location` now points
+# at a different function. Returning that function's body under the requested
+# name is the worst outcome this module can produce -- it is exactly as
+# authoritative-looking as the right answer -- so it is refused by name.
+DEFINITION_MISMATCH = "definition_mismatch"
 
 
 def _outermost(node):
@@ -220,6 +274,101 @@ def _clean_key(text: str) -> str | None:
     return text
 
 
+_CALL_TYPES = {
+    "python": ("call",),
+    "javascript": ("call_expression", "new_expression"),
+    "typescript": ("call_expression", "new_expression"),
+    "go": ("call_expression",),
+    "java": ("method_invocation", "object_creation_expression"),
+    "rust": ("call_expression",),
+    "ruby": ("call",),
+    "php": ("function_call_expression", "member_call_expression",
+            "scoped_call_expression", "object_creation_expression"),
+    "kotlin": ("call_expression",),
+    "c_sharp": ("invocation_expression", "object_creation_expression"),
+}
+
+# Fields on a call node that hold the callee, in the order to try them.
+_CALLEE_FIELDS = ("function", "method", "name", "constructor", "type")
+# Member-access chains: descend to the field that names the LEAF.
+_CHAIN_LEAF_FIELD = {
+    "attribute": "attribute",              # python a.b
+    "member_expression": "property",       # js a.b
+    "selector_expression": "field",        # go a.b
+    "field_expression": "field",           # rust a.b
+    "scoped_identifier": "name",           # rust A::b
+    "member_access_expression": "name",    # c# a.b
+    "scoped_type_identifier": "name",      # rust A::B
+    "generic_type": "type",                # java/c# Foo<T>
+}
+_LEAF_TYPES = ("identifier", "property_identifier", "field_identifier", "name",
+               "simple_identifier", "type_identifier", "constant")
+
+
+def _callee_leaf(call_node, lang: str) -> str | None:
+    """Leaf identifier a call binds to: ``foo`` in ``a.b.foo(x)`` / ``foo(x)``.
+
+    Only plain identifiers and member chains are accepted. A call on a
+    computed expression (``fns[i]()``, ``(await x)()``) has no name and is
+    dropped rather than guessed.
+    """
+    fn = None
+    for field in _CALLEE_FIELDS:
+        fn = call_node.child_by_field_name(field)
+        if fn is not None:
+            break
+    if fn is None and lang == "kotlin":
+        # kotlin's call_expression has no callee field: the callee is the
+        # first named child, an identifier or a navigation chain `a.b.c`.
+        for c in call_node.children:
+            if c.is_named:
+                fn = c
+                break
+        while fn is not None and fn.type == "navigation_expression":
+            named = [c for c in fn.children if c.is_named]
+            fn = named[-1] if named else None
+        if fn is not None and fn.type == "navigation_suffix":
+            named = [c for c in fn.children if c.is_named]
+            fn = named[-1] if named else None
+    if fn is None:
+        return None
+    for _ in range(8):
+        nxt_field = _CHAIN_LEAF_FIELD.get(fn.type)
+        if nxt_field is None:
+            break
+        nxt = fn.child_by_field_name(nxt_field)
+        if nxt is None:
+            return None
+        fn = nxt
+    if fn.type not in _LEAF_TYPES:
+        return None
+    text = fn.text.decode("utf-8", "replace").strip()
+    return text or None
+
+
+def _direct_calls(body, lang: str, def_types) -> tuple[str, ...]:
+    """Ordered, de-duplicated callee leaf names directly inside ``body``.
+
+    Descent stops at any nested definition or function-valued binder: those
+    calls belong to the inner symbol, and attributing them to the outer one
+    would invent a `calls` edge from a function that never makes the call.
+    """
+    call_types = _CALL_TYPES.get(lang, ())
+    seen: dict[str, None] = {}
+    stack = list(body.children)
+    while stack:
+        node = stack.pop()
+        if node.type in def_types or node.type in (*_JS_FUNC_VALUES,
+                                                    *_JS_CLASS_VALUES):
+            continue
+        if node.type in call_types:
+            leaf = _callee_leaf(node, lang)
+            if leaf:
+                seen.setdefault(leaf, None)
+        stack.extend(node.children)
+    return tuple(seen)
+
+
 def _definitions(source: bytes, rel_path: str, with_source: bool):
     """(symbols, error_code). Exactly one of the two is meaningful."""
     lang = language_for(rel_path)
@@ -239,6 +388,15 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
 
     def emit(construct, value_node, qual, kind, def_node) -> None:
         body = value_node.child_by_field_name("body")
+        if body is None:
+            # Grammars without a `body` field (ruby, kotlin): the first block-
+            # like child is the body; the signature is what precedes it.
+            for c in value_node.children:
+                if c.type in ("body_statement", "function_body", "class_body",
+                              "block", "declaration_list", "compound_statement",
+                              "enum_body", "interface_body", "field_declaration_list"):
+                    body = c
+                    break
         sig_start = def_node.start_byte
         sig_end = body.start_byte if body is not None else value_node.end_byte
         out.append(Symbol(
@@ -250,6 +408,8 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
                 .decode("utf-8", "replace").strip().rstrip(":{").strip()[:200],
             source=(source[construct.start_byte:construct.end_byte]
                     .decode("utf-8", "replace") if with_source else ""),
+            calls=_direct_calls(body if body is not None else value_node,
+                                lang, wanted),
         ))
 
     def bound_targets(node):
@@ -302,15 +462,31 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
         nm = _clean_key(target.text.decode("utf-8", "replace"))
         return (nm, val) if nm else None
 
+    scopes = _SCOPE_TYPES.get(lang, {})
+
     def walk(node, prefix: tuple[str, ...]) -> None:
         for child in node.children:
+            if child.type in scopes:
+                # `impl Foo { ... }`: no symbol of its own, but its members are
+                # Foo's. Qualify, do not emit.
+                tnode = child.child_by_field_name(scopes[child.type])
+                tname = tnode.text.decode("utf-8", "replace") if tnode is not None else ""
+                for _ in range(4):        # strip generics: `Foo<T>` -> `Foo`
+                    tnode2 = tnode.child_by_field_name("type") if tnode is not None else None
+                    if tnode2 is None:
+                        break
+                    tnode = tnode2
+                    tname = tnode.text.decode("utf-8", "replace")
+                tname = tname.split("<", 1)[0].strip()
+                walk(child, (*prefix, tname) if tname else prefix)
+                continue
             if child.type in wanted:
                 nm = child.child_by_field_name("name")
                 if nm is None:
                     walk(child, prefix)
                     continue
                 qual = (*prefix, nm.text.decode("utf-8", "replace"))
-                kind = ("class" if "class" in child.type or "interface" in child.type
+                kind = ("class" if any(k in child.type for k in _TYPE_KINDS)
                         else "function")
                 emit(_outermost(child), child, qual, kind, child)
                 walk(child, qual)
@@ -355,19 +531,40 @@ def definitions_from_source(source: bytes, rel_path: str,
     return syms
 
 
-def is_nested_in_function(name: str, all_names: dict) -> bool:
-    """True when an ancestor segment of ``name`` is itself a function.
+def is_nested_in_function(name: str, all_names: dict,
+                          def_line: int | None = None,
+                          extents: dict | None = None) -> bool:
+    """True when ``name`` is defined INSIDE the body of a function.
 
     ``name.count(".") >= 1`` is NOT this test: ``Class.method`` is dotted and not
     nested, and JavaScript's ``res.send`` is dotted and not nested either. Using
     the dot count told an agent that a missing method was "nested inside another
     definition — graphify emits no node for these", which is false; graphify
     emits method nodes.
+
+    Nor is "an ancestor segment is a function" the test, which is what this
+    checked before. ``proto.param = function param() {}`` where ``proto`` is
+    itself a function (``var proto = module.exports = function (options) {}``)
+    is a property assigned ONTO a function object at module level, not a
+    closure inside its body -- and graphify's omission applies only to the
+    latter. Measured: express ``lib/router/index.js`` binds its entire router
+    API this way, and the old test declined to materialise any of it.
+
+    So when ``def_line`` and ``extents`` (``name -> (start, end)``) are given,
+    an ancestor counts only if its extent actually contains the definition.
+    Without extents the kind-only test is kept for callers that have nothing
+    better, and it errs towards "nested" (the disclosed direction).
     """
     parts = name.split(".")
     for i in range(1, len(parts)):
-        anc = all_names.get(".".join(parts[:i]))
-        if anc is not None and anc == "function":
+        anc = ".".join(parts[:i])
+        kind = all_names.get(anc)
+        if kind != "function":
+            continue
+        if def_line is None or extents is None or anc not in extents:
+            return True
+        lo, hi = extents[anc]
+        if lo < def_line <= hi:
             return True
     return False
 
@@ -414,13 +611,20 @@ def resolve_detail(root: Path, rel_path: str, def_line: int,
                 rel_path, def_line)
 
     sym = hits[0]
+    leaf = str(expect or "").strip().lstrip(".").rstrip("()")
+    if leaf and sym.name.split(".")[-1] != leaf and sym.name != leaf:
+        return Unresolved(
+            DEFINITION_MISMATCH,
+            f"line {def_line} defines {sym.name!r}, not {leaf!r} -- the graph "
+            f"is probably stale for this file (re-run graphify update)",
+            rel_path, def_line)
     # `name` is the LEAF here, matching what the graph labels a symbol
     # (`.json()` -> json). The qualified form lives on definitions_from_source,
     # where the gap list needs `res.send` distinguishable from every other
     # `send` in the module.
     return Symbol(name=sym.name.split(".")[-1], kind=sym.kind, file=sym.file,
                   start=sym.start, end=sym.end, def_line=sym.def_line,
-                  signature=sym.signature, source=sym.source)
+                  signature=sym.signature, source=sym.source, calls=sym.calls)
 
 
 def resolve(root: Path, rel_path: str, def_line: int,

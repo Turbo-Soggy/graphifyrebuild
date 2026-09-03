@@ -1,207 +1,195 @@
 # graphify-ext
 
-Customization layer on top of stock [graphify](https://github.com/Graphify-Labs/graphify)
-(v8 branch, vendored read-only under `graphify-upstream/`), implementing the two
-requirements in `C:\projects\graphify-customization-spec.md`:
+A layer on top of stock [graphify](https://github.com/Graphify-Labs/graphify)
+(`graphifyy` on PyPI, vendored read-only under `graphify-upstream/` for the
+tests) that turns its code graph into **fix-ready context for a coding agent**:
+the source of the symbol under repair plus its neighbourhood, within a token
+budget, with every gap in that context named rather than hidden. It also keeps
+one cached graph per git branch so a branch switch reconciles incrementally
+instead of rebuilding.
 
-1. **Per-branch incremental graph caching** — one cached graph state per branch,
-   reused on switch-back, reconciled with the existing incremental primitive
-   instead of a full rebuild on every branch switch.
-2. **AppSec fix-context layer** — blast radius, override discovery, external
-   taint/test/config edge injection, an end-to-end vuln triage pipeline, and
-   post-fix edge-diff verification for a coding agent.
+Nothing in `graphify-upstream/` is modified; everything lives in `graphify_ext`.
 
-Nothing in `graphify-upstream/` is modified; everything lives in the
-`graphify_ext` package.
+## What "good enough for autonomous remediation" means here, and where it stands
+
+The target is **disclosure, not completeness** (`plans/04-correctness-roadmap.md`):
+no static graph reaches zero misses, so the achievable guarantee is that the
+graph never lies about what it is missing. Every retrieval result carries its
+gaps as fields an agent can branch on.
+
+Measured on the frozen 70-task corpus (`bench/agentctx/corpus.json`: real fix
+commits from psf/requests, pallets/flask and expressjs/express; ground truth =
+the symbols the fix actually changed, computed from git without consulting the
+graph). All figures below are at **depth 2, budget 6,000 tokens, containment
+on, `max_nodes` 800**, the `default` config in `bench/agentctx/regress.py`;
+recall is over the symbols the agent had to *discover*, precision over
+everything returned. Re-derived on 2026-09-04 by `bench/agentctx/compare_configs.py`.
+
+| | stock graph (`default`) | + `supplement` | + class summaries | + index tier (reserve 300) |
+|---|---|---|---|---|
+| tasks scoreable (entry symbol has a node) | 53 of 70 | **68 of 70** | 68 | 68 |
+| symbols shown **as source**, mean recall | 0.512 (n=53) | 0.622 (n=68) | 0.629 | 0.629 |
+| symbols shown as source **or named in the index** | - | - | - | **0.723** |
+| mean precision (bodies) | 0.158 | 0.118 | 0.118 | 0.118 |
+| tasks regressed vs previous column | | **0** | **0** | **0** |
+| tasks improved / newly scoreable vs previous | | 7 / 15 | 1 / 0 | 0 / 0 (named: many) |
+| mean tokens used of 6,000 | - | 4,418 | 4,418 | 4,811 |
+
+Each column changes exactly one thing against the one before it, at the same
+total budget. Per-task detail, which matters more than the means, is in the
+captured baselines under `bench/agentctx/` and is re-derived by
+`compare_configs.py`. The caveats travel with the numbers: n is 70 with 1 to 7
+symbols per task; co-change is a proxy for "context needed", not a definition;
+precision falls because packs return more symbols; "named in the index" means
+the agent still has to open that symbol, so the two recall rows are never
+summed. Of the 175 ground-truth symbols, every one the graph has a node for is
+*reachable*: the misses left are 16 functions nested inside functions (no node
+by upstream design; disclosed as `unmodelled`) and symbols beyond three hops or
+outside the budget.
+
+The index reserve was fitted, not asserted: a fixed 1,200-token share reached
+0.782 named recall but cost one task its bodies (bodies 0.629 to 0.614); a
+dynamic reserve of 300 that also spends what the bodies leave unused regressed
+no task. Sweep in `plans/04-correctness-roadmap.md`. Flask remains the weak
+shape (11 of 19 tasks at zero for bodies) and is dominated by symbols reached
+through deeper chains than depth 2 covers.
+
+**The two tasks still unscoreable are by design and disclosed**: one entry is
+a function nested inside a function (graphify emits no node for closures; the
+pack lists them as `unmodelled`), the other is a four-segment JavaScript
+binding the walker does not model.
+
+### What an agent gets, end to end
+
+```
+graphify-ext search "send"                       # what could this name mean? (file, line, origin)
+graphify-ext context "lib/response.js:239"       # seed by location, label, id or qualified name
+graphify-ext blast-radius res.json --relation calls   # who is affected
+graphify-ext overrides Base.method               # subclass overrides that need their own fix
+graphify-ext edge-diff snapshot --node res.json  # ... edit ...
+graphify-ext refresh                             # incremental graph update for the edited files
+graphify-ext edge-diff check                     # exit 2 on an unexpected structural change
+```
+
+`context` returns the seed's real source (decorators included, exact extents,
+signature) and its neighbours' source, ranked by depth then relation weight, a
+related class as signature plus member list rather than its whole body, an
+**index** tier of `file:line signature` lines for what did not fit or sits one
+hop further out, the **tests** whose nodes link to anything shown (with the
+edge's relation and confidence), and:
+
+- `omitted` — symbols dropped for budget, each with a score and a severity
+  (`truncated_high_rank` means it scored at least as well as something kept);
+- `unresolved` — symbols the graph knows but no slice was emitted for, with a
+  stable reason code. `definition_mismatch` means the graph's line for that
+  symbol now holds a *different* definition: the graph is stale, and the pack
+  refuses to serve the wrong body under the requested name;
+- `unmodelled` — definitions present in the code shown that have **no graph
+  node at all** (nested functions by design; id-collision victims by defect);
+- `stale_files` — files the pack touched whose content hash no longer matches
+  graphify's `manifest.json`;
+- per-symbol `origin` (extractor vs supplement) and, on `tests` edges, the
+  confidence label that separates coverage-measured from name-guessed.
+
+`refresh` closes the edit loop: incremental graphify update of the edited files
+(default: every file whose manifest hash changed), then re-application of the
+supplement and injected edges, without a full rebuild.
+
+Extents are recovered with the tree-sitter grammars graphify itself depends on,
+for Python, JavaScript, TypeScript, Go, Java, Rust, Ruby, PHP, Kotlin and C#;
+anything else is reported as `unsupported_language`, never guessed.
+
+The same tools are exposed over MCP (`graphify-ext-mcp`, nine tools) with
+errors returned as data, and ambiguous seeds come back as candidate lists. The
+repo's own `CLAUDE.md` is the agent-facing workflow.
+
+### `supplement`: making the missing queryable
+
+Two upstream limits left the symbol a fix was *about* with no node in 17 of 70
+tasks: assignment-bound JavaScript members (`res.json = function json(obj)`,
+express's entire public API; upstream guard #1077) and id collisions
+(`@overload` stubs, `_get_x` vs `get_x`; upstream #3302). A graph with no record
+of a symbol cannot be asked about it, so `graphify-ext supplement` materialises
+those definitions from source: a node in the extractor's own schema (tagged
+`origin: "graphify-ext:supplement"`, with `qualified_name` and
+`supplement_reason`), a `contains`/`method` edge from the owner, and
+**INFERRED** `calls` edges only where a callee name resolves to exactly one
+callable. Extractor nodes are never modified; nested functions are declined;
+files the graph is stale for are refused whole; the pass is idempotent and
+opt-in per output slot (the hooks re-apply it after rebuilds once enabled).
 
 ## Install
 
 ```
-pip install -e .            # into the SAME environment as graphifyy
-graphify-ext hook install   # replaces the stock hook bodies in .git/hooks
+pip install -e .                 # into the SAME environment as graphifyy
+pip install -e ".[mcp]"          # optional: fastmcp for graphify-ext-mcp
+graphify-ext hook install        # replaces the stock hook bodies in .git/hooks
+graphify-ext supplement          # once per repo, after the first graphify extract
 ```
 
 For `uv tool` installs of graphifyy: `uv tool install graphifyy --with graphify-ext`.
-The hook installer verifies importability under the pinned interpreter and warns
-if graphify_ext is missing there.
 
----
-
-## Requirement 1: per-branch caching
-
-### Layout
+## Per-branch caching (Requirement 1)
 
 ```
 .graphify-cache/
 ├── main/                      # slot: graph.json, manifest.json, reports, meta
-├── feature-x-<digest>/        # slash-y branch names get a digest suffix (no collisions)
+├── feature-x-<digest>/        # slash-y branch names get a digest suffix
 ├── @detached/                 # scratch slot for detached HEAD (always rebuilt)
 graphify-out/                  # link (or copy) of the ACTIVE branch's slot
 ```
 
-`graphify-out/` stays the stable path, so `graphify query`/`explain`/`path` and
-every skill/platform install file need zero changes. Upstream explicitly
-supports this: its atomic writer resolves symlinks and writes *through* the
-link (`graphify.paths._atomic_replace`).
+`graphify-out/` stays the stable path so every stock command keeps working.
+`post-checkout` swaps slots and reconciles with graphify's own content-hash
+incremental primitive instead of a full rebuild; `post-commit` does the stock
+incremental update plus slot stamping and re-application of the ext layer
+(supplement, then injected edges). Full rebuild fires on: no slot for the
+branch, history rewrite (base commit no longer an ancestor), detached HEAD,
+graphify version change. Symlink → junction → copy mode is chosen at runtime
+and *functionally verified*. Measured revisit speedup vs stock's full rebuild:
+1.9x on flask (83 files), 17.4x on scrapy (485 files) — see `TEST-RESULTS.md`.
 
-### Link mode vs copy mode
+## AppSec edges (Requirement 2, retained)
 
-`activate()` tries, in order: symlink → Windows directory junction →
-**copy mode**. After creating a link it *functionally verifies* traversal by
-creating a directory through it — on this machine an EDR/filter driver breaks
-`mkdir` through junctions under the user profile (`WinError 183` for paths that
-don't exist) while junctions under `C:\projects` work fine, so a bare
-"creation succeeded" check is not enough. In copy mode the slot is copied over
-a real `graphify-out/` and mirrored back before every swap (owner recorded in
-`graphify-out/.graphify_ext_owner`; previous branch recovered via git's `@{-1}`
-when the owner file is missing).
-
-### Verified upstream facts the design rests on (source, not README)
-
-* **`manifest.json` is portable** (`graphify/detect.py::save_manifest`): keys
-  are forward-slash repo-relative when saved with `root=` (the rebuild path
-  does), values are `{mtime, seen, ast_hash, semantic_hash}` — mtime is only a
-  fast path; MD5 content hashes are ground truth (`detect_incremental`). So
-  cross-branch reuse is valid: checkout-driven mtime churn on identical files
-  costs one hash check, not a re-extract. The v4-era "mtime-based, always
-  gitignored" description is obsolete.
-* **`graphify update` is NOT manifest-gated** — `_rebuild_code(root)` with no
-  `changed_paths` re-extracts the *full* corpus. The spec's plan to run a plain
-  `update` after swap would have bought nothing. The swap-back reconcile here
-  computes the changed set itself with `detect_incremental(kind="ast")` against
-  the slot's manifest and passes it as `changed_paths`.
-* **No schema-version field exists in graph.json**, so the version stamp lives
-  in a slot-local sidecar `graphify_ext_meta.json` (`{branch, base_commit,
-  graphify_version, stamped_at}`). It is deliberately NOT inside
-  `manifest.json`: a non-file key would surface as a phantom "deleted file" in
-  `detect_incremental`'s corpus sweep. The meta never enters `graphify-out/`
-  (copy-mode mirrors would smear one branch's anchor onto another slot).
-* **The nohup-on-Git-for-Windows failure the spec warns about is already fixed
-  upstream** (#1161): hooks use a Python-native detached launcher. The
-  customized hooks inherit it unchanged.
-
-### Hook strategy (spec step 5)
-
-`graphify_ext/hooks_ext.py` composes hook scripts from upstream's own exported
-building blocks (`_PYTHON_DETECT` probe, `_WORKTREE_GUARD`, the detached
-launcher, rebase/merge guards) and swaps only the rebuild *bodies*:
-
-* `post-checkout` → `branch_cache.swap_or_build()` instead of the stock
-  unconditional full `_rebuild_code(Path('.'))`.
-* `post-commit` → `branch_cache.post_commit_update(changed)` — the same
-  incremental `_rebuild_code(changed_paths=...)` as stock, plus slot stamping,
-  external-edge re-application, and the memory/LESSONS refresh.
-
-The stock markers are reused so exactly one graphify block ever exists per
-hook: `graphify-ext hook install` replaces a stock block in place; re-running
-stock `graphify hook install` reverts (re-run ours to re-apply).
-`uv tool upgrade graphifyy` cannot clobber the customization — the hook scripts
-live in `.git/hooks`, not site-packages. The composition raises loudly in
-`_compose_scripts()` if upstream's template layout drifts.
-
-Spec step 6 (repoint the commit hook's manifest path) is a **no-op by design**:
-with `graphify-out` linked to the active slot, `graphify-out/manifest.json`
-*is* the slot's manifest.
-
-### Fallback-to-full-rebuild triggers (all implemented, all tested)
-
-| trigger | mechanism |
-|---|---|
-| no cache slot for target branch | `has_cache()` false → full build |
-| history rewrite (rebase/force-push) | `base_commit` no longer `merge-base --is-ancestor` of HEAD → full build |
-| detached HEAD | `@detached` scratch slot, cleared + fully rebuilt each time |
-| graphify version change | meta `graphify_version` ≠ installed version → full build |
-
-A slot with no meta stamp is trusted (spec: "let update sort it out" — sound,
-because reconciliation is content-hash-based).
-
-`git checkout -b` fires no rebuild (HEAD unchanged, upstream #2421); the first
-commit on the new branch seeds its slot from the currently active slot before
-updating, so the new branch never starts from an empty graph.
-
-### Verification checklist (spec) — status
-
-- [x] Manifest format/portability confirmed in source (see above)
-- [x] graph.json schema-version: confirmed absent; version check implemented via slot meta
-- [x] checkout A → edit → commit → checkout B → checkout A: pre-switch edit present via
-      incremental update, no full rebuild (`tests/test_e2e_branch_cache.py`, steps 3–4,
-      run against the real graphifyy package in BOTH link and copy modes)
-- [x] history rewrite → full rebuild fires (e2e step 5)
-- [x] detached HEAD → full rebuild fires (e2e step 6)
-- [x] symlink approach vs skill/install assumptions: upstream writes through symlinks
-      (`paths._atomic_replace` docstring + code); in copy mode `graphify-out` is a real
-      dir, so consumers are trivially unaffected
-
----
-
-## Requirement 2: AppSec fix-context layer
-
-### Architecture decision (spec step 2, decided up front): **merge into graph.json**
-
-The agent queries ONE graph; blast-radius, triage, and stock `graphify query`
-all see injected edges with no join layer. The cost — rebuilds rewrite
-graph.json and drop injected edges — is handled by persisting findings to
-`graphify-out/external-findings.json` (slot-local ⇒ per-branch) and
-re-injecting after every rebuild (`edge_inject.reapply`, called by both
-customized hook bodies). Injected edges carry `confidence: "EXTERNAL"` and
-`origin: "graphify-ext"` (stock vocabulary is EXTRACTED/INFERRED/AMBIGUOUS),
-so injection is idempotent and provenance is unambiguous.
-
-### Case coverage
-
-| # | case | implementation |
-|---|---|---|
-| 1 | direct callers/callees | `triage` `neighbors` (1-hop, relation-filtered) |
-| 2 | transitive blast radius | `graphify-ext blast-radius "<node>" --depth N [--direction up\|down\|both] [--max-nodes N] --json` — scoped closed subgraph, depth-tagged nodes, explicit `truncated` flag for token budgeting. Relation set is a verified superset of upstream `affected`'s (parity test parses the upstream constant) |
-| 3 | overrides | `graphify-ext overrides "<node>"` — method → owning class → transitive subclasses → same-bare-name member |
-| 4 | taint reachability | `graphify-ext inject --semgrep out.json` maps Semgrep taint `dataflow_trace` source→sink onto graph nodes as `taints`/`reaches_sink` edges; `triage` filters the radius to the taint-touched subset |
-| 5 | test coverage | `graphify-ext test-link --coverage cov.json` (coverage.py JSON with `--cov-context=test` — ground truth) or `--heuristic` (conservative name match; ambiguous names emit nothing rather than falsely claiming coverage) |
-| 6 | config/schema linkage | **verified first** (spec checklist): stock extractor emits NO env-var edges — grep of `extract.py` shows `os.environ` only for graphify's own flags. `graphify-ext config-scan` links env-var read sites (py/js/ts/rb/go/java) to defining config files (.env*, compose, Dockerfile, tf, CI yaml) as `reads_config` edges |
-| 7 | duplicate patterns | out-of-band by design — `triage` output says to run a pattern search (Semgrep) seeded by the vuln signature; not a graph-connectivity problem |
-| 8 | post-fix verification | `graphify-ext verify-fix snapshot --node X` → apply fix + update → `verify-fix check` (exit 2 on unexpected edge delta). Fingerprint excludes community/cluster attrs, so clustering churn is never a false positive |
-| 9 | cross-repo | `triage` notes point at `graphify global add` / `merge-graphs` pre-registration (upstream verbs) |
-
-Location→node resolution (`file:line` from a SAST report) uses
-nearest-preceding-definition containment (function extents aren't stored in
-graph.json), preferring callables; name resolution ports upstream
-`affected.resolve_seed`'s ladder so ext and stock commands agree on what a
-name means.
-
-### Pipeline
-
-```
-graphify-ext inject --semgrep semgrep.json      # taint edges (case 4)
-graphify-ext test-link --coverage coverage.json # tests edges (case 5)
-graphify-ext config-scan                        # reads_config edges (case 6)
-graphify-ext triage vulns.json --out ctx.json   # per-vuln agent context (1,2,3,4,5,6 + notes for 7,9)
-# ... agent applies fix ...
-graphify-ext verify-fix check                   # case 8
-```
-
-`vulns.json`: `[{"id", "description", "file", "line", "function"?}, ...]`.
-
-### Requirement-2 checklist (spec) — status
-
-- [x] Env-var/config edges confirmed absent upstream before building the pass
-- [x] Merge-vs-separate-index decided (merge; rationale above) before injector code
-- [x] Blast-radius token-bounding: `--depth`/`--max-nodes` caps + `truncated` flag
-      (benchmark on your real repo to pick the default depth for your agent's budget)
-- [ ] Taint-edge injection validated against a known-vulnerable corpus — adapter +
-      resolution are unit-tested; run against your SISA pipeline/corpus to validate
-      node-ID landing at scale
-- [x] Post-fix edge-diff ignores clustering churn (tested)
-
----
+`inject --semgrep` (taint/sink edges; trace-less findings are mapped only for
+declared taint rules and otherwise reported as skipped), `test-link --coverage`
+(EXTRACTED) / `--heuristic` (INFERRED), `config-scan` (env-var reads →
+defining config files), `triage` (per-vulnerability context bundle). Injected
+edges carry `origin: "graphify-ext"`, persist in the slot and are re-applied
+after rebuilds. Taint reachability is no longer a roadmap phase (scrapped
+2026-09-03) but the code stays and is tested.
 
 ## Development
 
 ```
 python -m venv .venv
-.venv/Scripts/pip install -e . pytest
-.venv/Scripts/pip install -e ./graphify-upstream   # for the e2e tests
-.venv/Scripts/python -m pytest tests -q            # 70 tests; e2e runs link+copy modes
+.venv/Scripts/pip install -e ".[mcp]" pytest tiktoken
+git clone https://github.com/Graphify-Labs/graphify graphify-upstream   # tests read its source
+.venv/Scripts/python -m pytest tests -q            # 184 tests; add -m e2e for the real-graphify lifecycle
 ```
 
-`tests/test_e2e_branch_cache.py` intentionally runs the full lifecycle twice:
-once in the system temp dir (copy mode on this machine — filter driver breaks
-junction traversal there) and once next to the project (link mode).
+Benchmark (needs full clones of the three corpus repos, gitignored):
+
+```
+git clone https://github.com/psf/requests      bench/agentctx/repo
+git clone https://github.com/pallets/flask     bench/agentctx/repo-flask
+git clone https://github.com/expressjs/express bench/agentctx/repo-express
+python bench/agentctx/build_all.py 4                 # 70 worktrees + graphs, ~2 min
+python bench/agentctx/regress.py --config default    # must print "no per-task change"
+python bench/agentctx/regress.py --config supplement-index-dyn300   # the shipped defaults
+python bench/agentctx/compare_configs.py bench/agentctx/baseline-supplement.json bench/agentctx/baseline-supplement-index-dyn300.json
+python bench/agentctx/diagnose.py --config supplement-index-dyn300 --only-zero   # why a task missed, per symbol
+```
+
+Any change to ranking, containment, edge generation or the supplement must be
+run through `regress.py` and reported per task, budget-matched, before it is
+described as an improvement. The evidence rules are in
+`plans/04-correctness-roadmap.md`.
+
+## Documents
+
+- `plans/04-correctness-roadmap.md` — what is claimed, what is not, and why
+- `AGENT-CONTEXT-COMPARISON.md` — the 14-task study that motivated `context`
+- `TEST-RESULTS.md` — differential testing of the branch cache vs stock
+- `CUSTOM-BUILD-GUIDE.md` — full command reference and the connected-repo record
+- `CODE-GRAPH-RESEARCH.md` — how this maps onto the agent code-graph literature

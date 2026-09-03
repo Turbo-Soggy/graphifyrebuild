@@ -555,6 +555,17 @@ def _reapply_external_edges() -> None:
 
     Best-effort: the branch cache must keep working without Requirement 2.
     """
+    # Supplement first: injected findings may resolve to a supplemented node
+    # (a semgrep hit inside `res.json`), so those nodes must exist before the
+    # external edges are re-resolved. No-op unless the slot opted in.
+    try:
+        from graphify_ext import supplement
+        rep = supplement.reapply(Path(OUT_NAME))
+        if rep:
+            print(f"[graphify-ext] re-applied supplement: {rep['added_nodes']} "
+                  f"node(s), {rep['added_edges']} edge(s)")
+    except Exception:
+        pass
     try:
         from graphify_ext.edge_inject import reapply
         n = reapply(Path(OUT_NAME))
