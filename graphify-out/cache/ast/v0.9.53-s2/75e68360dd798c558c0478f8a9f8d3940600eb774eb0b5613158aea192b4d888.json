@@ -1,1 +1,0 @@
-{"nodes": [{"id": "$graphify-root$_bench_agentctx_wt_36093e69_requests_packages_urllib3_contrib_init_py", "label": "__init__.py", "file_type": "code", "source_file": "bench/agentctx/wt/36093e69/requests/packages/urllib3/contrib/__init__.py", "source_location": "L1"}], "edges": [], "raw_calls": []}

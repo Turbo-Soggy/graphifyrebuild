@@ -1,1 +1,0 @@
-{"nodes": [{"id": "$graphify-root$_bench_sandbox_big_tests_test_cmdline_crawl_with_pipeline_test_spider_spiders_init_py", "label": "__init__.py", "file_type": "code", "source_file": "bench/sandbox-big/tests/test_cmdline_crawl_with_pipeline/test_spider/spiders/__init__.py", "source_location": "L1"}], "edges": [], "raw_calls": []}

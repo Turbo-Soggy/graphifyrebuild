@@ -17,3 +17,8 @@ __pycache__/
 
 # e2e test scratch dir (self-contained mini git repo, regenerated per test run)
 /.e2e-tmp/
+
+# Generated graph output. Rebuildable with `graphify extract .`, ~101 MB across
+# 2,462 files, and the post-commit hook regenerates it after every commit — so
+# tracking it meant the tree was dirty again the moment a commit landed.
+/graphify-out/

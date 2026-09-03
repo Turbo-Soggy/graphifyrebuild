@@ -1,1 +1,0 @@
-{"nodes": [{"id": "pkg_crate_a", "label": "crate_a", "file_type": "code", "type": "package", "ecosystem": "cargo", "source_file": "graphify-upstream/tests/fixtures/crate_a/Cargo.toml", "source_location": "L1", "version": "0.1.0"}], "edges": []}
