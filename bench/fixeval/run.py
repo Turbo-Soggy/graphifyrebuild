@@ -235,9 +235,14 @@ def node_env(tree: Path) -> bool:
 
 def _mocha(tree: Path, files: list[str], extra: list[str]) -> dict:
     try:
-        r = subprocess.run(["npx", "mocha", "--reporter", "json", "--exit", "--timeout", "20000",
-                            *extra, *files], cwd=str(tree), capture_output=True, text=True,
-                           encoding="utf-8", errors="replace", shell=True, timeout=600)
+        flags = ["--reporter", "json", "--timeout", "20000"]
+        if "--no-exit" in extra:
+            extra = [x for x in extra if x != "--no-exit"]
+        else:
+            flags.append("--exit")
+        r = subprocess.run(["npx", "mocha", *flags, *extra, *files], cwd=str(tree),
+                           capture_output=True, text=True, encoding="utf-8", errors="replace",
+                           shell=True, timeout=600)
     except subprocess.TimeoutExpired:
         return {"tests": {}, "exit": 124, "tail": "mocha timed out after 600s"}
     text = r.stdout
@@ -257,11 +262,18 @@ def _mocha(tree: Path, files: list[str], extra: list[str]) -> dict:
 
 
 def run_mocha(tree: Path, files: list[str]) -> dict:
+    """Try the modern invocation first, then progressively older ones: mocha
+    before 4.x rejects `--exit`, and 1.x/2.x print their JSON differently.
+    A tree whose mocha cannot run under Node 24 is reported, not scored."""
     if not node_env(tree):
         return {"tests": {}, "exit": 1, "tail": "npm install failed"}
-    res = _mocha(tree, files, ["--require", "test/support/env"]) if (tree / "test" / "support" / "env.js").exists() else None
-    if res is None or not res["tests"]:
-        res = _mocha(tree, files, [])
+    env_req = ["--require", "test/support/env"] if (tree / "test" / "support" / "env.js").exists() else []
+    attempts = [env_req, [], ["--no-exit"] + env_req, ["--no-exit"]]
+    res = {"tests": {}, "exit": 1, "tail": "mocha never produced a result"}
+    for extra in attempts:
+        res = _mocha(tree, files, extra)
+        if res["tests"]:
+            return res
     return res
 
 

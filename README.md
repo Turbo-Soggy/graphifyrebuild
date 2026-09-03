@@ -182,7 +182,8 @@ and *functionally verified*. Measured revisit speedup vs stock's full rebuild:
 declared taint rules and otherwise reported as skipped), `inject --joern`
 (Joern `reachableByFlows` output via `bench/joern/export_flows.sc`: endpoints
 plus one `taints` edge per inter-function step of the path, so the agent sees
-the whole chain a sanitiser could break; Joern itself is not a dependency), `test-link --coverage`
+the whole chain a sanitiser could break; Joern itself is not a dependency;
+validated against real Joern output on the taint corpus, 9 of 9 checks), `test-link --coverage`
 (EXTRACTED) / `--heuristic` (INFERRED), `config-scan` (env-var reads →
 defining config files), `triage` (per-vulnerability context bundle). Injected
 edges carry `origin: "graphify-ext"`, persist in the slot and are re-applied

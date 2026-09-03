@@ -566,6 +566,17 @@ symbol short (the lost task: named function refactored, call site untouched).
 Everything needed to make the number quotable is listed in
 `bench/fixeval/README.md`; the harness is the deliverable of this pass.
 
+## Joern as taint engine — **VALIDATED 2026-09-04**
+
+`edge_inject.from_joern` + `bench/joern/*.sc`. Real `pysrc2cpg` +
+`reachableByFlows` on `corpus/vuln_app`, scored by the same M1-M5 ground truth
+as the Semgrep-shaped arm: 9/9. The one real finding: Joern reported the
+sanitised path as a flow until sanitizers were declared and filtered by method
+membership (`passesNot` on the call node did not catch it because the exported
+path enters the sanitizer's body). Chain edges (one `taints` per inter-function
+step) land on distinct nodes for the multi-hop case. Scope unchanged: an appsec
+add-on, not part of the general fix loop.
+
 ## Phase 5 — Cross-pillar integration
 
 Unchanged. Single ranking function arbitrating across all four pillars, not four

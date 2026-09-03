@@ -18,9 +18,21 @@ import io.joern.dataflowengineoss.queryengine.EngineContext
   }
   val sources = "read_query_param|read_request_body|read_header"
   val sinks = "run_sql|run_shell|render_html"
+  val sanitizers = "sanitize"
   val src = cpg.call.name(sources)
   val snk = cpg.call.name(sinks).argument
-  val flows = snk.reachableByFlows(src).l.map { path =>
+  // A path that passes through a sanitizer call is not a taint flow. Without
+  // this, Joern reported tn_sanitized_sql -> sanitize -> run_sql as a flow.
+  // `passesNot` on the call node alone missed it: the exported path enters the
+  // sanitizer's BODY (sinks.py) rather than touching the call node. Drop any
+  // path with an element inside a sanitizer method or on a sanitizer call.
+  val flows = snk.reachableByFlows(src).l.filterNot { path =>
+    path.elements.exists { e =>
+      e.location.methodFullName.split("[.:]").lastOption.exists(_.matches(sanitizers)) ||
+      (e.isInstanceOf[io.shiftleft.codepropertygraph.generated.nodes.Call] &&
+        e.asInstanceOf[io.shiftleft.codepropertygraph.generated.nodes.Call].name.matches(sanitizers))
+    }
+  }.map { path =>
     val elems = path.elements.map { e =>
       ujson.Obj(
         "file"   -> rel(e.location.filename),

@@ -36,6 +36,9 @@ ROOT = HERE.parent
 GT = json.loads((HERE / "ground_truth.json").read_text(encoding="utf-8"))
 PY = sys.executable
 SCRIPTS = Path(PY).parent
+# the stock graphify entry point: whatever is on PATH first, else beside PY
+import shutil as _shutil
+GRAPHIFY_EXE = _shutil.which("graphify") or str(SCRIPTS / "graphify.exe")
 
 RESULTS: list[tuple[str, str, bool, str]] = []
 
@@ -197,7 +200,7 @@ def run_build_a(ws: Path) -> None:
     from graphify_ext import edge_inject, graphio
 
     env = dict(os.environ, PYTHONHASHSEED="0", GRAPHIFY_MAX_WORKERS="1")
-    r = subprocess.run([str(SCRIPTS / "graphify.exe"), ".", "--code-only"],
+    r = subprocess.run([GRAPHIFY_EXE, ".", "--code-only"],
                        cwd=str(ws), capture_output=True, text=True, env=env)
     graph_path = ws / "graphify-out" / "graph.json"
     if not graph_path.exists():
@@ -283,6 +286,78 @@ def run_build_a(ws: Path) -> None:
         resolve=lambda rel, line: graphio.resolve_by_location(data, rel, line, root=ws),
         label_of=lambda nid: str(idx.get(nid, {}).get("label", nid)) if nid else None,
     )
+
+
+# ---------------------------------------------------------------- joern arm
+
+JOERN_FLOWS = ROOT / "bench" / "joern" / "corpus-flows.json"
+
+
+def run_build_joern(ws: Path) -> None:
+    """Build A's graph + REAL Joern flows through `edge_inject.from_joern`.
+
+    The flows file is produced by `bench/joern/corpus_flows.sc` in a Joern
+    shell (pysrc2cpg on corpus/vuln_app, sources/sinks/sanitizer by name); this
+    arm does not run Joern itself. It holds the adapter to the same ground truth
+    as the Semgrep-shaped arm: every TP flow must land on the expected source and
+    sink nodes, the multi-hop flow on two distinct nodes, and no true-negative
+    function may be exposed -- which is exactly where an engine that does not
+    know `sanitize` is a sanitizer fails.
+    """
+    print("\n=== Build A + Joern flows (edge_inject.from_joern) ===")
+    sys.path.insert(0, str(ROOT))
+    from graphify_ext import edge_inject, graphio
+
+    if not JOERN_FLOWS.exists():
+        check("J", "flows", f"{JOERN_FLOWS.name} present (run bench/joern/corpus_flows.sc)", False)
+        return
+    env = dict(os.environ, PYTHONHASHSEED="0", GRAPHIFY_MAX_WORKERS="1")
+    r = subprocess.run([GRAPHIFY_EXE, ".", "--code-only"],
+                       cwd=str(ws), capture_output=True, text=True, env=env)
+    graph_path = ws / "graphify-out" / "graph.json"
+    if not graph_path.exists():
+        check("J", "build", "corpus graph built", False, (r.stdout + r.stderr).strip()[-200:])
+        return
+    check("J", "build", "corpus graph built", True)
+
+    raw = json.loads(JOERN_FLOWS.read_text(encoding="utf-8"))
+    # flows are relative to vuln_app/; the workspace graph is rooted one level up
+    for fl in raw.get("flows", []):
+        for el in fl.get("path", []):
+            if el.get("file") and not str(el["file"]).startswith("vuln_app/"):
+                el["file"] = "vuln_app/" + str(el["file"]).replace("\\", "/")
+    findings = edge_inject.from_joern(raw)
+    check("J", "M0", "every exported flow has >= 2 located elements",
+          not findings["skipped"], f"skipped={findings['skipped']}")
+    report = edge_inject.inject(graph_path, findings)
+    check("J", "M0b", "every flow element resolved to a graph node",
+          not report["unresolved"], f"unresolved={len(report['unresolved'])}")
+    data = graphio.load(graph_path)
+    idx = graphio.node_index(data)
+
+    def label_of(nid: str) -> str:
+        return str(idx.get(nid, {}).get("label", nid)).rstrip("()")
+
+    ext = [e for e in graphio.edges(data) if e.get("origin") == "graphify-ext"]
+    endpoints = {(label_of(str(e["source"])), label_of(str(e["target"])))
+                 for e in ext if e["relation"] == "reaches_sink"}
+    chain = {(label_of(str(e["source"])), label_of(str(e["target"])))
+             for e in ext if e["relation"] == "taints"}
+    for f in GT["flows"]:
+        want = (f["expected_source_node"], f["expected_sink_node"])
+        check("J", f"M1/M2 {f['id']}", "flow endpoints land on the expected nodes",
+              want in endpoints, f"want {want}; have {sorted(endpoints)}")
+        if want[0] != want[1]:
+            check("J", f"M3 {f['id']}", "cross-function flow is a chain of distinct nodes",
+                  want in chain and want[0] != want[1])
+    exposed = {a for a, _ in endpoints} | {b for _, b in endpoints} |               {a for a, _ in chain} | {b for _, b in chain}
+    negatives = {n["function"] for n in GT["negatives"]}
+    check("J", "M5", "no true-negative function is exposed (sanitizer respected)",
+          not (exposed & negatives), f"leaked={sorted(exposed & negatives)}")
+    expected = set(GT["expected_exposed_nodes"])
+    real_exposed = {x for x in exposed if x in expected or x in negatives}
+    check("J", "M4", "taint-exposed set matches ground truth", real_exposed == expected,
+          f"extra={sorted(real_exposed - expected)} missing={sorted(expected - real_exposed)}")
 
 
 # -------------------------------------------------------------------- build B
@@ -379,7 +454,7 @@ def run_build_b(ws: Path) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["a", "b", "both"], default="both")
+    ap.add_argument("--build", choices=["a", "b", "both", "joern", "all"], default="both")
     ap.add_argument("--keep", action="store_true", help="keep the workspace")
     args = ap.parse_args()
 
@@ -390,6 +465,8 @@ def main() -> int:
             run_build_a(ws)
         if args.build in ("b", "both"):
             run_build_b(ws)
+        if args.build in ("joern", "all"):
+            run_build_joern(ws)
     finally:
         if not args.keep:
             shutil.rmtree(ws, ignore_errors=True)

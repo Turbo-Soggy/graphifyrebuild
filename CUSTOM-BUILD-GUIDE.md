@@ -228,6 +228,20 @@ adapter also accepts Joern's raw `toJson` of a `List[Path]`. Joern and the JVM
 are not dependencies of this package; the adapter is pure JSON and every
 element that fails to resolve to a graph node is reported, never dropped.
 
+**Validated end to end (2026-09-04).** Joern CLI v4.0.617 (`pysrc2cpg`) on
+`corpus/vuln_app` via `bench/joern/corpus_flows.sc`, injected with
+`from_joern`, scored by `python corpus/validate_taint.py --build joern`:
+**9 of 9 checks pass** -- every true-positive flow lands on the expected source
+and sink nodes, the multi-hop shell flow is a chain of two distinct nodes, and
+no true-negative function is exposed. The last one needed a lesson: Joern does
+not know `sanitize` is a sanitizer, so it reported
+`tn_sanitized_sql -> sanitize -> run_sql` as a flow; the export scripts drop
+any path that enters a declared sanitizer's body or call
+(`--param sanitizers=<regex>` on `run_export.sc`). Declare your sanitizers or
+the chain edges will include neutralised paths. `joern.bat` passes `--param`
+values through `cmd.exe`, which eats `|` in regexes; `corpus_flows.sc` is the
+parameter-free form for that reason.
+
 **On trace-less semgrep findings.** Semgrep emits a `dataflow_trace` only when
 a flow has a multi-step path; when source and sink are the same expression it
 emits none. Measured against a real scan, **9 of 9 taint findings had no

@@ -16,7 +16,7 @@ import io.joern.dataflowengineoss.queryengine.EngineContext
 import io.joern.dataflowengineoss.semanticsloader.FlowSemantic
 
 @main def exec(repo: String, out: String, sources: String, sinks: String,
-               rule: String = "joern"): Unit = {
+               rule: String = "joern", sanitizers: String = ""): Unit = {
   importCode(repo, "fixctx")
   implicit val ctx: EngineContext = EngineContext()
   val root = repo.replace('\\', '/').stripSuffix("/")
@@ -26,7 +26,15 @@ import io.joern.dataflowengineoss.semanticsloader.FlowSemantic
   }
   val src = cpg.call.name(sources).argument ++ cpg.call.name(sources)
   val snk = cpg.call.name(sinks).argument
-  val flows = snk.reachableByFlows(src).l.map { path =>
+  val raw = snk.reachableByFlows(src).l
+  // paths entering a declared sanitizer (its body or its call) are not taint flows
+  val flows = (if (sanitizers.isEmpty) raw else raw.filterNot { path =>
+    path.elements.exists { e =>
+      e.location.methodFullName.split("[.:]").lastOption.exists(_.matches(sanitizers)) ||
+      (e.isInstanceOf[io.shiftleft.codepropertygraph.generated.nodes.Call] &&
+        e.asInstanceOf[io.shiftleft.codepropertygraph.generated.nodes.Call].name.matches(sanitizers))
+    }
+  }).map { path =>
     val elems = path.elements.map { e =>
       ujson.Obj(
         "file"   -> rel(e.location.filename),
