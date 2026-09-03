@@ -57,6 +57,30 @@ no task. Sweep in `plans/04-correctness-roadmap.md`. Flask remains the weak
 shape (11 of 19 tasks at zero for bodies) and is dominated by symbols reached
 through deeper chains than depth 2 covers.
 
+### Does it actually produce fixes? First end-to-end measurement
+
+`bench/fixeval/` runs a headless Claude Code agent (`sonnet`, 30 turns, no
+Bash) on the pre-fix tree with the commit message as the problem statement,
+with and without the context pack, then applies the maintainers' own test
+diff and checks FAIL_TO_PASS, SWE-bench style. Only 6 of the 70 corpus tasks
+are verifiable that way so far (most fix commits carry no discriminating test;
+old suites need older interpreters; Express dependency installs were too slow
+to finish). Results, one run per cell:
+
+| | with the pack | without |
+|---|---|---|
+| tasks resolved | 3 of 6 | 4 of 6 |
+| mean agent turns | 21.7 | 27.8 |
+| mean cost per run | $0.55 | $0.45 |
+
+**n is 6 and one run per cell; this separates nothing statistically.** What it
+does show: the pack made the agent act sooner (on one task the no-graph agent
+spent all 31 turns and never edited a file), and on the one task it lost, the
+graph agent stopped at turn 10 having fixed the named function but not its
+call site. Context that looks complete can end exploration early. Method,
+per-task table and what would make the number quotable are in
+`bench/fixeval/README.md`.
+
 **The two tasks still unscoreable are by design and disclosed**: one entry is
 a function nested inside a function (graphify emits no node for closures; the
 pack lists them as `unmodelled`), the other is a four-segment JavaScript
@@ -155,7 +179,10 @@ and *functionally verified*. Measured revisit speedup vs stock's full rebuild:
 ## AppSec edges (Requirement 2, retained)
 
 `inject --semgrep` (taint/sink edges; trace-less findings are mapped only for
-declared taint rules and otherwise reported as skipped), `test-link --coverage`
+declared taint rules and otherwise reported as skipped), `inject --joern`
+(Joern `reachableByFlows` output via `bench/joern/export_flows.sc`: endpoints
+plus one `taints` edge per inter-function step of the path, so the agent sees
+the whole chain a sanitiser could break; Joern itself is not a dependency), `test-link --coverage`
 (EXTRACTED) / `--heuristic` (INFERRED), `config-scan` (env-var reads →
 defining config files), `triage` (per-vulnerability context bundle). Injected
 edges carry `origin: "graphify-ext"`, persist in the slot and are re-applied

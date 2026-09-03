@@ -22,3 +22,7 @@ __pycache__/
 # 2,462 files, and the post-commit hook regenerates it after every commit — so
 # tracking it meant the tree was dirty again the moment a commit landed.
 /graphify-out/
+
+# end-to-end fix eval scratch: per-task venvs and agent working copies
+/bench/fixeval/venvs/
+/bench/fixeval/work/

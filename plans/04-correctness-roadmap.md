@@ -552,6 +552,20 @@ A/B.
 - Method leaf names resolve as seeds (`parse` finds `.parse()`); id/path
   substrings rank below label matches in `search`.
 
+## End-to-end fix evaluation — **FIRST RUN 2026-09-04, not yet quotable**
+
+The retrieval metrics above are proxies. `bench/fixeval/` measures the target
+directly: a headless agent fixes the pre-fix tree from the commit message, with
+and without the pack; the maintainers' test diff decides. 6 of 70 tasks were
+verifiable; with the pack 3 of 6 resolved, without it 4 of 6; mean turns 21.7
+vs 27.8; mean cost $0.55 vs $0.45. **One run per cell, n=6: this says nothing
+about which arm is better.** It does show two mechanisms worth designing
+against: the pack makes the agent commit to an edit sooner (good on one task,
+where the no-graph agent never edited), and it can make the agent stop one
+symbol short (the lost task: named function refactored, call site untouched).
+Everything needed to make the number quotable is listed in
+`bench/fixeval/README.md`; the harness is the deliverable of this pass.
+
 ## Phase 5 — Cross-pillar integration
 
 Unchanged. Single ranking function arbitrating across all four pillars, not four

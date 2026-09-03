@@ -102,6 +102,11 @@ def inject(graph_path: Path, findings: dict) -> dict:
                 "reason": "source_ref unresolved" if src is None else "target_ref unresolved",
             })
             continue
+        if src == tgt and f.get("skip_self"):
+            # a chain step whose two ends fall in the same function says
+            # nothing about propagation between functions; drop it quietly
+            # (the producer asked for exactly this with skip_self)
+            continue
         dedupe = (src, tgt, relation)
         if dedupe in seen:
             continue
@@ -259,6 +264,92 @@ def from_semgrep(semgrep_json: dict, *,
                            "(pass --taint-rule/--assume-taint if it is)"),
             })
     return {"edges": edges, "skipped": skipped}
+
+
+def from_joern(flows_json, *, rule: str = "joern") -> dict:
+    """Map Joern data-flow results to findings edges (case 4 producer, second engine).
+
+    Joern's ``reachableByFlows`` gives what Semgrep's ``dataflow_trace`` only
+    sometimes gives: a full interprocedural path from source to sink, with
+    every intermediate statement located. This adapter accepts either:
+
+    * the **neutral form** written by ``bench/joern/export_flows.sc``:
+      ``{"flows": [{"rule": str?, "path": [{"file", "line", "method"?, "code"?}, ...]}]}``
+      (first element = source, last = sink), or
+    * Joern's own ``toJson`` of a ``List[Path]``: a list of objects whose
+      ``elements`` carry ``filename``/``lineNumber`` (``location`` nested or flat).
+
+    Edges emitted per flow, all ``confidence: EXTERNAL`` with the engine named:
+
+    * ``taints``        source -> sink
+    * ``reaches_sink``  source -> sink
+    * ``taints``        between CONSECUTIVE path elements that land on
+      DIFFERENT graph nodes -- the chain. A fix anywhere along it breaks the
+      flow, and an agent shown only the endpoints cannot see where the
+      sanitiser belongs. Resolution to nodes happens at inject time
+      (nearest enclosing callable, with the containment guards), and any
+      element that does not resolve is reported by ``inject`` as unresolved,
+      never dropped silently.
+
+    Nothing here runs Joern: the JVM is not a dependency of this package. Run
+    the export script in a Joern shell and hand the JSON over.
+    """
+    flows = flows_json.get("flows") if isinstance(flows_json, dict) else flows_json
+    if flows is None:
+        flows = []
+    edges: list[dict] = []
+    skipped: list[dict] = []
+    for i, flow in enumerate(flows):
+        path = _joern_path(flow)
+        if len(path) < 2:
+            skipped.append({"flow": i, "reason": "fewer than two located elements"})
+            continue
+        name = str((flow.get("rule") if isinstance(flow, dict) else None) or rule)
+        src, snk = path[0], path[-1]
+        common = {"detail": f"{name} (joern flow {i}, {len(path)} elements)",
+                  "confidence": "EXTERNAL", "confidence_score": 1.0}
+        for rel in ("taints", "reaches_sink"):
+            edges.append({"relation": rel,
+                          "source_ref": {"file": src[0], "line": src[1]},
+                          "target_ref": {"file": snk[0], "line": snk[1]}, **common})
+        # the chain: one hop per consecutive pair; inject() de-duplicates pairs
+        # that resolve to the same node, so intra-function steps collapse.
+        for a, b in zip(path, path[1:]):
+            if (a[0], a[1]) == (b[0], b[1]):
+                continue
+            edges.append({"relation": "taints",
+                          "source_ref": {"file": a[0], "line": a[1]},
+                          "target_ref": {"file": b[0], "line": b[1]},
+                          "detail": f"{name} (joern flow {i}, chain step)",
+                          "confidence": "EXTERNAL", "confidence_score": 1.0,
+                          "skip_self": True})
+    return {"edges": edges, "skipped": skipped}
+
+
+def _joern_path(flow) -> list[tuple[str, int]]:
+    """Ordered (file, line) for a flow in either accepted shape."""
+    if isinstance(flow, dict):
+        elems = flow.get("path") or flow.get("elements") or []
+    elif isinstance(flow, list):
+        elems = flow
+    else:
+        return []
+    out: list[tuple[str, int]] = []
+    for e in elems:
+        if not isinstance(e, dict):
+            continue
+        loc = e.get("location") if isinstance(e.get("location"), dict) else e
+        file = loc.get("file") or loc.get("filename")
+        line = loc.get("line") or loc.get("lineNumber")
+        if isinstance(line, dict):          # Joern Option[Integer] serialisation
+            line = line.get("value")
+        if not file or line in (None, "", -1):
+            continue
+        try:
+            out.append((str(file).replace("\\", "/"), int(line)))
+        except (TypeError, ValueError):
+            continue
+    return out
 
 
 def _semgrep_loc(obj) -> tuple[str, int] | None:

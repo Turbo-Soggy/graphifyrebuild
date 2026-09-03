@@ -211,9 +211,22 @@ Subclass implementations that override a base method — each needs its own fix.
 ```bash
 graphify-ext inject <findings.json> [--graph PATH] [--no-store]
 graphify-ext inject --semgrep <out.json> [--taint-rule ID ...] [--assume-taint]
+graphify-ext inject --joern <flows.json>
 ```
 Merge external edges into `graph.json`. Findings are persisted so a later
 rebuild can restore them.
+
+**Joern as the taint engine.** Semgrep's `dataflow_trace` is absent on most
+real findings (measured 9 of 9). Joern's `reachableByFlows` always yields the
+full interprocedural path, so `--joern` emits the endpoints (`taints`,
+`reaches_sink`) **and the chain**: one `taints` edge per consecutive pair of
+path elements that land in different functions. An agent shown only the
+endpoints cannot see where along the flow the sanitiser belongs; the chain is
+that answer. Produce the JSON in a Joern shell with
+`bench/joern/export_flows.sc` (`exportFlows(out, sources, sinks, rule)`); the
+adapter also accepts Joern's raw `toJson` of a `List[Path]`. Joern and the JVM
+are not dependencies of this package; the adapter is pure JSON and every
+element that fails to resolve to a graph node is reported, never dropped.
 
 **On trace-less semgrep findings.** Semgrep emits a `dataflow_trace` only when
 a flow has a multi-step path; when source and sink are the same expression it

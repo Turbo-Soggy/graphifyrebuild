@@ -1,0 +1,50 @@
+flask/a411a243         skip: fix changed no test file
+flask/c77a5203         skip: fix changed no test file
+flask/eca5fd1d         skip: fix changed no test file
+flask/daf1510a         OK: 6 fail-to-pass, 86 pass-to-pass, 0 excluded as environment failures
+
+1 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/9822a035         OK: 1 fail-to-pass, 34 pass-to-pass, 0 excluded as environment failures
+
+2 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/d718ecf6         skip: fix changed no test file
+flask/72c85e80         skip: fix changed no test file
+flask/4256fc63         skip: fix changed no test file
+flask/2a33c178         skip: no test goes fail->pass with the real fix (130 pass, 0 fail in both, 0 pending)
+flask/5d8e3565         skip: no test goes fail->pass with the real fix (52 pass, 0 fail in both, 0 pending)
+flask/095651be         skip: fix changed no test file
+flask/58f3536a         skip: fix changed no test file
+flask/c2810ffd         skip: fix changed no test file
+flask/9e686d93         skip: fix changed no test file
+flask/5544d094         skip: no test goes fail->pass with the real fix (52 pass, 1 fail in both, 0 pending)
+flask/c9e000b9         skip: no test goes fail->pass with the real fix (51 pass, 2 fail in both, 0 pending)
+flask/45174bf9         skip: fix changed no test file
+flask/96c97dec         OK: 4 fail-to-pass, 192 pass-to-pass, 0 excluded as environment failures
+
+3 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/3351a867         skip: suite did not run -- 'no tests ran in 0.00s'
+flask/a406c297         skip: fix changed no test file
+
+3 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+requests/3816cfa1      skip: fix changed no test file
+requests/aa1461b6      skip: fix changed no test file
+requests/99b3b492      skip: test patch does not apply
+requests/db575eee      skip: test patch does not apply
+requests/bd100472      skip: pre-2021 requests suite (old six on py3.12)
+requests/bf4a8133      skip: fix changed no test file
+requests/c3367d18      skip: fix changed no test file
+requests/f002b730      skip: fix changed no test file
+requests/31b35ab8      skip: pre-2021 requests suite (old six on py3.12)
+requests/9e9d2c65      skip: fix changed no test file
+requests/3e3fc768      skip: fix changed no test file
+requests/36093e69      skip: fix changed no test file
+requests/8ed941fa      skip: fix changed no test file
+requests/dfa41afd      skip: fix changed no test file
+requests/7815953c      skip: fix changed no test file
+requests/59c8d813      skip: fix changed no test file
+requests/c15a8f8a      skip: fix changed no test file
+requests/1d42d9d2      skip: pre-2021 requests suite (old six on py3.12)
+requests/1adba3c9      skip: pre-2021 requests suite (old six on py3.12)
+requests/012f0334      skip: fix changed no test file
+
+3 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json

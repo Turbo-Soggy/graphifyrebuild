@@ -10,7 +10,7 @@ Requirement 2:
                                      [--include-containment] [--list-relations]
                                      [--graph P] [--json]
   graphify-ext overrides "<node>" [--graph P]
-  graphify-ext inject (<findings.json> | --semgrep out.json) [--graph P] [--no-store]
+  graphify-ext inject (<findings.json> | --semgrep out.json | --joern flows.json) [--graph P] [--no-store]
   graphify-ext test-link (--coverage cov.json | --heuristic) [--graph P] [--dry-run]
   graphify-ext config-scan [path] [--graph P] [--dry-run]
   graphify-ext reapply [--out DIR]
@@ -164,6 +164,8 @@ def main(argv: list[str] | None = None) -> int:
     inj = sub.add_parser("inject", help="merge external findings edges into graph.json")
     inj.add_argument("findings", nargs="?", help="findings JSON file (neutral format)")
     inj.add_argument("--semgrep", help="semgrep JSON output to convert and inject")
+    inj.add_argument("--joern", help="Joern data-flow JSON (see bench/joern/export_flows.sc) "
+                                     "to convert and inject: source->sink plus the chain")
     inj.add_argument("--no-store", action="store_true",
                      help="apply once without persisting for hook re-application")
     inj.add_argument("--taint-rule", action="append", default=[], metavar="ID",
@@ -357,13 +359,15 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "inject":
         from graphify_ext import edge_inject
-        if bool(args.findings) == bool(args.semgrep):
-            sys.exit("error: pass exactly one of <findings.json> or --semgrep")
+        if sum(map(bool, (args.findings, args.semgrep, args.joern))) != 1:
+            sys.exit("error: pass exactly one of <findings.json>, --semgrep or --joern")
         from graphify_ext import graphio
         if args.semgrep:
             findings = edge_inject.from_semgrep(
                 graphio.read_json(args.semgrep),
                 taint_rules=args.taint_rule, assume_taint=args.assume_taint)
+        elif args.joern:
+            findings = edge_inject.from_joern(graphio.read_json(args.joern))
         else:
             findings = graphio.read_json(args.findings)
         return _apply_findings(args, findings)
