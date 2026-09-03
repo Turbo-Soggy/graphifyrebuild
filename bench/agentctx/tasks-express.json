@@ -17,13 +17,15 @@
         {
           "name": "res.download",
           "kind": "function",
-          "start": 433,
+          "def_line": 433,
+          "extent_start": 433,
           "end": 482
         },
         {
           "name": "res.attachment",
           "kind": "function",
-          "start": 604,
+          "def_line": 604,
+          "extent_start": 604,
           "end": 612
         }
       ]
@@ -51,66 +53,30 @@
         {
           "name": "res.status",
           "kind": "function",
-          "start": 67,
+          "def_line": 67,
+          "extent_start": 67,
           "end": 73
         },
         {
           "name": "res.send",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 211
         },
         {
           "name": "res.sendStatus",
           "kind": "function",
-          "start": 314,
+          "def_line": 314,
+          "extent_start": 314,
           "end": 321
         },
         {
           "name": "res.redirect",
           "kind": "function",
-          "start": 819,
+          "def_line": 819,
+          "extent_start": 819,
           "end": 858
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "a0276c6c91b3b119acc045640e8f4e0616734526",
-    "parent": "3d05e85b0cfe76ed0c70f842dbdbf27d9a7c8d39",
-    "subject": "Use mime-types for file to content type mapping",
-    "entry": "res.type",
-    "ground_truth": [
-      "lib/response.js::res.type",
-      "lib/response.js::res.header",
-      "lib/utils.js::exports.normalizeType"
-    ],
-    "discover": [
-      "lib/response.js::res.header",
-      "lib/utils.js::exports.normalizeType"
-    ],
-    "by_file": {
-      "lib/response.js": [
-        {
-          "name": "res.type",
-          "kind": "function",
-          "start": 471,
-          "end": 477
-        },
-        {
-          "name": "res.header",
-          "kind": "function",
-          "start": 631,
-          "end": 655
-        }
-      ],
-      "lib/utils.js": [
-        {
-          "name": "exports.normalizeType",
-          "kind": "function",
-          "start": 53,
-          "end": 57
         }
       ]
     }
@@ -135,19 +101,22 @@
         {
           "name": "res.json",
           "kind": "function",
-          "start": 239,
+          "def_line": 239,
+          "extent_start": 239,
           "end": 267
         },
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 281,
+          "def_line": 281,
+          "extent_start": 281,
           "end": 334
         },
         {
           "name": "stringify",
           "kind": "function",
-          "start": 1105,
+          "def_line": 1105,
+          "extent_start": 1105,
           "end": 1111
         }
       ]
@@ -171,13 +140,15 @@
         {
           "name": "Layer",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 50
         },
         {
           "name": "Layer.prototype.match",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 149
         }
       ]
@@ -203,19 +174,22 @@
         {
           "name": "res.location",
           "kind": "function",
-          "start": 826,
+          "def_line": 826,
+          "extent_start": 826,
           "end": 837
         },
         {
           "name": "res.redirect",
           "kind": "function",
-          "start": 857,
+          "def_line": 857,
+          "extent_start": 857,
           "end": 902
         },
         {
           "name": "res.redirect.text",
           "kind": "function",
-          "start": 879,
+          "def_line": 879,
+          "extent_start": 879,
           "end": 881
         }
       ]
@@ -228,55 +202,27 @@
     "subject": "Remove app.param(fn) signature",
     "entry": "proto.param",
     "ground_truth": [
-      "lib/router/index.js::module.exports",
+      "lib/router/index.js::proto",
       "lib/router/index.js::proto.param"
     ],
     "discover": [
-      "lib/router/index.js::module.exports"
+      "lib/router/index.js::proto"
     ],
     "by_file": {
       "lib/router/index.js": [
         {
-          "name": "module.exports",
+          "name": "proto",
           "kind": "function",
-          "start": 42,
+          "def_line": 42,
+          "extent_start": 42,
           "end": 60
         },
         {
           "name": "proto.param",
           "kind": "function",
-          "start": 96,
+          "def_line": 96,
+          "extent_start": 96,
           "end": 123
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "f5a240636d71781c7875191d2048279efce5ad56",
-    "parent": "10502480d0f286442654852dba4ec57f8d3391fd",
-    "subject": "perf: isolate app.render try block",
-    "entry": "app.render",
-    "ground_truth": [
-      "lib/application.js::app.render",
-      "lib/application.js::logerror"
-    ],
-    "discover": [
-      "lib/application.js::logerror"
-    ],
-    "by_file": {
-      "lib/application.js": [
-        {
-          "name": "app.render",
-          "kind": "function",
-          "start": 531,
-          "end": 597
-        },
-        {
-          "name": "logerror",
-          "kind": "function",
-          "start": 632,
-          "end": 635
         }
       ]
     }
@@ -301,19 +247,22 @@
         {
           "name": "View",
           "kind": "function",
-          "start": 51,
+          "def_line": 51,
+          "extent_start": 51,
           "end": 62
         },
         {
           "name": "View.prototype.render",
           "kind": "function",
-          "start": 101,
+          "def_line": 101,
+          "extent_start": 101,
           "end": 104
         },
         {
           "name": "View.prototype.resolve",
           "kind": "function",
-          "start": 114,
+          "def_line": 114,
+          "extent_start": 114,
           "end": 134
         }
       ]
@@ -341,7 +290,8 @@
         {
           "name": "proto.use",
           "kind": "function",
-          "start": 419,
+          "def_line": 419,
+          "extent_start": 419,
           "end": 465
         }
       ],
@@ -349,13 +299,15 @@
         {
           "name": "Route.prototype.all",
           "kind": "function",
-          "start": 143,
+          "def_line": 143,
+          "extent_start": 143,
           "end": 160
         },
         {
           "name": "Route.prototype[method]",
           "kind": "function",
-          "start": 163,
+          "def_line": 163,
+          "extent_start": 163,
           "end": 182
         }
       ],
@@ -363,7 +315,8 @@
         {
           "name": "exports.flatten",
           "kind": "function",
-          "start": 79,
+          "def_line": 79,
+          "extent_start": 79,
           "end": 90
         }
       ]
@@ -387,13 +340,15 @@
         {
           "name": "View.prototype.lookup",
           "kind": "function",
-          "start": 55,
+          "def_line": 55,
+          "extent_start": 55,
           "end": 65
         },
         {
           "name": "View.prototype.render",
           "kind": "function",
-          "start": 75,
+          "def_line": 75,
+          "extent_start": 75,
           "end": 77
         }
       ]
@@ -417,13 +372,15 @@
         {
           "name": "exports.etag",
           "kind": "function",
-          "start": 27,
+          "def_line": 27,
+          "extent_start": 27,
           "end": 38
         },
         {
           "name": "exports.wetag",
           "kind": "function",
-          "start": 49,
+          "def_line": 49,
+          "extent_start": 49,
           "end": 60
         }
       ]
@@ -443,8 +400,7 @@
       "lib/response.js::res.sendfile",
       "lib/response.js::res.sendfile.error",
       "lib/response.js::res.sendfile.stream",
-      "lib/response.js::res.sendfile.cleanup",
-      "lib/response.js::res.render"
+      "lib/response.js::res.sendfile.cleanup"
     ],
     "discover": [
       "lib/response.js::res.sendFile",
@@ -453,64 +409,65 @@
       "lib/response.js::res.sendFile.cleanup",
       "lib/response.js::res.sendfile.error",
       "lib/response.js::res.sendfile.stream",
-      "lib/response.js::res.sendfile.cleanup",
-      "lib/response.js::res.render"
+      "lib/response.js::res.sendfile.cleanup"
     ],
     "by_file": {
       "lib/response.js": [
         {
           "name": "res.sendFile",
           "kind": "function",
-          "start": 346,
+          "def_line": 346,
+          "extent_start": 346,
           "end": 420
         },
         {
           "name": "res.sendFile.onerror",
           "kind": "function",
-          "start": 371,
+          "def_line": 371,
+          "extent_start": 371,
           "end": 383
         },
         {
           "name": "res.sendFile.onstream",
           "kind": "function",
-          "start": 386,
+          "def_line": 386,
+          "extent_start": 386,
           "end": 390
         },
         {
           "name": "res.sendFile.cleanup",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 395
         },
         {
           "name": "res.sendfile",
           "kind": "function",
-          "start": 463,
+          "def_line": 463,
+          "extent_start": 463,
           "end": 529
         },
         {
           "name": "res.sendfile.error",
           "kind": "function",
-          "start": 481,
+          "def_line": 481,
+          "extent_start": 481,
           "end": 493
         },
         {
           "name": "res.sendfile.stream",
           "kind": "function",
-          "start": 496,
+          "def_line": 496,
+          "extent_start": 496,
           "end": 500
         },
         {
           "name": "res.sendfile.cleanup",
           "kind": "function",
-          "start": 503,
+          "def_line": 503,
+          "extent_start": 503,
           "end": 505
-        },
-        {
-          "name": "res.render",
-          "kind": "function",
-          "start": 933,
-          "end": 955
         }
       ]
     }
@@ -535,19 +492,22 @@
         {
           "name": "app.use",
           "kind": "function",
-          "start": 152,
+          "def_line": 152,
+          "extent_start": 152,
           "end": 196
         },
         {
           "name": "app[method]",
           "kind": "function",
-          "start": 411,
+          "def_line": 411,
+          "extent_start": 411,
           "end": 419
         },
         {
           "name": "app.all",
           "kind": "function",
-          "start": 432,
+          "def_line": 432,
+          "extent_start": 432,
           "end": 442
         }
       ]
@@ -571,13 +531,15 @@
         {
           "name": "proto.process_params.param",
           "kind": "function",
-          "start": 316,
+          "def_line": 316,
+          "extent_start": 316,
           "end": 361
         },
         {
           "name": "proto.process_params.paramCallback",
           "kind": "function",
-          "start": 364,
+          "def_line": 364,
+          "extent_start": 364,
           "end": 380
         }
       ]
@@ -605,25 +567,29 @@
         {
           "name": "Route",
           "kind": "function",
-          "start": 22,
+          "def_line": 22,
+          "extent_start": 22,
           "end": 29
         },
         {
           "name": "Route.prototype.dispatch",
           "kind": "function",
-          "start": 48,
+          "def_line": 48,
+          "extent_start": 48,
           "end": 108
         },
         {
           "name": "Route.prototype.all",
           "kind": "function",
-          "start": 138,
+          "def_line": 138,
+          "extent_start": 138,
           "end": 160
         },
         {
           "name": "Route.prototype[method]",
           "kind": "function",
-          "start": 163,
+          "def_line": 163,
+          "extent_start": 163,
           "end": 190
         }
       ]
@@ -649,13 +615,15 @@
         {
           "name": "res.json",
           "kind": "function",
-          "start": 193,
+          "def_line": 193,
+          "extent_start": 193,
           "end": 219
         },
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 243,
+          "def_line": 243,
+          "extent_start": 243,
           "end": 284
         }
       ],
@@ -663,7 +631,8 @@
         {
           "name": "exports.deprecate",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 45
         }
       ]
@@ -687,7 +656,8 @@
         {
           "name": "res.redirect.html",
           "kind": "function",
-          "start": 746,
+          "def_line": 746,
+          "extent_start": 746,
           "end": 749
         }
       ],
@@ -695,40 +665,9 @@
         {
           "name": "exports.escape",
           "kind": "function",
-          "start": 333,
+          "def_line": 333,
+          "extent_start": 333,
           "end": 339
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "f14e39d4515c81c1e5c980b7ce31566eeeb84734",
-    "parent": "084f5d891b4dd413caca21283a3127bb28f9069d",
-    "subject": "set proper charset in content-type for res.send",
-    "entry": "res.send",
-    "ground_truth": [
-      "lib/response.js::res.send",
-      "lib/utils.js::exports.compileTrust"
-    ],
-    "discover": [
-      "lib/utils.js::exports.compileTrust"
-    ],
-    "by_file": {
-      "lib/response.js": [
-        {
-          "name": "res.send",
-          "kind": "function",
-          "start": 83,
-          "end": 157
-        }
-      ],
-      "lib/utils.js": [
-        {
-          "name": "exports.compileTrust",
-          "kind": "function",
-          "start": 350,
-          "end": 369
         }
       ]
     }
@@ -751,13 +690,15 @@
         {
           "name": "proto.handle.trim_prefix",
           "kind": "function",
-          "start": 201,
+          "def_line": 201,
+          "extent_start": 201,
           "end": 230
         },
         {
           "name": "proto.handle",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 235
         }
       ]
@@ -770,25 +711,27 @@
     "subject": "move setHeader charset patch to .set",
     "entry": "res.setHeader",
     "ground_truth": [
-      "lib/response.js::res.header",
-      "lib/response.js::res.setHeader"
+      "lib/response.js::res.setHeader",
+      "lib/response.js::res.set"
     ],
     "discover": [
-      "lib/response.js::res.header"
+      "lib/response.js::res.set"
     ],
     "by_file": {
       "lib/response.js": [
         {
-          "name": "res.header",
-          "kind": "function",
-          "start": 524,
-          "end": 535
-        },
-        {
           "name": "res.setHeader",
           "kind": "function",
-          "start": 794,
+          "def_line": 794,
+          "extent_start": 794,
           "end": 802
+        },
+        {
+          "name": "res.set",
+          "kind": "function",
+          "def_line": 523,
+          "extent_start": 523,
+          "end": 535
         }
       ]
     }
@@ -823,49 +766,57 @@
         {
           "name": "Router",
           "kind": "function",
-          "start": 25,
+          "def_line": 25,
+          "extent_start": 25,
           "end": 36
         },
         {
           "name": "Router.prototype.param",
           "kind": "function",
-          "start": 72,
+          "def_line": 72,
+          "extent_start": 72,
           "end": 102
         },
         {
           "name": "Router.prototype.handle",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 237
         },
         {
           "name": "Router.prototype.process_params",
           "kind": "function",
-          "start": 245,
+          "def_line": 245,
+          "extent_start": 245,
           "end": 300
         },
         {
           "name": "Router.prototype.use",
           "kind": "function",
-          "start": 320,
+          "def_line": 320,
+          "extent_start": 320,
           "end": 344
         },
         {
           "name": "Router.prototype.route",
           "kind": "function",
-          "start": 359,
+          "def_line": 359,
+          "extent_start": 359,
           "end": 372
         },
         {
           "name": "Router.prototype.all",
           "kind": "function",
-          "start": 384,
+          "def_line": 384,
+          "extent_start": 384,
           "end": 389
         },
         {
           "name": "Router.prototype[method]",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 397
         }
       ]
@@ -889,7 +840,8 @@
         {
           "name": "ServerResponse.prototype.setHeader",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 53
         }
       ],
@@ -897,7 +849,8 @@
         {
           "name": "res.cookie",
           "kind": "function",
-          "start": 587,
+          "def_line": 587,
+          "extent_start": 587,
           "end": 602
         }
       ]
@@ -920,7 +873,6 @@
       "lib/express.js::createApplication",
       "lib/router/index.js::Router",
       "lib/router/index.js::Router.this.middleware",
-      "lib/router/index.js::Router.prototype.param",
       "lib/router/index.js::Router.prototype._dispatch",
       "lib/router/index.js::Router.prototype._dispatch.nextRoute",
       "lib/router/index.js::Router.prototype._dispatch.param",
@@ -933,8 +885,8 @@
       "lib/router/index.js::Router.prototype.route",
       "lib/router/index.js::Router.prototype.all",
       "lib/router/index.js::Router.prototype[method]",
-      "lib/router/route.js::Route",
-      "lib/router/route.js::Route.prototype.match"
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/route.js::Route"
     ],
     "discover": [
       "lib/application.js::app.defaultConfiguration",
@@ -946,7 +898,6 @@
       "lib/application.js::app.all",
       "lib/express.js::createApplication",
       "lib/router/index.js::Router",
-      "lib/router/index.js::Router.prototype.param",
       "lib/router/index.js::Router.prototype._dispatch",
       "lib/router/index.js::Router.prototype._dispatch.nextRoute",
       "lib/router/index.js::Router.prototype._dispatch.param",
@@ -959,51 +910,58 @@
       "lib/router/index.js::Router.prototype.route",
       "lib/router/index.js::Router.prototype.all",
       "lib/router/index.js::Router.prototype[method]",
-      "lib/router/route.js::Route",
-      "lib/router/route.js::Route.prototype.match"
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/route.js::Route"
     ],
     "by_file": {
       "lib/application.js": [
         {
           "name": "app.defaultConfiguration",
           "kind": "function",
-          "start": 43,
+          "def_line": 43,
+          "extent_start": 43,
           "end": 87
         },
         {
           "name": "app.use",
           "kind": "function",
-          "start": 99,
+          "def_line": 99,
+          "extent_start": 99,
           "end": 130
         },
         {
           "name": "app.use.fn",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 118
         },
         {
           "name": "app.param",
           "kind": "function",
-          "start": 205,
+          "def_line": 205,
+          "extent_start": 205,
           "end": 228
         },
         {
           "name": "app.path",
           "kind": "function",
-          "start": 268,
+          "def_line": 268,
+          "extent_start": 268,
           "end": 272
         },
         {
           "name": "app[method]",
           "kind": "function",
-          "start": 341,
+          "def_line": 341,
+          "extent_start": 341,
           "end": 355
         },
         {
           "name": "app.all",
           "kind": "function",
-          "start": 368,
+          "def_line": 368,
+          "extent_start": 368,
           "end": 374
         }
       ],
@@ -1011,7 +969,8 @@
         {
           "name": "createApplication",
           "kind": "function",
-          "start": 34,
+          "def_line": 34,
+          "extent_start": 34,
           "end": 41
         }
       ],
@@ -1019,106 +978,116 @@
         {
           "name": "Router",
           "kind": "function",
-          "start": 24,
+          "def_line": 24,
+          "extent_start": 24,
           "end": 35
         },
         {
           "name": "Router.this.middleware",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 34
-        },
-        {
-          "name": "Router.prototype.param",
-          "kind": "function",
-          "start": 46,
-          "end": 72
         },
         {
           "name": "Router.prototype._dispatch",
           "kind": "function",
-          "start": 83,
+          "def_line": 83,
+          "extent_start": 83,
           "end": 174
         },
         {
           "name": "Router.prototype._dispatch.nextRoute",
           "kind": "function",
-          "start": 99,
+          "def_line": 99,
+          "extent_start": 99,
           "end": 101
         },
         {
           "name": "Router.prototype._dispatch.param",
           "kind": "function",
-          "start": 120,
+          "def_line": 120,
+          "extent_start": 120,
           "end": 143
         },
         {
           "name": "Router.prototype._dispatch.paramCallback",
           "kind": "function",
-          "start": 148,
+          "def_line": 148,
+          "extent_start": 148,
           "end": 152
         },
         {
           "name": "Router.prototype._dispatch.callbacks",
           "kind": "function",
-          "start": 155,
+          "def_line": 155,
+          "extent_start": 155,
           "end": 172
         },
         {
           "name": "Router.prototype._options",
           "kind": "function",
-          "start": 184,
+          "def_line": 184,
+          "extent_start": 184,
           "end": 189
         },
         {
           "name": "Router.prototype._optionsFor",
           "kind": "function",
-          "start": 199,
+          "def_line": 199,
+          "extent_start": 199,
           "end": 210
         },
         {
           "name": "Router.prototype.matchRequest",
           "kind": "function",
-          "start": 223,
+          "def_line": 223,
+          "extent_start": 223,
           "end": 250
         },
         {
           "name": "Router.prototype.match",
           "kind": "function",
-          "start": 264,
+          "def_line": 264,
+          "extent_start": 264,
           "end": 267
         },
         {
           "name": "Router.prototype.route",
           "kind": "function",
-          "start": 279,
+          "def_line": 279,
+          "extent_start": 279,
           "end": 304
         },
         {
           "name": "Router.prototype.all",
           "kind": "function",
-          "start": 306,
+          "def_line": 306,
+          "extent_start": 306,
           "end": 313
         },
         {
           "name": "Router.prototype[method]",
           "kind": "function",
-          "start": 316,
+          "def_line": 316,
+          "extent_start": 316,
           "end": 320
+        },
+        {
+          "name": "Router.prototype.param",
+          "kind": "function",
+          "def_line": 46,
+          "extent_start": 46,
+          "end": 72
         }
       ],
       "lib/router/route.js": [
         {
           "name": "Route",
           "kind": "function",
-          "start": 30,
+          "def_line": 30,
+          "extent_start": 30,
           "end": 39
-        },
-        {
-          "name": "Route.prototype.match",
-          "kind": "function",
-          "start": 50,
-          "end": 79
         }
       ]
     }
@@ -1159,31 +1128,36 @@
         {
           "name": "req.accepts",
           "kind": "function",
-          "start": 102,
+          "def_line": 102,
+          "extent_start": 102,
           "end": 105
         },
         {
           "name": "req.acceptsEncoding",
           "kind": "function",
-          "start": 115,
+          "def_line": 115,
+          "extent_start": 115,
           "end": 117
         },
         {
           "name": "req.acceptsCharset",
           "kind": "function",
-          "start": 128,
+          "def_line": 128,
+          "extent_start": 128,
           "end": 133
         },
         {
           "name": "req.acceptsLanguage",
           "kind": "function",
-          "start": 144,
+          "def_line": 144,
+          "extent_start": 144,
           "end": 149
         },
         {
           "name": "req.is",
           "kind": "function",
-          "start": 322,
+          "def_line": 322,
+          "extent_start": 322,
           "end": 335
         }
       ],
@@ -1191,37 +1165,43 @@
         {
           "name": "exports.acceptsArray",
           "kind": "function",
-          "start": 122,
+          "def_line": 122,
+          "extent_start": 122,
           "end": 138
         },
         {
           "name": "exports.accepts",
           "kind": "function",
-          "start": 150,
+          "def_line": 150,
+          "extent_start": 150,
           "end": 153
         },
         {
           "name": "exports.accept",
           "kind": "function",
-          "start": 164,
+          "def_line": 164,
+          "extent_start": 164,
           "end": 169
         },
         {
           "name": "paramsEqual",
           "kind": "function",
-          "start": 180,
+          "def_line": 180,
+          "extent_start": 180,
           "end": 184
         },
         {
           "name": "exports.parseAccept",
           "kind": "function",
-          "start": 198,
+          "def_line": 198,
+          "extent_start": 198,
           "end": 207
         },
         {
           "name": "exports.parseParams",
           "kind": "function",
-          "start": 219,
+          "def_line": 219,
+          "extent_start": 219,
           "end": 233
         }
       ]
@@ -1245,46 +1225,16 @@
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 215,
+          "def_line": 215,
+          "extent_start": 215,
           "end": 249
         },
         {
           "name": "res.vary",
           "kind": "function",
-          "start": 737,
+          "def_line": 737,
+          "extent_start": 737,
           "end": 764
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "e4907ce8e8c4fb53be9cccd086e326cf5faf14bb",
-    "parent": "33eaa8329cbcec28acc0a806e52561a524ef91d9",
-    "subject": "add http verbs methods to Router",
-    "entry": "Router.prototype.route",
-    "ground_truth": [
-      "lib/application.js::app[method]",
-      "lib/router/index.js::Router.prototype.route"
-    ],
-    "discover": [
-      "lib/application.js::app[method]"
-    ],
-    "by_file": {
-      "lib/application.js": [
-        {
-          "name": "app[method]",
-          "kind": "function",
-          "start": 404,
-          "end": 410
-        }
-      ],
-      "lib/router/index.js": [
-        {
-          "name": "Router.prototype.route",
-          "kind": "function",
-          "start": 239,
-          "end": 262
         }
       ]
     }
@@ -1307,7 +1257,8 @@
         {
           "name": "app.render",
           "kind": "function",
-          "start": 455,
+          "def_line": 455,
+          "extent_start": 455,
           "end": 508
         }
       ],
@@ -1315,7 +1266,8 @@
         {
           "name": "res.render",
           "kind": "function",
-          "start": 656,
+          "def_line": 656,
+          "extent_start": 656,
           "end": 678
         }
       ]
@@ -1341,19 +1293,22 @@
         {
           "name": "res.sendfile.error",
           "kind": "function",
-          "start": 188,
+          "def_line": 188,
+          "extent_start": 188,
           "end": 204
         },
         {
           "name": "res.sendfile.stream",
           "kind": "function",
-          "start": 207,
+          "def_line": 207,
+          "extent_start": 207,
           "end": 211
         },
         {
           "name": "res.sendfile",
           "kind": "function",
-          "start": 171,
+          "def_line": 171,
+          "extent_start": 171,
           "end": 221
         }
       ]
@@ -1379,20 +1334,200 @@
         {
           "name": "Router.prototype._dispatch",
           "kind": "function",
-          "start": 83,
+          "def_line": 83,
+          "extent_start": 83,
           "end": 174
         },
         {
           "name": "Router.prototype.matchReq",
           "kind": "function",
-          "start": 222,
+          "def_line": 222,
+          "extent_start": 222,
           "end": 249
         },
         {
           "name": "Router.prototype.match",
           "kind": "function",
-          "start": 263,
+          "def_line": 263,
+          "extent_start": 263,
           "end": 267
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "4f7c4d10513bf2b04e7ddf5c1fafacc15fa3ecf2",
+    "parent": "78845e7d231692054b526ee3956ef5768413621d",
+    "subject": "remove app.locals.use and res.locals.use",
+    "entry": "exports.locals.locals.use",
+    "ground_truth": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/response.js::res.render.render",
+      "lib/response.js::res.render",
+      "lib/utils.js::exports.locals.locals",
+      "lib/utils.js::exports.locals",
+      "lib/utils.js::exports.locals.locals.use"
+    ],
+    "discover": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/response.js::res.render.render",
+      "lib/response.js::res.render",
+      "lib/utils.js::exports.locals.locals",
+      "lib/utils.js::exports.locals"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.defaultConfiguration",
+          "kind": "function",
+          "def_line": 50,
+          "extent_start": 50,
+          "end": 95
+        }
+      ],
+      "lib/response.js": [
+        {
+          "name": "res.render.render",
+          "kind": "function",
+          "def_line": 577,
+          "extent_start": 577,
+          "end": 589
+        },
+        {
+          "name": "res.render",
+          "kind": "function",
+          "def_line": 566,
+          "extent_start": 566,
+          "end": 614
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.locals.locals",
+          "kind": "function",
+          "def_line": 21,
+          "extent_start": 21,
+          "end": 24
+        },
+        {
+          "name": "exports.locals",
+          "kind": "function",
+          "def_line": 18,
+          "extent_start": 18,
+          "end": 39
+        },
+        {
+          "name": "exports.locals.locals.use",
+          "kind": "function",
+          "def_line": 26,
+          "extent_start": 26,
+          "end": 36
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f11024846215e8024e4d29daba9f6ca7733dc3b6",
+    "parent": "136f0546144ccb6d527102bda8bfa8298de94777",
+    "subject": "Issue 944: Changing Router#match() signature from (req[, i]) to (method, url[, i]), and making it public",
+    "entry": "Router.prototype.match",
+    "ground_truth": [
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype.match"
+    ],
+    "discover": [
+      "lib/router/index.js::Router.prototype._dispatch"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "Router.prototype._dispatch",
+          "kind": "function",
+          "def_line": 84,
+          "extent_start": 84,
+          "end": 175
+        },
+        {
+          "name": "Router.prototype.match",
+          "kind": "function",
+          "def_line": 223,
+          "extent_start": 223,
+          "end": 250
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "82b5b12ca721f3c08fc0a3b502355e6cbfe5589f",
+    "parent": "c145ab9b81980946a345231ce697446ccb9d9e37",
+    "subject": "Added `.default()` support to `res.format()`",
+    "entry": "res.format",
+    "ground_truth": [
+      "lib/response.js::res.format",
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.html"
+    ],
+    "discover": [
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.html"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.format",
+          "kind": "function",
+          "def_line": 359,
+          "extent_start": 359,
+          "end": 380
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "def_line": 524,
+          "extent_start": 524,
+          "end": 578
+        },
+        {
+          "name": "res.redirect.html",
+          "kind": "function",
+          "def_line": 566,
+          "extent_start": 566,
+          "end": 568
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "1311f2ac25337ef7051e33a2bdcaef12d98f34dd",
+    "parent": "82a98170617ddac1079a2581f5e763b663d9a990",
+    "subject": "Fixed res.redirect() 406. Closes #1154",
+    "entry": "res.redirect",
+    "ground_truth": [
+      "lib/response.js::res.format",
+      "lib/response.js::res.redirect"
+    ],
+    "discover": [
+      "lib/response.js::res.format"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.format",
+          "kind": "function",
+          "def_line": 349,
+          "extent_start": 349,
+          "end": 368
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "def_line": 513,
+          "extent_start": 513,
+          "end": 564
         }
       ]
     }

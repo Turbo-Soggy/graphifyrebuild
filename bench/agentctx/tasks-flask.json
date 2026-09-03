@@ -6,32 +6,26 @@
     "subject": "add back opening session on context push",
     "entry": "AppContext.session",
     "ground_truth": [
-      "src/flask/ctx.py::AppContext",
       "src/flask/ctx.py::AppContext.session",
       "src/flask/ctx.py::AppContext.push"
     ],
     "discover": [
-      "src/flask/ctx.py::AppContext",
       "src/flask/ctx.py::AppContext.push"
     ],
     "by_file": {
       "src/flask/ctx.py": [
         {
-          "name": "AppContext",
-          "kind": "class",
-          "start": 259,
-          "end": 502
-        },
-        {
           "name": "AppContext.session",
           "kind": "function",
-          "start": 381,
+          "def_line": 381,
+          "extent_start": 380,
           "end": 397
         },
         {
           "name": "AppContext.push",
           "kind": "function",
-          "start": 410,
+          "def_line": 410,
+          "extent_start": 410,
           "end": 431
         }
       ]
@@ -44,34 +38,37 @@
     "subject": "deprecate should_ignore_error",
     "entry": "App.should_ignore_error",
     "ground_truth": [
-      "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/sansio/app.py::App.should_ignore_error"
     ],
     "discover": [
-      "src/flask/app.py::Flask.full_dispatch_request",
-      "src/flask/app.py::Flask.wsgi_app"
+      "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask.full_dispatch_request",
-          "kind": "function",
-          "start": 991,
-          "end": 1007
-        },
-        {
           "name": "Flask.wsgi_app",
           "kind": "function",
-          "start": 1536,
+          "def_line": 1536,
+          "extent_start": 1536,
           "end": 1582
+        },
+        {
+          "name": "Flask.full_dispatch_request",
+          "kind": "function",
+          "def_line": 991,
+          "extent_start": 991,
+          "end": 1007
         }
       ],
       "src/flask/sansio/app.py": [
         {
           "name": "App.should_ignore_error",
           "kind": "function",
-          "start": 925,
+          "def_line": 925,
+          "extent_start": 925,
           "end": 933
         }
       ]
@@ -95,7 +92,8 @@
         {
           "name": "redirect",
           "kind": "function",
-          "start": 241,
+          "def_line": 241,
+          "extent_start": 241,
           "end": 262
         }
       ],
@@ -103,7 +101,8 @@
         {
           "name": "App.redirect",
           "kind": "function",
-          "start": 935,
+          "def_line": 935,
+          "extent_start": 935,
           "end": 951
         }
       ]
@@ -135,19 +134,22 @@
         {
           "name": "App.template_filter",
           "kind": "function",
-          "start": 664,
+          "def_line": 664,
+          "extent_start": 663,
           "end": 683
         },
         {
           "name": "App.template_test",
           "kind": "function",
-          "start": 698,
+          "def_line": 698,
+          "extent_start": 697,
           "end": 724
         },
         {
           "name": "App.template_global",
           "kind": "function",
-          "start": 741,
+          "def_line": 741,
+          "extent_start": 740,
           "end": 762
         }
       ],
@@ -155,19 +157,22 @@
         {
           "name": "Blueprint.app_template_filter",
           "kind": "function",
-          "start": 444,
+          "def_line": 444,
+          "extent_start": 443,
           "end": 458
         },
         {
           "name": "Blueprint.app_template_test",
           "kind": "function",
-          "start": 478,
+          "def_line": 478,
+          "extent_start": 477,
           "end": 494
         },
         {
           "name": "Blueprint.app_template_global",
           "kind": "function",
-          "start": 516,
+          "def_line": 516,
+          "extent_start": 515,
           "end": 532
         }
       ]
@@ -191,13 +196,15 @@
         {
           "name": "stream_with_context",
           "kind": "function",
-          "start": 62,
+          "def_line": 62,
+          "extent_start": 62,
           "end": 136
         },
         {
           "name": "stream_with_context.generator",
           "kind": "function",
-          "start": 108,
+          "def_line": 108,
+          "extent_start": 108,
           "end": 128
         }
       ]
@@ -221,7 +228,8 @@
         {
           "name": "Flask",
           "kind": "class",
-          "start": 79,
+          "def_line": 79,
+          "extent_start": 79,
           "end": 1498
         }
       ],
@@ -229,7 +237,8 @@
         {
           "name": "App.add_url_rule",
           "kind": "function",
-          "start": 605,
+          "def_line": 605,
+          "extent_start": 604,
           "end": 661
         }
       ]
@@ -240,35 +249,29 @@
     "commit": "72c85e80c8ef9e6d5b5644f7bb23cdc175ca3873",
     "parent": "0ec7f713d679ceed2c605e62ac5d38d579f29fa0",
     "subject": "Provide an extendable merge blueprint funcs method",
-    "entry": "Blueprint",
+    "entry": "Blueprint.register.extend",
     "ground_truth": [
       "src/flask/sansio/blueprints.py::Blueprint.register",
-      "src/flask/sansio/blueprints.py::Blueprint.register.extend",
-      "src/flask/sansio/blueprints.py::Blueprint"
+      "src/flask/sansio/blueprints.py::Blueprint.register.extend"
     ],
     "discover": [
-      "src/flask/sansio/blueprints.py::Blueprint.register",
-      "src/flask/sansio/blueprints.py::Blueprint.register.extend"
+      "src/flask/sansio/blueprints.py::Blueprint.register"
     ],
     "by_file": {
       "src/flask/sansio/blueprints.py": [
         {
           "name": "Blueprint.register",
           "kind": "function",
-          "start": 273,
+          "def_line": 273,
+          "extent_start": 273,
           "end": 407
         },
         {
           "name": "Blueprint.register.extend",
           "kind": "function",
-          "start": 333,
+          "def_line": 333,
+          "extent_start": 333,
           "end": 336
-        },
-        {
-          "name": "Blueprint",
-          "kind": "class",
-          "start": 119,
-          "end": 626
         }
       ]
     }
@@ -280,45 +283,67 @@
     "subject": "deprecate locked_cached_property",
     "entry": "locked_cached_property",
     "ground_truth": [
-      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
       "src/flask/helpers.py::locked_cached_property",
       "src/flask/helpers.py::locked_cached_property.__init__",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
     ],
     "discover": [
-      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
       "src/flask/helpers.py::locked_cached_property.__init__",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask",
-          "kind": "class",
-          "start": 105,
-          "end": 2227
+          "name": "Flask.name",
+          "kind": "function",
+          "def_line": 535,
+          "extent_start": 534,
+          "end": 549
+        },
+        {
+          "name": "Flask.logger",
+          "kind": "function",
+          "def_line": 552,
+          "extent_start": 551,
+          "end": 576
+        },
+        {
+          "name": "Flask.jinja_env",
+          "kind": "function",
+          "def_line": 579,
+          "extent_start": 578,
+          "end": 586
         }
       ],
       "src/flask/helpers.py": [
         {
           "name": "locked_cached_property",
           "kind": "class",
-          "start": 611,
+          "def_line": 611,
+          "extent_start": 611,
           "end": 642
         },
         {
           "name": "locked_cached_property.__init__",
           "kind": "function",
-          "start": 620,
+          "def_line": 620,
+          "extent_start": 620,
           "end": 627
         }
       ],
       "src/flask/scaffold.py": [
         {
-          "name": "Scaffold",
-          "kind": "class",
-          "start": 54,
-          "end": 770
+          "name": "Scaffold.jinja_loader",
+          "kind": "function",
+          "def_line": 321,
+          "extent_start": 320,
+          "end": 331
         }
       ]
     }
@@ -341,13 +366,15 @@
         {
           "name": "Flask.__init__",
           "kind": "function",
-          "start": 368,
+          "def_line": 368,
+          "extent_start": 368,
           "end": 522
         },
         {
           "name": "Flask.got_first_request",
           "kind": "function",
-          "start": 591,
+          "def_line": 591,
+          "extent_start": 590,
           "end": 597
         }
       ]
@@ -387,7 +414,8 @@
         {
           "name": "Flask.run",
           "kind": "function",
-          "start": 885,
+          "def_line": 885,
+          "extent_start": 885,
           "end": 1011
         }
       ],
@@ -395,55 +423,64 @@
         {
           "name": "DispatchingApp",
           "kind": "class",
-          "start": 270,
+          "def_line": 270,
+          "extent_start": 270,
           "end": 335
         },
         {
           "name": "DispatchingApp.__init__",
           "kind": "function",
-          "start": 277,
+          "def_line": 277,
+          "extent_start": 277,
           "end": 289
         },
         {
           "name": "DispatchingApp._load_in_background",
           "kind": "function",
-          "start": 291,
+          "def_line": 291,
+          "extent_start": 291,
           "end": 309
         },
         {
           "name": "DispatchingApp._load_in_background._load_app",
           "kind": "function",
-          "start": 296,
+          "def_line": 296,
+          "extent_start": 296,
           "end": 306
         },
         {
           "name": "DispatchingApp._flush_bg_loading_exception",
           "kind": "function",
-          "start": 311,
+          "def_line": 311,
+          "extent_start": 311,
           "end": 317
         },
         {
           "name": "DispatchingApp._load_unlocked",
           "kind": "function",
-          "start": 319,
+          "def_line": 319,
+          "extent_start": 319,
           "end": 323
         },
         {
           "name": "DispatchingApp.__call__",
           "kind": "function",
-          "start": 325,
+          "def_line": 325,
+          "extent_start": 325,
           "end": 335
         },
         {
           "name": "show_server_banner",
           "kind": "function",
-          "start": 814,
+          "def_line": 814,
+          "extent_start": 814,
           "end": 840
         },
         {
           "name": "run_command",
           "kind": "function",
-          "start": 997,
+          "def_line": 997,
+          "extent_start": 938,
           "end": 1040
         }
       ]
@@ -467,13 +504,15 @@
         {
           "name": "has_request_context",
           "kind": "function",
-          "start": 187,
+          "def_line": 187,
+          "extent_start": 187,
           "end": 216
         },
         {
           "name": "has_app_context",
           "kind": "function",
-          "start": 219,
+          "def_line": 219,
+          "extent_start": 219,
           "end": 226
         }
       ]
@@ -497,13 +536,15 @@
         {
           "name": "render_template",
           "kind": "function",
-          "start": 133,
+          "def_line": 133,
+          "extent_start": 133,
           "end": 152
         },
         {
           "name": "render_template_string",
           "kind": "function",
-          "start": 155,
+          "def_line": 155,
+          "extent_start": 155,
           "end": 166
         }
       ]
@@ -529,19 +570,22 @@
         {
           "name": "_prepare_send_file_kwargs",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 444
         },
         {
           "name": "send_file",
           "kind": "function",
-          "start": 447,
+          "def_line": 447,
+          "extent_start": 447,
           "end": 578
         },
         {
           "name": "send_from_directory",
           "kind": "function",
-          "start": 581,
+          "def_line": 581,
+          "extent_start": 581,
           "end": 631
         }
       ]
@@ -554,8 +598,8 @@
     "subject": "remove deprecated RequestContext.g",
     "entry": "RequestContext.g",
     "ground_truth": [
-      "src/flask/ctx.py::RequestContext",
-      "src/flask/ctx.py::RequestContext.g"
+      "src/flask/ctx.py::RequestContext.g",
+      "src/flask/ctx.py::RequestContext"
     ],
     "discover": [
       "src/flask/ctx.py::RequestContext"
@@ -563,16 +607,18 @@
     "by_file": {
       "src/flask/ctx.py": [
         {
-          "name": "RequestContext",
-          "kind": "class",
-          "start": 278,
-          "end": 482
-        },
-        {
           "name": "RequestContext.g",
           "kind": "function",
-          "start": 344,
-          "end": 354
+          "def_line": 331,
+          "extent_start": 330,
+          "end": 341
+        },
+        {
+          "name": "RequestContext",
+          "kind": "class",
+          "def_line": 278,
+          "extent_start": 278,
+          "end": 482
         }
       ]
     }
@@ -595,7 +641,8 @@
         {
           "name": "Flask.run",
           "kind": "function",
-          "start": 849,
+          "def_line": 849,
+          "extent_start": 849,
           "end": 975
         }
       ],
@@ -603,7 +650,8 @@
         {
           "name": "FlaskGroup.make_context",
           "kind": "function",
-          "start": 711,
+          "def_line": 711,
+          "extent_start": 711,
           "end": 728
         }
       ]
@@ -618,39 +666,43 @@
     "ground_truth": [
       "src/flask/cli.py::with_appcontext",
       "src/flask/cli.py::with_appcontext.decorator",
-      "src/flask/cli.py::FlaskGroup",
-      "src/flask/cli.py::FlaskGroup.get_command"
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
     ],
     "discover": [
       "src/flask/cli.py::with_appcontext.decorator",
-      "src/flask/cli.py::FlaskGroup",
-      "src/flask/cli.py::FlaskGroup.get_command"
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
     ],
     "by_file": {
       "src/flask/cli.py": [
         {
           "name": "with_appcontext",
           "kind": "function",
-          "start": 411,
+          "def_line": 411,
+          "extent_start": 411,
           "end": 423
         },
         {
           "name": "with_appcontext.decorator",
           "kind": "function",
-          "start": 419,
+          "def_line": 419,
+          "extent_start": 418,
           "end": 421
-        },
-        {
-          "name": "FlaskGroup",
-          "kind": "class",
-          "start": 568,
-          "end": 715
         },
         {
           "name": "FlaskGroup.get_command",
           "kind": "function",
-          "start": 649,
+          "def_line": 649,
+          "extent_start": 649,
           "end": 665
+        },
+        {
+          "name": "FlaskGroup",
+          "kind": "class",
+          "def_line": 568,
+          "extent_start": 568,
+          "end": 715
         }
       ]
     }
@@ -677,25 +729,29 @@
         {
           "name": "View",
           "kind": "class",
-          "start": 13,
+          "def_line": 13,
+          "extent_start": 13,
           "end": 132
         },
         {
           "name": "MethodViewType",
           "kind": "class",
-          "start": 135,
+          "def_line": 135,
+          "extent_start": 135,
           "end": 159
         },
         {
           "name": "MethodViewType.__init__",
           "kind": "function",
-          "start": 140,
+          "def_line": 140,
+          "extent_start": 140,
           "end": 159
         },
         {
           "name": "MethodView",
           "kind": "class",
-          "start": 162,
+          "def_line": 162,
+          "extent_start": 162,
           "end": 198
         }
       ]
@@ -708,58 +764,64 @@
     "subject": "deprecate before_first_request",
     "entry": "Flask.before_first_request",
     "ground_truth": [
-      "src/flask/app.py::Flask.__init__",
-      "src/flask/app.py::Flask.before_first_request",
       "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
       "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.before_first_request",
       "src/flask/blueprints.py::Blueprint.before_app_first_request"
     ],
     "discover": [
-      "src/flask/app.py::Flask.__init__",
       "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
       "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
       "src/flask/blueprints.py::Blueprint.before_app_first_request"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask.__init__",
-          "kind": "function",
-          "start": 391,
-          "end": 536
-        },
-        {
-          "name": "Flask.before_first_request",
-          "kind": "function",
-          "start": 1249,
-          "end": 1261
-        },
-        {
           "name": "Flask.full_dispatch_request",
           "kind": "function",
-          "start": 1548,
+          "def_line": 1548,
+          "extent_start": 1548,
           "end": 1563
         },
         {
           "name": "Flask.try_trigger_before_first_request_functions",
           "kind": "function",
-          "start": 1594,
+          "def_line": 1594,
+          "extent_start": 1594,
           "end": 1608
         },
         {
           "name": "Flask",
           "kind": "class",
-          "start": 95,
+          "def_line": 95,
+          "extent_start": 95,
           "end": 2283
+        },
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 391,
+          "extent_start": 391,
+          "end": 536
+        },
+        {
+          "name": "Flask.before_first_request",
+          "kind": "function",
+          "def_line": 1249,
+          "extent_start": 1248,
+          "end": 1261
         }
       ],
       "src/flask/blueprints.py": [
         {
           "name": "Blueprint.before_app_first_request",
           "kind": "function",
-          "start": 541,
+          "def_line": 541,
+          "extent_start": 540,
           "end": 548
         }
       ]
@@ -787,13 +849,15 @@
         {
           "name": "Blueprint.app_errorhandler",
           "kind": "function",
-          "start": 564,
+          "def_line": 564,
+          "extent_start": 564,
           "end": 573
         },
         {
           "name": "Blueprint.app_errorhandler.decorator",
           "kind": "function",
-          "start": 569,
+          "def_line": 569,
+          "extent_start": 569,
           "end": 571
         }
       ],
@@ -801,13 +865,15 @@
         {
           "name": "Scaffold.errorhandler",
           "kind": "function",
-          "start": 655,
+          "def_line": 655,
+          "extent_start": 654,
           "end": 691
         },
         {
           "name": "Scaffold.errorhandler.decorator",
           "kind": "function",
-          "start": 687,
+          "def_line": 687,
+          "extent_start": 687,
           "end": 689
         }
       ]
@@ -822,28 +888,25 @@
     "ground_truth": [
       "src/flask/app.py::Flask._is_setup_finished",
       "src/flask/blueprints.py::Blueprint._is_setup_finished",
-      "src/flask/blueprints.py::Blueprint",
       "src/flask/blueprints.py::Blueprint.record",
       "src/flask/scaffold.py::setupmethod",
       "src/flask/scaffold.py::setupmethod.wrapper_func",
-      "src/flask/scaffold.py::Scaffold._is_setup_finished",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
     ],
     "discover": [
       "src/flask/app.py::Flask._is_setup_finished",
       "src/flask/blueprints.py::Blueprint._is_setup_finished",
-      "src/flask/blueprints.py::Blueprint",
       "src/flask/blueprints.py::Blueprint.record",
       "src/flask/scaffold.py::setupmethod.wrapper_func",
-      "src/flask/scaffold.py::Scaffold._is_setup_finished",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
           "name": "Flask._is_setup_finished",
           "kind": "function",
-          "start": 544,
+          "def_line": 544,
+          "extent_start": 544,
           "end": 545
         }
       ],
@@ -851,19 +914,15 @@
         {
           "name": "Blueprint._is_setup_finished",
           "kind": "function",
-          "start": 210,
+          "def_line": 210,
+          "extent_start": 210,
           "end": 211
-        },
-        {
-          "name": "Blueprint",
-          "kind": "class",
-          "start": 112,
-          "end": 597
         },
         {
           "name": "Blueprint.record",
           "kind": "function",
-          "start": 213,
+          "def_line": 213,
+          "extent_start": 213,
           "end": 230
         }
       ],
@@ -871,26 +930,23 @@
         {
           "name": "setupmethod",
           "kind": "function",
-          "start": 39,
+          "def_line": 39,
+          "extent_start": 39,
           "end": 58
         },
         {
           "name": "setupmethod.wrapper_func",
           "kind": "function",
-          "start": 44,
+          "def_line": 44,
+          "extent_start": 44,
           "end": 56
         },
         {
           "name": "Scaffold._is_setup_finished",
           "kind": "function",
-          "start": 242,
+          "def_line": 242,
+          "extent_start": 242,
           "end": 243
-        },
-        {
-          "name": "Scaffold",
-          "kind": "class",
-          "start": 61,
-          "end": 747
         }
       ]
     }

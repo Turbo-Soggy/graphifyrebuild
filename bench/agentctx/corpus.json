@@ -21,13 +21,15 @@
         {
           "name": "SupportsItems",
           "kind": "class",
-          "start": 31,
+          "def_line": 31,
+          "extent_start": 30,
           "end": 32
         },
         {
           "name": "SupportsItems.items",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 32
         }
       ],
@@ -35,14 +37,16 @@
         {
           "name": "dict_to_sequence",
           "kind": "function",
-          "start": 149,
+          "def_line": 149,
+          "extent_start": 149,
           "end": 157
         },
         {
           "name": "to_key_val_list",
           "kind": "function",
-          "start": 376,
-          "end": 404
+          "def_line": 373,
+          "extent_start": 372,
+          "end": 375
         }
       ]
     }
@@ -67,19 +71,22 @@
         {
           "name": "HTTPAdapter._get_connection",
           "kind": "function",
-          "start": 377,
+          "def_line": 377,
+          "extent_start": 377,
           "end": 404
         },
         {
           "name": "HTTPAdapter.get_connection",
           "kind": "function",
-          "start": 406,
+          "def_line": 406,
+          "extent_start": 406,
           "end": 433
         },
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 512,
+          "def_line": 512,
+          "extent_start": 512,
           "end": 616
         }
       ]
@@ -105,19 +112,22 @@
         {
           "name": "SessionRedirectMixin",
           "kind": "class",
-          "start": 96,
+          "def_line": 96,
+          "extent_start": 96,
           "end": 334
         },
         {
           "name": "SessionRedirectMixin.rebuild_proxies",
           "kind": "function",
-          "start": 273,
+          "def_line": 273,
+          "extent_start": 273,
           "end": 312
         },
         {
           "name": "Session.send",
           "kind": "function",
-          "start": 626,
+          "def_line": 626,
+          "extent_start": 626,
           "end": 699
         }
       ]
@@ -141,13 +151,15 @@
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 455,
+          "def_line": 455,
+          "extent_start": 455,
           "end": 527
         },
         {
           "name": "Response.json",
           "kind": "function",
-          "start": 881,
+          "def_line": 881,
+          "extent_start": 881,
           "end": 910
         }
       ]
@@ -173,19 +185,22 @@
         {
           "name": "Response.__init__",
           "kind": "function",
-          "start": 596,
+          "def_line": 596,
+          "extent_start": 596,
           "end": 643
         },
         {
           "name": "Response.iter_content.generate",
           "kind": "function",
-          "start": 748,
+          "def_line": 748,
+          "extent_start": 748,
           "end": 771
         },
         {
           "name": "Response.content",
           "kind": "function",
-          "start": 821,
+          "def_line": 821,
+          "extent_start": 820,
           "end": 841
         }
       ]
@@ -209,13 +224,15 @@
         {
           "name": "information",
           "kind": "function",
-          "start": 58,
+          "def_line": 58,
+          "extent_start": 58,
           "end": 102
         },
         {
           "name": "main",
           "kind": "function",
-          "start": 104,
+          "def_line": 104,
+          "extent_start": 104,
           "end": 106
         }
       ]
@@ -229,11 +246,9 @@
     "entry": "PreparedRequest.send",
     "ground_truth": [
       "requests/models.py::PreparedRequest.send",
-      "requests/models.py::Response",
       "requests/models.py::Response.next"
     ],
     "discover": [
-      "requests/models.py::Response",
       "requests/models.py::Response.next"
     ],
     "by_file": {
@@ -241,19 +256,15 @@
         {
           "name": "PreparedRequest.send",
           "kind": "function",
-          "start": 580,
+          "def_line": 580,
+          "extent_start": 580,
           "end": 582
-        },
-        {
-          "name": "Response",
-          "kind": "class",
-          "start": 585,
-          "end": 951
         },
         {
           "name": "Response.next",
           "kind": "function",
-          "start": 717,
+          "def_line": 717,
+          "extent_start": 717,
           "end": 720
         }
       ]
@@ -277,7 +288,8 @@
         {
           "name": "MockRequest.get_full_url",
           "kind": "function",
-          "start": 54,
+          "def_line": 54,
+          "extent_start": 54,
           "end": 66
         }
       ],
@@ -285,7 +297,8 @@
         {
           "name": "to_native_string",
           "kind": "function",
-          "start": 773,
+          "def_line": 773,
+          "extent_start": 773,
           "end": 786
         }
       ]
@@ -309,13 +322,15 @@
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 418,
+          "def_line": 418,
+          "extent_start": 418,
           "end": 475
         },
         {
           "name": "PreparedRequest.prepare_content_length",
           "kind": "function",
-          "start": 477,
+          "def_line": 477,
+          "extent_start": 477,
           "end": 489
         }
       ]
@@ -339,13 +354,15 @@
         {
           "name": "BaseAdapter.send",
           "kind": "function",
-          "start": 57,
+          "def_line": 57,
+          "extent_start": 57,
           "end": 58
         },
         {
           "name": "BaseAdapter.close",
           "kind": "function",
-          "start": 60,
+          "def_line": 60,
+          "extent_start": 60,
           "end": 61
         }
       ]
@@ -373,25 +390,29 @@
         {
           "name": "VendorAlias",
           "kind": "class",
-          "start": 28,
+          "def_line": 28,
+          "extent_start": 28,
           "end": 104
         },
         {
           "name": "VendorAlias.__init__",
           "kind": "function",
-          "start": 30,
+          "def_line": 30,
+          "extent_start": 30,
           "end": 36
         },
         {
           "name": "VendorAlias.find_module",
           "kind": "function",
-          "start": 38,
+          "def_line": 38,
+          "extent_start": 38,
           "end": 40
         },
         {
           "name": "VendorAlias.load_module",
           "kind": "function",
-          "start": 42,
+          "def_line": 42,
+          "extent_start": 42,
           "end": 104
         }
       ]
@@ -415,7 +436,8 @@
         {
           "name": "RequestsCookieJar.update",
           "kind": "function",
-          "start": 301,
+          "def_line": 301,
+          "extent_start": 301,
           "end": 307
         }
       ],
@@ -423,7 +445,8 @@
         {
           "name": "PreparedRequest.copy",
           "kind": "function",
-          "start": 318,
+          "def_line": 318,
+          "extent_start": 318,
           "end": 326
         }
       ]
@@ -453,25 +476,29 @@
         {
           "name": "Request",
           "kind": "class",
-          "start": 183,
+          "def_line": 183,
+          "extent_start": 183,
           "end": 259
         },
         {
           "name": "Request.__init__",
           "kind": "function",
-          "start": 207,
+          "def_line": 207,
+          "extent_start": 207,
           "end": 239
         },
         {
           "name": "PreparedRequest.prepare",
           "kind": "function",
-          "start": 296,
+          "def_line": 296,
+          "extent_start": 296,
           "end": 310
         },
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 405,
+          "def_line": 405,
+          "extent_start": 405,
           "end": 458
         }
       ],
@@ -479,7 +506,8 @@
         {
           "name": "Session.request",
           "kind": "function",
-          "start": 377,
+          "def_line": 377,
+          "extent_start": 377,
           "end": 455
         }
       ]
@@ -509,7 +537,8 @@
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 314,
+          "def_line": 314,
+          "extent_start": 314,
           "end": 423
         }
       ],
@@ -517,7 +546,8 @@
         {
           "name": "request",
           "kind": "function",
-          "start": 17,
+          "def_line": 17,
+          "extent_start": 17,
           "end": 44
         }
       ],
@@ -525,13 +555,15 @@
         {
           "name": "Timeout",
           "kind": "class",
-          "start": 46,
+          "def_line": 46,
+          "extent_start": 46,
           "end": 51
         },
         {
           "name": "ConnectTimeout",
           "kind": "class",
-          "start": 54,
+          "def_line": 54,
+          "extent_start": 54,
           "end": 58
         }
       ],
@@ -539,38 +571,9 @@
         {
           "name": "Session.request",
           "kind": "function",
-          "start": 376,
+          "def_line": 376,
+          "extent_start": 376,
           "end": 450
-        }
-      ]
-    }
-  },
-  {
-    "repo": "requests",
-    "commit": "b4a7906bca61f94a5b7a0e177b0d85b3ee11604f",
-    "parent": "7a09e727e392d03201a09a432bae87db5c514504",
-    "subject": "Add Session method to merge environment settings with per-request settings",
-    "entry": "Session",
-    "ground_truth": [
-      "requests/sessions.py::Session.request",
-      "requests/sessions.py::Session"
-    ],
-    "discover": [
-      "requests/sessions.py::Session.request"
-    ],
-    "by_file": {
-      "requests/sessions.py": [
-        {
-          "name": "Session.request",
-          "kind": "function",
-          "start": 376,
-          "end": 470
-        },
-        {
-          "name": "Session",
-          "kind": "class",
-          "start": 260,
-          "end": 646
         }
       ]
     }
@@ -599,31 +602,36 @@
         {
           "name": "IteratorProxy",
           "kind": "class",
-          "start": 16,
+          "def_line": 16,
+          "extent_start": 16,
           "end": 34
         },
         {
           "name": "IteratorProxy.__init__",
           "kind": "function",
-          "start": 18,
+          "def_line": 18,
+          "extent_start": 18,
           "end": 20
         },
         {
           "name": "IteratorProxy.__iter__",
           "kind": "function",
-          "start": 22,
+          "def_line": 22,
+          "extent_start": 22,
           "end": 23
         },
         {
           "name": "IteratorProxy.__len__",
           "kind": "function",
-          "start": 25,
+          "def_line": 25,
+          "extent_start": 25,
           "end": 31
         },
         {
           "name": "IteratorProxy.read",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 34
         }
       ]
@@ -647,7 +655,8 @@
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 294,
+          "def_line": 294,
+          "extent_start": 294,
           "end": 393
         }
       ],
@@ -655,7 +664,8 @@
         {
           "name": "Session.send",
           "kind": "function",
-          "start": 529,
+          "def_line": 529,
+          "extent_start": 529,
           "end": 595
         }
       ]
@@ -681,52 +691,23 @@
         {
           "name": "CaseInsensitiveDict.__repr__",
           "kind": "function",
-          "start": 108,
+          "def_line": 108,
+          "extent_start": 108,
           "end": 109
         },
         {
           "name": "CaseInsensitiveDict",
           "kind": "class",
-          "start": 37,
+          "def_line": 37,
+          "extent_start": 37,
           "end": 112
         },
         {
           "name": "CaseInsensitiveDict.__str__",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 112
-        }
-      ]
-    }
-  },
-  {
-    "repo": "requests",
-    "commit": "0caa2432123bab2d991e635ce558226d019d7bc7",
-    "parent": "4ecd74693f65821a96180af2859c13560bf84560",
-    "subject": "New Response property, .is_redirect.",
-    "entry": "Response",
-    "ground_truth": [
-      "requests/models.py::Response",
-      "requests/sessions.py::SessionRedirectMixin.resolve_redirects"
-    ],
-    "discover": [
-      "requests/sessions.py::SessionRedirectMixin.resolve_redirects"
-    ],
-    "by_file": {
-      "requests/models.py": [
-        {
-          "name": "Response",
-          "kind": "class",
-          "start": 493,
-          "end": 783
-        }
-      ],
-      "requests/sessions.py": [
-        {
-          "name": "SessionRedirectMixin.resolve_redirects",
-          "kind": "function",
-          "start": 86,
-          "end": 187
         }
       ]
     }
@@ -749,14 +730,93 @@
         {
           "name": "is_ipv4_network",
           "kind": "function",
-          "start": 440,
+          "def_line": 440,
+          "extent_start": 440,
           "end": 449
         },
         {
           "name": "get_environ_proxies",
           "kind": "function",
-          "start": 452,
+          "def_line": 452,
+          "extent_start": 452,
           "end": 488
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "1adba3c9e94a7408584d0d819da6aa47b34ed0bd",
+    "parent": "30018e604c0f89a0dad7d8b7e6f2a227916ee8c9",
+    "subject": "modified 'merge_cookies' and update tests. made sessions.py to use that method when merging cookies.",
+    "entry": "merge_cookies",
+    "ground_truth": [
+      "requests/cookies.py::merge_cookies",
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "merge_cookies",
+          "kind": "function",
+          "def_line": 426,
+          "extent_start": 426,
+          "end": 441
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.prepare_request",
+          "kind": "function",
+          "def_line": 233,
+          "extent_start": 233,
+          "end": 271
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "012f0334ce43fe23044fc58e4246a804db88650d",
+    "parent": "d22eaf96e2a1c64bc29579a072f67d2a9c758ef8",
+    "subject": "added param to cookiejar_from_dict instead of creating new method.",
+    "entry": "cookiejar_from_dict",
+    "ground_truth": [
+      "requests/cookies.py::cookiejar_from_dict",
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "cookiejar_from_dict",
+          "kind": "function",
+          "def_line": 395,
+          "extent_start": 395,
+          "end": 406
+        },
+        {
+          "name": "merge_session_cookies",
+          "kind": "function",
+          "def_line": 409,
+          "extent_start": 409,
+          "end": 422
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 268,
+          "extent_start": 268,
+          "end": 362
         }
       ]
     }
@@ -768,32 +828,26 @@
     "subject": "add back opening session on context push",
     "entry": "AppContext.session",
     "ground_truth": [
-      "src/flask/ctx.py::AppContext",
       "src/flask/ctx.py::AppContext.session",
       "src/flask/ctx.py::AppContext.push"
     ],
     "discover": [
-      "src/flask/ctx.py::AppContext",
       "src/flask/ctx.py::AppContext.push"
     ],
     "by_file": {
       "src/flask/ctx.py": [
         {
-          "name": "AppContext",
-          "kind": "class",
-          "start": 259,
-          "end": 502
-        },
-        {
           "name": "AppContext.session",
           "kind": "function",
-          "start": 381,
+          "def_line": 381,
+          "extent_start": 380,
           "end": 397
         },
         {
           "name": "AppContext.push",
           "kind": "function",
-          "start": 410,
+          "def_line": 410,
+          "extent_start": 410,
           "end": 431
         }
       ]
@@ -806,34 +860,37 @@
     "subject": "deprecate should_ignore_error",
     "entry": "App.should_ignore_error",
     "ground_truth": [
-      "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/sansio/app.py::App.should_ignore_error"
     ],
     "discover": [
-      "src/flask/app.py::Flask.full_dispatch_request",
-      "src/flask/app.py::Flask.wsgi_app"
+      "src/flask/app.py::Flask.wsgi_app",
+      "src/flask/app.py::Flask.full_dispatch_request"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask.full_dispatch_request",
-          "kind": "function",
-          "start": 991,
-          "end": 1007
-        },
-        {
           "name": "Flask.wsgi_app",
           "kind": "function",
-          "start": 1536,
+          "def_line": 1536,
+          "extent_start": 1536,
           "end": 1582
+        },
+        {
+          "name": "Flask.full_dispatch_request",
+          "kind": "function",
+          "def_line": 991,
+          "extent_start": 991,
+          "end": 1007
         }
       ],
       "src/flask/sansio/app.py": [
         {
           "name": "App.should_ignore_error",
           "kind": "function",
-          "start": 925,
+          "def_line": 925,
+          "extent_start": 925,
           "end": 933
         }
       ]
@@ -857,7 +914,8 @@
         {
           "name": "redirect",
           "kind": "function",
-          "start": 241,
+          "def_line": 241,
+          "extent_start": 241,
           "end": 262
         }
       ],
@@ -865,7 +923,8 @@
         {
           "name": "App.redirect",
           "kind": "function",
-          "start": 935,
+          "def_line": 935,
+          "extent_start": 935,
           "end": 951
         }
       ]
@@ -897,19 +956,22 @@
         {
           "name": "App.template_filter",
           "kind": "function",
-          "start": 664,
+          "def_line": 664,
+          "extent_start": 663,
           "end": 683
         },
         {
           "name": "App.template_test",
           "kind": "function",
-          "start": 698,
+          "def_line": 698,
+          "extent_start": 697,
           "end": 724
         },
         {
           "name": "App.template_global",
           "kind": "function",
-          "start": 741,
+          "def_line": 741,
+          "extent_start": 740,
           "end": 762
         }
       ],
@@ -917,19 +979,22 @@
         {
           "name": "Blueprint.app_template_filter",
           "kind": "function",
-          "start": 444,
+          "def_line": 444,
+          "extent_start": 443,
           "end": 458
         },
         {
           "name": "Blueprint.app_template_test",
           "kind": "function",
-          "start": 478,
+          "def_line": 478,
+          "extent_start": 477,
           "end": 494
         },
         {
           "name": "Blueprint.app_template_global",
           "kind": "function",
-          "start": 516,
+          "def_line": 516,
+          "extent_start": 515,
           "end": 532
         }
       ]
@@ -953,13 +1018,15 @@
         {
           "name": "stream_with_context",
           "kind": "function",
-          "start": 62,
+          "def_line": 62,
+          "extent_start": 62,
           "end": 136
         },
         {
           "name": "stream_with_context.generator",
           "kind": "function",
-          "start": 108,
+          "def_line": 108,
+          "extent_start": 108,
           "end": 128
         }
       ]
@@ -983,7 +1050,8 @@
         {
           "name": "Flask",
           "kind": "class",
-          "start": 79,
+          "def_line": 79,
+          "extent_start": 79,
           "end": 1498
         }
       ],
@@ -991,7 +1059,8 @@
         {
           "name": "App.add_url_rule",
           "kind": "function",
-          "start": 605,
+          "def_line": 605,
+          "extent_start": 604,
           "end": 661
         }
       ]
@@ -1002,35 +1071,29 @@
     "commit": "72c85e80c8ef9e6d5b5644f7bb23cdc175ca3873",
     "parent": "0ec7f713d679ceed2c605e62ac5d38d579f29fa0",
     "subject": "Provide an extendable merge blueprint funcs method",
-    "entry": "Blueprint",
+    "entry": "Blueprint.register.extend",
     "ground_truth": [
       "src/flask/sansio/blueprints.py::Blueprint.register",
-      "src/flask/sansio/blueprints.py::Blueprint.register.extend",
-      "src/flask/sansio/blueprints.py::Blueprint"
+      "src/flask/sansio/blueprints.py::Blueprint.register.extend"
     ],
     "discover": [
-      "src/flask/sansio/blueprints.py::Blueprint.register",
-      "src/flask/sansio/blueprints.py::Blueprint.register.extend"
+      "src/flask/sansio/blueprints.py::Blueprint.register"
     ],
     "by_file": {
       "src/flask/sansio/blueprints.py": [
         {
           "name": "Blueprint.register",
           "kind": "function",
-          "start": 273,
+          "def_line": 273,
+          "extent_start": 273,
           "end": 407
         },
         {
           "name": "Blueprint.register.extend",
           "kind": "function",
-          "start": 333,
+          "def_line": 333,
+          "extent_start": 333,
           "end": 336
-        },
-        {
-          "name": "Blueprint",
-          "kind": "class",
-          "start": 119,
-          "end": 626
         }
       ]
     }
@@ -1042,45 +1105,67 @@
     "subject": "deprecate locked_cached_property",
     "entry": "locked_cached_property",
     "ground_truth": [
-      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
       "src/flask/helpers.py::locked_cached_property",
       "src/flask/helpers.py::locked_cached_property.__init__",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
     ],
     "discover": [
-      "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.name",
+      "src/flask/app.py::Flask.logger",
+      "src/flask/app.py::Flask.jinja_env",
       "src/flask/helpers.py::locked_cached_property.__init__",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold.jinja_loader"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask",
-          "kind": "class",
-          "start": 105,
-          "end": 2227
+          "name": "Flask.name",
+          "kind": "function",
+          "def_line": 535,
+          "extent_start": 534,
+          "end": 549
+        },
+        {
+          "name": "Flask.logger",
+          "kind": "function",
+          "def_line": 552,
+          "extent_start": 551,
+          "end": 576
+        },
+        {
+          "name": "Flask.jinja_env",
+          "kind": "function",
+          "def_line": 579,
+          "extent_start": 578,
+          "end": 586
         }
       ],
       "src/flask/helpers.py": [
         {
           "name": "locked_cached_property",
           "kind": "class",
-          "start": 611,
+          "def_line": 611,
+          "extent_start": 611,
           "end": 642
         },
         {
           "name": "locked_cached_property.__init__",
           "kind": "function",
-          "start": 620,
+          "def_line": 620,
+          "extent_start": 620,
           "end": 627
         }
       ],
       "src/flask/scaffold.py": [
         {
-          "name": "Scaffold",
-          "kind": "class",
-          "start": 54,
-          "end": 770
+          "name": "Scaffold.jinja_loader",
+          "kind": "function",
+          "def_line": 321,
+          "extent_start": 320,
+          "end": 331
         }
       ]
     }
@@ -1103,13 +1188,15 @@
         {
           "name": "Flask.__init__",
           "kind": "function",
-          "start": 368,
+          "def_line": 368,
+          "extent_start": 368,
           "end": 522
         },
         {
           "name": "Flask.got_first_request",
           "kind": "function",
-          "start": 591,
+          "def_line": 591,
+          "extent_start": 590,
           "end": 597
         }
       ]
@@ -1149,7 +1236,8 @@
         {
           "name": "Flask.run",
           "kind": "function",
-          "start": 885,
+          "def_line": 885,
+          "extent_start": 885,
           "end": 1011
         }
       ],
@@ -1157,55 +1245,64 @@
         {
           "name": "DispatchingApp",
           "kind": "class",
-          "start": 270,
+          "def_line": 270,
+          "extent_start": 270,
           "end": 335
         },
         {
           "name": "DispatchingApp.__init__",
           "kind": "function",
-          "start": 277,
+          "def_line": 277,
+          "extent_start": 277,
           "end": 289
         },
         {
           "name": "DispatchingApp._load_in_background",
           "kind": "function",
-          "start": 291,
+          "def_line": 291,
+          "extent_start": 291,
           "end": 309
         },
         {
           "name": "DispatchingApp._load_in_background._load_app",
           "kind": "function",
-          "start": 296,
+          "def_line": 296,
+          "extent_start": 296,
           "end": 306
         },
         {
           "name": "DispatchingApp._flush_bg_loading_exception",
           "kind": "function",
-          "start": 311,
+          "def_line": 311,
+          "extent_start": 311,
           "end": 317
         },
         {
           "name": "DispatchingApp._load_unlocked",
           "kind": "function",
-          "start": 319,
+          "def_line": 319,
+          "extent_start": 319,
           "end": 323
         },
         {
           "name": "DispatchingApp.__call__",
           "kind": "function",
-          "start": 325,
+          "def_line": 325,
+          "extent_start": 325,
           "end": 335
         },
         {
           "name": "show_server_banner",
           "kind": "function",
-          "start": 814,
+          "def_line": 814,
+          "extent_start": 814,
           "end": 840
         },
         {
           "name": "run_command",
           "kind": "function",
-          "start": 997,
+          "def_line": 997,
+          "extent_start": 938,
           "end": 1040
         }
       ]
@@ -1229,13 +1326,15 @@
         {
           "name": "has_request_context",
           "kind": "function",
-          "start": 187,
+          "def_line": 187,
+          "extent_start": 187,
           "end": 216
         },
         {
           "name": "has_app_context",
           "kind": "function",
-          "start": 219,
+          "def_line": 219,
+          "extent_start": 219,
           "end": 226
         }
       ]
@@ -1259,13 +1358,15 @@
         {
           "name": "render_template",
           "kind": "function",
-          "start": 133,
+          "def_line": 133,
+          "extent_start": 133,
           "end": 152
         },
         {
           "name": "render_template_string",
           "kind": "function",
-          "start": 155,
+          "def_line": 155,
+          "extent_start": 155,
           "end": 166
         }
       ]
@@ -1291,19 +1392,22 @@
         {
           "name": "_prepare_send_file_kwargs",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 444
         },
         {
           "name": "send_file",
           "kind": "function",
-          "start": 447,
+          "def_line": 447,
+          "extent_start": 447,
           "end": 578
         },
         {
           "name": "send_from_directory",
           "kind": "function",
-          "start": 581,
+          "def_line": 581,
+          "extent_start": 581,
           "end": 631
         }
       ]
@@ -1316,8 +1420,8 @@
     "subject": "remove deprecated RequestContext.g",
     "entry": "RequestContext.g",
     "ground_truth": [
-      "src/flask/ctx.py::RequestContext",
-      "src/flask/ctx.py::RequestContext.g"
+      "src/flask/ctx.py::RequestContext.g",
+      "src/flask/ctx.py::RequestContext"
     ],
     "discover": [
       "src/flask/ctx.py::RequestContext"
@@ -1325,16 +1429,18 @@
     "by_file": {
       "src/flask/ctx.py": [
         {
-          "name": "RequestContext",
-          "kind": "class",
-          "start": 278,
-          "end": 482
-        },
-        {
           "name": "RequestContext.g",
           "kind": "function",
-          "start": 344,
-          "end": 354
+          "def_line": 331,
+          "extent_start": 330,
+          "end": 341
+        },
+        {
+          "name": "RequestContext",
+          "kind": "class",
+          "def_line": 278,
+          "extent_start": 278,
+          "end": 482
         }
       ]
     }
@@ -1357,7 +1463,8 @@
         {
           "name": "Flask.run",
           "kind": "function",
-          "start": 849,
+          "def_line": 849,
+          "extent_start": 849,
           "end": 975
         }
       ],
@@ -1365,7 +1472,8 @@
         {
           "name": "FlaskGroup.make_context",
           "kind": "function",
-          "start": 711,
+          "def_line": 711,
+          "extent_start": 711,
           "end": 728
         }
       ]
@@ -1380,39 +1488,43 @@
     "ground_truth": [
       "src/flask/cli.py::with_appcontext",
       "src/flask/cli.py::with_appcontext.decorator",
-      "src/flask/cli.py::FlaskGroup",
-      "src/flask/cli.py::FlaskGroup.get_command"
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
     ],
     "discover": [
       "src/flask/cli.py::with_appcontext.decorator",
-      "src/flask/cli.py::FlaskGroup",
-      "src/flask/cli.py::FlaskGroup.get_command"
+      "src/flask/cli.py::FlaskGroup.get_command",
+      "src/flask/cli.py::FlaskGroup"
     ],
     "by_file": {
       "src/flask/cli.py": [
         {
           "name": "with_appcontext",
           "kind": "function",
-          "start": 411,
+          "def_line": 411,
+          "extent_start": 411,
           "end": 423
         },
         {
           "name": "with_appcontext.decorator",
           "kind": "function",
-          "start": 419,
+          "def_line": 419,
+          "extent_start": 418,
           "end": 421
-        },
-        {
-          "name": "FlaskGroup",
-          "kind": "class",
-          "start": 568,
-          "end": 715
         },
         {
           "name": "FlaskGroup.get_command",
           "kind": "function",
-          "start": 649,
+          "def_line": 649,
+          "extent_start": 649,
           "end": 665
+        },
+        {
+          "name": "FlaskGroup",
+          "kind": "class",
+          "def_line": 568,
+          "extent_start": 568,
+          "end": 715
         }
       ]
     }
@@ -1439,25 +1551,29 @@
         {
           "name": "View",
           "kind": "class",
-          "start": 13,
+          "def_line": 13,
+          "extent_start": 13,
           "end": 132
         },
         {
           "name": "MethodViewType",
           "kind": "class",
-          "start": 135,
+          "def_line": 135,
+          "extent_start": 135,
           "end": 159
         },
         {
           "name": "MethodViewType.__init__",
           "kind": "function",
-          "start": 140,
+          "def_line": 140,
+          "extent_start": 140,
           "end": 159
         },
         {
           "name": "MethodView",
           "kind": "class",
-          "start": 162,
+          "def_line": 162,
+          "extent_start": 162,
           "end": 198
         }
       ]
@@ -1470,58 +1586,64 @@
     "subject": "deprecate before_first_request",
     "entry": "Flask.before_first_request",
     "ground_truth": [
-      "src/flask/app.py::Flask.__init__",
-      "src/flask/app.py::Flask.before_first_request",
       "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
       "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
+      "src/flask/app.py::Flask.before_first_request",
       "src/flask/blueprints.py::Blueprint.before_app_first_request"
     ],
     "discover": [
-      "src/flask/app.py::Flask.__init__",
       "src/flask/app.py::Flask.full_dispatch_request",
       "src/flask/app.py::Flask.try_trigger_before_first_request_functions",
       "src/flask/app.py::Flask",
+      "src/flask/app.py::Flask.__init__",
       "src/flask/blueprints.py::Blueprint.before_app_first_request"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
-          "name": "Flask.__init__",
-          "kind": "function",
-          "start": 391,
-          "end": 536
-        },
-        {
-          "name": "Flask.before_first_request",
-          "kind": "function",
-          "start": 1249,
-          "end": 1261
-        },
-        {
           "name": "Flask.full_dispatch_request",
           "kind": "function",
-          "start": 1548,
+          "def_line": 1548,
+          "extent_start": 1548,
           "end": 1563
         },
         {
           "name": "Flask.try_trigger_before_first_request_functions",
           "kind": "function",
-          "start": 1594,
+          "def_line": 1594,
+          "extent_start": 1594,
           "end": 1608
         },
         {
           "name": "Flask",
           "kind": "class",
-          "start": 95,
+          "def_line": 95,
+          "extent_start": 95,
           "end": 2283
+        },
+        {
+          "name": "Flask.__init__",
+          "kind": "function",
+          "def_line": 391,
+          "extent_start": 391,
+          "end": 536
+        },
+        {
+          "name": "Flask.before_first_request",
+          "kind": "function",
+          "def_line": 1249,
+          "extent_start": 1248,
+          "end": 1261
         }
       ],
       "src/flask/blueprints.py": [
         {
           "name": "Blueprint.before_app_first_request",
           "kind": "function",
-          "start": 541,
+          "def_line": 541,
+          "extent_start": 540,
           "end": 548
         }
       ]
@@ -1549,13 +1671,15 @@
         {
           "name": "Blueprint.app_errorhandler",
           "kind": "function",
-          "start": 564,
+          "def_line": 564,
+          "extent_start": 564,
           "end": 573
         },
         {
           "name": "Blueprint.app_errorhandler.decorator",
           "kind": "function",
-          "start": 569,
+          "def_line": 569,
+          "extent_start": 569,
           "end": 571
         }
       ],
@@ -1563,13 +1687,15 @@
         {
           "name": "Scaffold.errorhandler",
           "kind": "function",
-          "start": 655,
+          "def_line": 655,
+          "extent_start": 654,
           "end": 691
         },
         {
           "name": "Scaffold.errorhandler.decorator",
           "kind": "function",
-          "start": 687,
+          "def_line": 687,
+          "extent_start": 687,
           "end": 689
         }
       ]
@@ -1584,28 +1710,25 @@
     "ground_truth": [
       "src/flask/app.py::Flask._is_setup_finished",
       "src/flask/blueprints.py::Blueprint._is_setup_finished",
-      "src/flask/blueprints.py::Blueprint",
       "src/flask/blueprints.py::Blueprint.record",
       "src/flask/scaffold.py::setupmethod",
       "src/flask/scaffold.py::setupmethod.wrapper_func",
-      "src/flask/scaffold.py::Scaffold._is_setup_finished",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
     ],
     "discover": [
       "src/flask/app.py::Flask._is_setup_finished",
       "src/flask/blueprints.py::Blueprint._is_setup_finished",
-      "src/flask/blueprints.py::Blueprint",
       "src/flask/blueprints.py::Blueprint.record",
       "src/flask/scaffold.py::setupmethod.wrapper_func",
-      "src/flask/scaffold.py::Scaffold._is_setup_finished",
-      "src/flask/scaffold.py::Scaffold"
+      "src/flask/scaffold.py::Scaffold._is_setup_finished"
     ],
     "by_file": {
       "src/flask/app.py": [
         {
           "name": "Flask._is_setup_finished",
           "kind": "function",
-          "start": 544,
+          "def_line": 544,
+          "extent_start": 544,
           "end": 545
         }
       ],
@@ -1613,19 +1736,15 @@
         {
           "name": "Blueprint._is_setup_finished",
           "kind": "function",
-          "start": 210,
+          "def_line": 210,
+          "extent_start": 210,
           "end": 211
-        },
-        {
-          "name": "Blueprint",
-          "kind": "class",
-          "start": 112,
-          "end": 597
         },
         {
           "name": "Blueprint.record",
           "kind": "function",
-          "start": 213,
+          "def_line": 213,
+          "extent_start": 213,
           "end": 230
         }
       ],
@@ -1633,26 +1752,23 @@
         {
           "name": "setupmethod",
           "kind": "function",
-          "start": 39,
+          "def_line": 39,
+          "extent_start": 39,
           "end": 58
         },
         {
           "name": "setupmethod.wrapper_func",
           "kind": "function",
-          "start": 44,
+          "def_line": 44,
+          "extent_start": 44,
           "end": 56
         },
         {
           "name": "Scaffold._is_setup_finished",
           "kind": "function",
-          "start": 242,
+          "def_line": 242,
+          "extent_start": 242,
           "end": 243
-        },
-        {
-          "name": "Scaffold",
-          "kind": "class",
-          "start": 61,
-          "end": 747
         }
       ]
     }
@@ -1675,13 +1791,15 @@
         {
           "name": "res.download",
           "kind": "function",
-          "start": 433,
+          "def_line": 433,
+          "extent_start": 433,
           "end": 482
         },
         {
           "name": "res.attachment",
           "kind": "function",
-          "start": 604,
+          "def_line": 604,
+          "extent_start": 604,
           "end": 612
         }
       ]
@@ -1709,66 +1827,30 @@
         {
           "name": "res.status",
           "kind": "function",
-          "start": 67,
+          "def_line": 67,
+          "extent_start": 67,
           "end": 73
         },
         {
           "name": "res.send",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 211
         },
         {
           "name": "res.sendStatus",
           "kind": "function",
-          "start": 314,
+          "def_line": 314,
+          "extent_start": 314,
           "end": 321
         },
         {
           "name": "res.redirect",
           "kind": "function",
-          "start": 819,
+          "def_line": 819,
+          "extent_start": 819,
           "end": 858
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "a0276c6c91b3b119acc045640e8f4e0616734526",
-    "parent": "3d05e85b0cfe76ed0c70f842dbdbf27d9a7c8d39",
-    "subject": "Use mime-types for file to content type mapping",
-    "entry": "res.type",
-    "ground_truth": [
-      "lib/response.js::res.type",
-      "lib/response.js::res.header",
-      "lib/utils.js::exports.normalizeType"
-    ],
-    "discover": [
-      "lib/response.js::res.header",
-      "lib/utils.js::exports.normalizeType"
-    ],
-    "by_file": {
-      "lib/response.js": [
-        {
-          "name": "res.type",
-          "kind": "function",
-          "start": 471,
-          "end": 477
-        },
-        {
-          "name": "res.header",
-          "kind": "function",
-          "start": 631,
-          "end": 655
-        }
-      ],
-      "lib/utils.js": [
-        {
-          "name": "exports.normalizeType",
-          "kind": "function",
-          "start": 53,
-          "end": 57
         }
       ]
     }
@@ -1793,19 +1875,22 @@
         {
           "name": "res.json",
           "kind": "function",
-          "start": 239,
+          "def_line": 239,
+          "extent_start": 239,
           "end": 267
         },
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 281,
+          "def_line": 281,
+          "extent_start": 281,
           "end": 334
         },
         {
           "name": "stringify",
           "kind": "function",
-          "start": 1105,
+          "def_line": 1105,
+          "extent_start": 1105,
           "end": 1111
         }
       ]
@@ -1829,13 +1914,15 @@
         {
           "name": "Layer",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 50
         },
         {
           "name": "Layer.prototype.match",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 149
         }
       ]
@@ -1861,19 +1948,22 @@
         {
           "name": "res.location",
           "kind": "function",
-          "start": 826,
+          "def_line": 826,
+          "extent_start": 826,
           "end": 837
         },
         {
           "name": "res.redirect",
           "kind": "function",
-          "start": 857,
+          "def_line": 857,
+          "extent_start": 857,
           "end": 902
         },
         {
           "name": "res.redirect.text",
           "kind": "function",
-          "start": 879,
+          "def_line": 879,
+          "extent_start": 879,
           "end": 881
         }
       ]
@@ -1886,55 +1976,27 @@
     "subject": "Remove app.param(fn) signature",
     "entry": "proto.param",
     "ground_truth": [
-      "lib/router/index.js::module.exports",
+      "lib/router/index.js::proto",
       "lib/router/index.js::proto.param"
     ],
     "discover": [
-      "lib/router/index.js::module.exports"
+      "lib/router/index.js::proto"
     ],
     "by_file": {
       "lib/router/index.js": [
         {
-          "name": "module.exports",
+          "name": "proto",
           "kind": "function",
-          "start": 42,
+          "def_line": 42,
+          "extent_start": 42,
           "end": 60
         },
         {
           "name": "proto.param",
           "kind": "function",
-          "start": 96,
+          "def_line": 96,
+          "extent_start": 96,
           "end": 123
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "f5a240636d71781c7875191d2048279efce5ad56",
-    "parent": "10502480d0f286442654852dba4ec57f8d3391fd",
-    "subject": "perf: isolate app.render try block",
-    "entry": "app.render",
-    "ground_truth": [
-      "lib/application.js::app.render",
-      "lib/application.js::logerror"
-    ],
-    "discover": [
-      "lib/application.js::logerror"
-    ],
-    "by_file": {
-      "lib/application.js": [
-        {
-          "name": "app.render",
-          "kind": "function",
-          "start": 531,
-          "end": 597
-        },
-        {
-          "name": "logerror",
-          "kind": "function",
-          "start": 632,
-          "end": 635
         }
       ]
     }
@@ -1959,19 +2021,22 @@
         {
           "name": "View",
           "kind": "function",
-          "start": 51,
+          "def_line": 51,
+          "extent_start": 51,
           "end": 62
         },
         {
           "name": "View.prototype.render",
           "kind": "function",
-          "start": 101,
+          "def_line": 101,
+          "extent_start": 101,
           "end": 104
         },
         {
           "name": "View.prototype.resolve",
           "kind": "function",
-          "start": 114,
+          "def_line": 114,
+          "extent_start": 114,
           "end": 134
         }
       ]
@@ -1999,7 +2064,8 @@
         {
           "name": "proto.use",
           "kind": "function",
-          "start": 419,
+          "def_line": 419,
+          "extent_start": 419,
           "end": 465
         }
       ],
@@ -2007,13 +2073,15 @@
         {
           "name": "Route.prototype.all",
           "kind": "function",
-          "start": 143,
+          "def_line": 143,
+          "extent_start": 143,
           "end": 160
         },
         {
           "name": "Route.prototype[method]",
           "kind": "function",
-          "start": 163,
+          "def_line": 163,
+          "extent_start": 163,
           "end": 182
         }
       ],
@@ -2021,7 +2089,8 @@
         {
           "name": "exports.flatten",
           "kind": "function",
-          "start": 79,
+          "def_line": 79,
+          "extent_start": 79,
           "end": 90
         }
       ]
@@ -2045,13 +2114,15 @@
         {
           "name": "View.prototype.lookup",
           "kind": "function",
-          "start": 55,
+          "def_line": 55,
+          "extent_start": 55,
           "end": 65
         },
         {
           "name": "View.prototype.render",
           "kind": "function",
-          "start": 75,
+          "def_line": 75,
+          "extent_start": 75,
           "end": 77
         }
       ]
@@ -2075,13 +2146,15 @@
         {
           "name": "exports.etag",
           "kind": "function",
-          "start": 27,
+          "def_line": 27,
+          "extent_start": 27,
           "end": 38
         },
         {
           "name": "exports.wetag",
           "kind": "function",
-          "start": 49,
+          "def_line": 49,
+          "extent_start": 49,
           "end": 60
         }
       ]
@@ -2101,8 +2174,7 @@
       "lib/response.js::res.sendfile",
       "lib/response.js::res.sendfile.error",
       "lib/response.js::res.sendfile.stream",
-      "lib/response.js::res.sendfile.cleanup",
-      "lib/response.js::res.render"
+      "lib/response.js::res.sendfile.cleanup"
     ],
     "discover": [
       "lib/response.js::res.sendFile",
@@ -2111,64 +2183,65 @@
       "lib/response.js::res.sendFile.cleanup",
       "lib/response.js::res.sendfile.error",
       "lib/response.js::res.sendfile.stream",
-      "lib/response.js::res.sendfile.cleanup",
-      "lib/response.js::res.render"
+      "lib/response.js::res.sendfile.cleanup"
     ],
     "by_file": {
       "lib/response.js": [
         {
           "name": "res.sendFile",
           "kind": "function",
-          "start": 346,
+          "def_line": 346,
+          "extent_start": 346,
           "end": 420
         },
         {
           "name": "res.sendFile.onerror",
           "kind": "function",
-          "start": 371,
+          "def_line": 371,
+          "extent_start": 371,
           "end": 383
         },
         {
           "name": "res.sendFile.onstream",
           "kind": "function",
-          "start": 386,
+          "def_line": 386,
+          "extent_start": 386,
           "end": 390
         },
         {
           "name": "res.sendFile.cleanup",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 395
         },
         {
           "name": "res.sendfile",
           "kind": "function",
-          "start": 463,
+          "def_line": 463,
+          "extent_start": 463,
           "end": 529
         },
         {
           "name": "res.sendfile.error",
           "kind": "function",
-          "start": 481,
+          "def_line": 481,
+          "extent_start": 481,
           "end": 493
         },
         {
           "name": "res.sendfile.stream",
           "kind": "function",
-          "start": 496,
+          "def_line": 496,
+          "extent_start": 496,
           "end": 500
         },
         {
           "name": "res.sendfile.cleanup",
           "kind": "function",
-          "start": 503,
+          "def_line": 503,
+          "extent_start": 503,
           "end": 505
-        },
-        {
-          "name": "res.render",
-          "kind": "function",
-          "start": 933,
-          "end": 955
         }
       ]
     }
@@ -2193,19 +2266,22 @@
         {
           "name": "app.use",
           "kind": "function",
-          "start": 152,
+          "def_line": 152,
+          "extent_start": 152,
           "end": 196
         },
         {
           "name": "app[method]",
           "kind": "function",
-          "start": 411,
+          "def_line": 411,
+          "extent_start": 411,
           "end": 419
         },
         {
           "name": "app.all",
           "kind": "function",
-          "start": 432,
+          "def_line": 432,
+          "extent_start": 432,
           "end": 442
         }
       ]
@@ -2229,13 +2305,15 @@
         {
           "name": "proto.process_params.param",
           "kind": "function",
-          "start": 316,
+          "def_line": 316,
+          "extent_start": 316,
           "end": 361
         },
         {
           "name": "proto.process_params.paramCallback",
           "kind": "function",
-          "start": 364,
+          "def_line": 364,
+          "extent_start": 364,
           "end": 380
         }
       ]
@@ -2263,25 +2341,29 @@
         {
           "name": "Route",
           "kind": "function",
-          "start": 22,
+          "def_line": 22,
+          "extent_start": 22,
           "end": 29
         },
         {
           "name": "Route.prototype.dispatch",
           "kind": "function",
-          "start": 48,
+          "def_line": 48,
+          "extent_start": 48,
           "end": 108
         },
         {
           "name": "Route.prototype.all",
           "kind": "function",
-          "start": 138,
+          "def_line": 138,
+          "extent_start": 138,
           "end": 160
         },
         {
           "name": "Route.prototype[method]",
           "kind": "function",
-          "start": 163,
+          "def_line": 163,
+          "extent_start": 163,
           "end": 190
         }
       ]
@@ -2307,13 +2389,15 @@
         {
           "name": "res.json",
           "kind": "function",
-          "start": 193,
+          "def_line": 193,
+          "extent_start": 193,
           "end": 219
         },
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 243,
+          "def_line": 243,
+          "extent_start": 243,
           "end": 284
         }
       ],
@@ -2321,7 +2405,8 @@
         {
           "name": "exports.deprecate",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 45
         }
       ]
@@ -2345,7 +2430,8 @@
         {
           "name": "res.redirect.html",
           "kind": "function",
-          "start": 746,
+          "def_line": 746,
+          "extent_start": 746,
           "end": 749
         }
       ],
@@ -2353,40 +2439,9 @@
         {
           "name": "exports.escape",
           "kind": "function",
-          "start": 333,
+          "def_line": 333,
+          "extent_start": 333,
           "end": 339
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "f14e39d4515c81c1e5c980b7ce31566eeeb84734",
-    "parent": "084f5d891b4dd413caca21283a3127bb28f9069d",
-    "subject": "set proper charset in content-type for res.send",
-    "entry": "res.send",
-    "ground_truth": [
-      "lib/response.js::res.send",
-      "lib/utils.js::exports.compileTrust"
-    ],
-    "discover": [
-      "lib/utils.js::exports.compileTrust"
-    ],
-    "by_file": {
-      "lib/response.js": [
-        {
-          "name": "res.send",
-          "kind": "function",
-          "start": 83,
-          "end": 157
-        }
-      ],
-      "lib/utils.js": [
-        {
-          "name": "exports.compileTrust",
-          "kind": "function",
-          "start": 350,
-          "end": 369
         }
       ]
     }
@@ -2409,13 +2464,15 @@
         {
           "name": "proto.handle.trim_prefix",
           "kind": "function",
-          "start": 201,
+          "def_line": 201,
+          "extent_start": 201,
           "end": 230
         },
         {
           "name": "proto.handle",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 235
         }
       ]
@@ -2428,25 +2485,27 @@
     "subject": "move setHeader charset patch to .set",
     "entry": "res.setHeader",
     "ground_truth": [
-      "lib/response.js::res.header",
-      "lib/response.js::res.setHeader"
+      "lib/response.js::res.setHeader",
+      "lib/response.js::res.set"
     ],
     "discover": [
-      "lib/response.js::res.header"
+      "lib/response.js::res.set"
     ],
     "by_file": {
       "lib/response.js": [
         {
-          "name": "res.header",
-          "kind": "function",
-          "start": 524,
-          "end": 535
-        },
-        {
           "name": "res.setHeader",
           "kind": "function",
-          "start": 794,
+          "def_line": 794,
+          "extent_start": 794,
           "end": 802
+        },
+        {
+          "name": "res.set",
+          "kind": "function",
+          "def_line": 523,
+          "extent_start": 523,
+          "end": 535
         }
       ]
     }
@@ -2481,49 +2540,57 @@
         {
           "name": "Router",
           "kind": "function",
-          "start": 25,
+          "def_line": 25,
+          "extent_start": 25,
           "end": 36
         },
         {
           "name": "Router.prototype.param",
           "kind": "function",
-          "start": 72,
+          "def_line": 72,
+          "extent_start": 72,
           "end": 102
         },
         {
           "name": "Router.prototype.handle",
           "kind": "function",
-          "start": 110,
+          "def_line": 110,
+          "extent_start": 110,
           "end": 237
         },
         {
           "name": "Router.prototype.process_params",
           "kind": "function",
-          "start": 245,
+          "def_line": 245,
+          "extent_start": 245,
           "end": 300
         },
         {
           "name": "Router.prototype.use",
           "kind": "function",
-          "start": 320,
+          "def_line": 320,
+          "extent_start": 320,
           "end": 344
         },
         {
           "name": "Router.prototype.route",
           "kind": "function",
-          "start": 359,
+          "def_line": 359,
+          "extent_start": 359,
           "end": 372
         },
         {
           "name": "Router.prototype.all",
           "kind": "function",
-          "start": 384,
+          "def_line": 384,
+          "extent_start": 384,
           "end": 389
         },
         {
           "name": "Router.prototype[method]",
           "kind": "function",
-          "start": 393,
+          "def_line": 393,
+          "extent_start": 393,
           "end": 397
         }
       ]
@@ -2547,7 +2614,8 @@
         {
           "name": "ServerResponse.prototype.setHeader",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 53
         }
       ],
@@ -2555,7 +2623,8 @@
         {
           "name": "res.cookie",
           "kind": "function",
-          "start": 587,
+          "def_line": 587,
+          "extent_start": 587,
           "end": 602
         }
       ]
@@ -2578,7 +2647,6 @@
       "lib/express.js::createApplication",
       "lib/router/index.js::Router",
       "lib/router/index.js::Router.this.middleware",
-      "lib/router/index.js::Router.prototype.param",
       "lib/router/index.js::Router.prototype._dispatch",
       "lib/router/index.js::Router.prototype._dispatch.nextRoute",
       "lib/router/index.js::Router.prototype._dispatch.param",
@@ -2591,8 +2659,8 @@
       "lib/router/index.js::Router.prototype.route",
       "lib/router/index.js::Router.prototype.all",
       "lib/router/index.js::Router.prototype[method]",
-      "lib/router/route.js::Route",
-      "lib/router/route.js::Route.prototype.match"
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/route.js::Route"
     ],
     "discover": [
       "lib/application.js::app.defaultConfiguration",
@@ -2604,7 +2672,6 @@
       "lib/application.js::app.all",
       "lib/express.js::createApplication",
       "lib/router/index.js::Router",
-      "lib/router/index.js::Router.prototype.param",
       "lib/router/index.js::Router.prototype._dispatch",
       "lib/router/index.js::Router.prototype._dispatch.nextRoute",
       "lib/router/index.js::Router.prototype._dispatch.param",
@@ -2617,51 +2684,58 @@
       "lib/router/index.js::Router.prototype.route",
       "lib/router/index.js::Router.prototype.all",
       "lib/router/index.js::Router.prototype[method]",
-      "lib/router/route.js::Route",
-      "lib/router/route.js::Route.prototype.match"
+      "lib/router/index.js::Router.prototype.param",
+      "lib/router/route.js::Route"
     ],
     "by_file": {
       "lib/application.js": [
         {
           "name": "app.defaultConfiguration",
           "kind": "function",
-          "start": 43,
+          "def_line": 43,
+          "extent_start": 43,
           "end": 87
         },
         {
           "name": "app.use",
           "kind": "function",
-          "start": 99,
+          "def_line": 99,
+          "extent_start": 99,
           "end": 130
         },
         {
           "name": "app.use.fn",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 118
         },
         {
           "name": "app.param",
           "kind": "function",
-          "start": 205,
+          "def_line": 205,
+          "extent_start": 205,
           "end": 228
         },
         {
           "name": "app.path",
           "kind": "function",
-          "start": 268,
+          "def_line": 268,
+          "extent_start": 268,
           "end": 272
         },
         {
           "name": "app[method]",
           "kind": "function",
-          "start": 341,
+          "def_line": 341,
+          "extent_start": 341,
           "end": 355
         },
         {
           "name": "app.all",
           "kind": "function",
-          "start": 368,
+          "def_line": 368,
+          "extent_start": 368,
           "end": 374
         }
       ],
@@ -2669,7 +2743,8 @@
         {
           "name": "createApplication",
           "kind": "function",
-          "start": 34,
+          "def_line": 34,
+          "extent_start": 34,
           "end": 41
         }
       ],
@@ -2677,106 +2752,116 @@
         {
           "name": "Router",
           "kind": "function",
-          "start": 24,
+          "def_line": 24,
+          "extent_start": 24,
           "end": 35
         },
         {
           "name": "Router.this.middleware",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 34
-        },
-        {
-          "name": "Router.prototype.param",
-          "kind": "function",
-          "start": 46,
-          "end": 72
         },
         {
           "name": "Router.prototype._dispatch",
           "kind": "function",
-          "start": 83,
+          "def_line": 83,
+          "extent_start": 83,
           "end": 174
         },
         {
           "name": "Router.prototype._dispatch.nextRoute",
           "kind": "function",
-          "start": 99,
+          "def_line": 99,
+          "extent_start": 99,
           "end": 101
         },
         {
           "name": "Router.prototype._dispatch.param",
           "kind": "function",
-          "start": 120,
+          "def_line": 120,
+          "extent_start": 120,
           "end": 143
         },
         {
           "name": "Router.prototype._dispatch.paramCallback",
           "kind": "function",
-          "start": 148,
+          "def_line": 148,
+          "extent_start": 148,
           "end": 152
         },
         {
           "name": "Router.prototype._dispatch.callbacks",
           "kind": "function",
-          "start": 155,
+          "def_line": 155,
+          "extent_start": 155,
           "end": 172
         },
         {
           "name": "Router.prototype._options",
           "kind": "function",
-          "start": 184,
+          "def_line": 184,
+          "extent_start": 184,
           "end": 189
         },
         {
           "name": "Router.prototype._optionsFor",
           "kind": "function",
-          "start": 199,
+          "def_line": 199,
+          "extent_start": 199,
           "end": 210
         },
         {
           "name": "Router.prototype.matchRequest",
           "kind": "function",
-          "start": 223,
+          "def_line": 223,
+          "extent_start": 223,
           "end": 250
         },
         {
           "name": "Router.prototype.match",
           "kind": "function",
-          "start": 264,
+          "def_line": 264,
+          "extent_start": 264,
           "end": 267
         },
         {
           "name": "Router.prototype.route",
           "kind": "function",
-          "start": 279,
+          "def_line": 279,
+          "extent_start": 279,
           "end": 304
         },
         {
           "name": "Router.prototype.all",
           "kind": "function",
-          "start": 306,
+          "def_line": 306,
+          "extent_start": 306,
           "end": 313
         },
         {
           "name": "Router.prototype[method]",
           "kind": "function",
-          "start": 316,
+          "def_line": 316,
+          "extent_start": 316,
           "end": 320
+        },
+        {
+          "name": "Router.prototype.param",
+          "kind": "function",
+          "def_line": 46,
+          "extent_start": 46,
+          "end": 72
         }
       ],
       "lib/router/route.js": [
         {
           "name": "Route",
           "kind": "function",
-          "start": 30,
+          "def_line": 30,
+          "extent_start": 30,
           "end": 39
-        },
-        {
-          "name": "Route.prototype.match",
-          "kind": "function",
-          "start": 50,
-          "end": 79
         }
       ]
     }
@@ -2817,31 +2902,36 @@
         {
           "name": "req.accepts",
           "kind": "function",
-          "start": 102,
+          "def_line": 102,
+          "extent_start": 102,
           "end": 105
         },
         {
           "name": "req.acceptsEncoding",
           "kind": "function",
-          "start": 115,
+          "def_line": 115,
+          "extent_start": 115,
           "end": 117
         },
         {
           "name": "req.acceptsCharset",
           "kind": "function",
-          "start": 128,
+          "def_line": 128,
+          "extent_start": 128,
           "end": 133
         },
         {
           "name": "req.acceptsLanguage",
           "kind": "function",
-          "start": 144,
+          "def_line": 144,
+          "extent_start": 144,
           "end": 149
         },
         {
           "name": "req.is",
           "kind": "function",
-          "start": 322,
+          "def_line": 322,
+          "extent_start": 322,
           "end": 335
         }
       ],
@@ -2849,37 +2939,43 @@
         {
           "name": "exports.acceptsArray",
           "kind": "function",
-          "start": 122,
+          "def_line": 122,
+          "extent_start": 122,
           "end": 138
         },
         {
           "name": "exports.accepts",
           "kind": "function",
-          "start": 150,
+          "def_line": 150,
+          "extent_start": 150,
           "end": 153
         },
         {
           "name": "exports.accept",
           "kind": "function",
-          "start": 164,
+          "def_line": 164,
+          "extent_start": 164,
           "end": 169
         },
         {
           "name": "paramsEqual",
           "kind": "function",
-          "start": 180,
+          "def_line": 180,
+          "extent_start": 180,
           "end": 184
         },
         {
           "name": "exports.parseAccept",
           "kind": "function",
-          "start": 198,
+          "def_line": 198,
+          "extent_start": 198,
           "end": 207
         },
         {
           "name": "exports.parseParams",
           "kind": "function",
-          "start": 219,
+          "def_line": 219,
+          "extent_start": 219,
           "end": 233
         }
       ]
@@ -2903,46 +2999,16 @@
         {
           "name": "res.jsonp",
           "kind": "function",
-          "start": 215,
+          "def_line": 215,
+          "extent_start": 215,
           "end": 249
         },
         {
           "name": "res.vary",
           "kind": "function",
-          "start": 737,
+          "def_line": 737,
+          "extent_start": 737,
           "end": 764
-        }
-      ]
-    }
-  },
-  {
-    "repo": "express",
-    "commit": "e4907ce8e8c4fb53be9cccd086e326cf5faf14bb",
-    "parent": "33eaa8329cbcec28acc0a806e52561a524ef91d9",
-    "subject": "add http verbs methods to Router",
-    "entry": "Router.prototype.route",
-    "ground_truth": [
-      "lib/application.js::app[method]",
-      "lib/router/index.js::Router.prototype.route"
-    ],
-    "discover": [
-      "lib/application.js::app[method]"
-    ],
-    "by_file": {
-      "lib/application.js": [
-        {
-          "name": "app[method]",
-          "kind": "function",
-          "start": 404,
-          "end": 410
-        }
-      ],
-      "lib/router/index.js": [
-        {
-          "name": "Router.prototype.route",
-          "kind": "function",
-          "start": 239,
-          "end": 262
         }
       ]
     }
@@ -2965,7 +3031,8 @@
         {
           "name": "app.render",
           "kind": "function",
-          "start": 455,
+          "def_line": 455,
+          "extent_start": 455,
           "end": 508
         }
       ],
@@ -2973,7 +3040,8 @@
         {
           "name": "res.render",
           "kind": "function",
-          "start": 656,
+          "def_line": 656,
+          "extent_start": 656,
           "end": 678
         }
       ]
@@ -2999,19 +3067,22 @@
         {
           "name": "res.sendfile.error",
           "kind": "function",
-          "start": 188,
+          "def_line": 188,
+          "extent_start": 188,
           "end": 204
         },
         {
           "name": "res.sendfile.stream",
           "kind": "function",
-          "start": 207,
+          "def_line": 207,
+          "extent_start": 207,
           "end": 211
         },
         {
           "name": "res.sendfile",
           "kind": "function",
-          "start": 171,
+          "def_line": 171,
+          "extent_start": 171,
           "end": 221
         }
       ]
@@ -3037,20 +3108,200 @@
         {
           "name": "Router.prototype._dispatch",
           "kind": "function",
-          "start": 83,
+          "def_line": 83,
+          "extent_start": 83,
           "end": 174
         },
         {
           "name": "Router.prototype.matchReq",
           "kind": "function",
-          "start": 222,
+          "def_line": 222,
+          "extent_start": 222,
           "end": 249
         },
         {
           "name": "Router.prototype.match",
           "kind": "function",
-          "start": 263,
+          "def_line": 263,
+          "extent_start": 263,
           "end": 267
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "4f7c4d10513bf2b04e7ddf5c1fafacc15fa3ecf2",
+    "parent": "78845e7d231692054b526ee3956ef5768413621d",
+    "subject": "remove app.locals.use and res.locals.use",
+    "entry": "exports.locals.locals.use",
+    "ground_truth": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/response.js::res.render.render",
+      "lib/response.js::res.render",
+      "lib/utils.js::exports.locals.locals",
+      "lib/utils.js::exports.locals",
+      "lib/utils.js::exports.locals.locals.use"
+    ],
+    "discover": [
+      "lib/application.js::app.defaultConfiguration",
+      "lib/response.js::res.render.render",
+      "lib/response.js::res.render",
+      "lib/utils.js::exports.locals.locals",
+      "lib/utils.js::exports.locals"
+    ],
+    "by_file": {
+      "lib/application.js": [
+        {
+          "name": "app.defaultConfiguration",
+          "kind": "function",
+          "def_line": 50,
+          "extent_start": 50,
+          "end": 95
+        }
+      ],
+      "lib/response.js": [
+        {
+          "name": "res.render.render",
+          "kind": "function",
+          "def_line": 577,
+          "extent_start": 577,
+          "end": 589
+        },
+        {
+          "name": "res.render",
+          "kind": "function",
+          "def_line": 566,
+          "extent_start": 566,
+          "end": 614
+        }
+      ],
+      "lib/utils.js": [
+        {
+          "name": "exports.locals.locals",
+          "kind": "function",
+          "def_line": 21,
+          "extent_start": 21,
+          "end": 24
+        },
+        {
+          "name": "exports.locals",
+          "kind": "function",
+          "def_line": 18,
+          "extent_start": 18,
+          "end": 39
+        },
+        {
+          "name": "exports.locals.locals.use",
+          "kind": "function",
+          "def_line": 26,
+          "extent_start": 26,
+          "end": 36
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "f11024846215e8024e4d29daba9f6ca7733dc3b6",
+    "parent": "136f0546144ccb6d527102bda8bfa8298de94777",
+    "subject": "Issue 944: Changing Router#match() signature from (req[, i]) to (method, url[, i]), and making it public",
+    "entry": "Router.prototype.match",
+    "ground_truth": [
+      "lib/router/index.js::Router.prototype._dispatch",
+      "lib/router/index.js::Router.prototype.match"
+    ],
+    "discover": [
+      "lib/router/index.js::Router.prototype._dispatch"
+    ],
+    "by_file": {
+      "lib/router/index.js": [
+        {
+          "name": "Router.prototype._dispatch",
+          "kind": "function",
+          "def_line": 84,
+          "extent_start": 84,
+          "end": 175
+        },
+        {
+          "name": "Router.prototype.match",
+          "kind": "function",
+          "def_line": 223,
+          "extent_start": 223,
+          "end": 250
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "82b5b12ca721f3c08fc0a3b502355e6cbfe5589f",
+    "parent": "c145ab9b81980946a345231ce697446ccb9d9e37",
+    "subject": "Added `.default()` support to `res.format()`",
+    "entry": "res.format",
+    "ground_truth": [
+      "lib/response.js::res.format",
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.html"
+    ],
+    "discover": [
+      "lib/response.js::res.redirect",
+      "lib/response.js::res.redirect.html"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.format",
+          "kind": "function",
+          "def_line": 359,
+          "extent_start": 359,
+          "end": 380
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "def_line": 524,
+          "extent_start": 524,
+          "end": 578
+        },
+        {
+          "name": "res.redirect.html",
+          "kind": "function",
+          "def_line": 566,
+          "extent_start": 566,
+          "end": 568
+        }
+      ]
+    }
+  },
+  {
+    "repo": "express",
+    "commit": "1311f2ac25337ef7051e33a2bdcaef12d98f34dd",
+    "parent": "82a98170617ddac1079a2581f5e763b663d9a990",
+    "subject": "Fixed res.redirect() 406. Closes #1154",
+    "entry": "res.redirect",
+    "ground_truth": [
+      "lib/response.js::res.format",
+      "lib/response.js::res.redirect"
+    ],
+    "discover": [
+      "lib/response.js::res.format"
+    ],
+    "by_file": {
+      "lib/response.js": [
+        {
+          "name": "res.format",
+          "kind": "function",
+          "def_line": 349,
+          "extent_start": 349,
+          "end": 368
+        },
+        {
+          "name": "res.redirect",
+          "kind": "function",
+          "def_line": 513,
+          "extent_start": 513,
+          "end": 564
         }
       ]
     }

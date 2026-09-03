@@ -21,13 +21,15 @@
         {
           "name": "SupportsItems",
           "kind": "class",
-          "start": 31,
+          "def_line": 31,
+          "extent_start": 30,
           "end": 32
         },
         {
           "name": "SupportsItems.items",
           "kind": "function",
-          "start": 32,
+          "def_line": 32,
+          "extent_start": 32,
           "end": 32
         }
       ],
@@ -35,14 +37,16 @@
         {
           "name": "dict_to_sequence",
           "kind": "function",
-          "start": 149,
+          "def_line": 149,
+          "extent_start": 149,
           "end": 157
         },
         {
           "name": "to_key_val_list",
           "kind": "function",
-          "start": 376,
-          "end": 404
+          "def_line": 373,
+          "extent_start": 372,
+          "end": 375
         }
       ]
     }
@@ -67,19 +71,22 @@
         {
           "name": "HTTPAdapter._get_connection",
           "kind": "function",
-          "start": 377,
+          "def_line": 377,
+          "extent_start": 377,
           "end": 404
         },
         {
           "name": "HTTPAdapter.get_connection",
           "kind": "function",
-          "start": 406,
+          "def_line": 406,
+          "extent_start": 406,
           "end": 433
         },
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 512,
+          "def_line": 512,
+          "extent_start": 512,
           "end": 616
         }
       ]
@@ -105,19 +112,22 @@
         {
           "name": "SessionRedirectMixin",
           "kind": "class",
-          "start": 96,
+          "def_line": 96,
+          "extent_start": 96,
           "end": 334
         },
         {
           "name": "SessionRedirectMixin.rebuild_proxies",
           "kind": "function",
-          "start": 273,
+          "def_line": 273,
+          "extent_start": 273,
           "end": 312
         },
         {
           "name": "Session.send",
           "kind": "function",
-          "start": 626,
+          "def_line": 626,
+          "extent_start": 626,
           "end": 699
         }
       ]
@@ -141,13 +151,15 @@
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 455,
+          "def_line": 455,
+          "extent_start": 455,
           "end": 527
         },
         {
           "name": "Response.json",
           "kind": "function",
-          "start": 881,
+          "def_line": 881,
+          "extent_start": 881,
           "end": 910
         }
       ]
@@ -173,19 +185,22 @@
         {
           "name": "Response.__init__",
           "kind": "function",
-          "start": 596,
+          "def_line": 596,
+          "extent_start": 596,
           "end": 643
         },
         {
           "name": "Response.iter_content.generate",
           "kind": "function",
-          "start": 748,
+          "def_line": 748,
+          "extent_start": 748,
           "end": 771
         },
         {
           "name": "Response.content",
           "kind": "function",
-          "start": 821,
+          "def_line": 821,
+          "extent_start": 820,
           "end": 841
         }
       ]
@@ -209,13 +224,15 @@
         {
           "name": "information",
           "kind": "function",
-          "start": 58,
+          "def_line": 58,
+          "extent_start": 58,
           "end": 102
         },
         {
           "name": "main",
           "kind": "function",
-          "start": 104,
+          "def_line": 104,
+          "extent_start": 104,
           "end": 106
         }
       ]
@@ -229,11 +246,9 @@
     "entry": "PreparedRequest.send",
     "ground_truth": [
       "requests/models.py::PreparedRequest.send",
-      "requests/models.py::Response",
       "requests/models.py::Response.next"
     ],
     "discover": [
-      "requests/models.py::Response",
       "requests/models.py::Response.next"
     ],
     "by_file": {
@@ -241,19 +256,15 @@
         {
           "name": "PreparedRequest.send",
           "kind": "function",
-          "start": 580,
+          "def_line": 580,
+          "extent_start": 580,
           "end": 582
-        },
-        {
-          "name": "Response",
-          "kind": "class",
-          "start": 585,
-          "end": 951
         },
         {
           "name": "Response.next",
           "kind": "function",
-          "start": 717,
+          "def_line": 717,
+          "extent_start": 717,
           "end": 720
         }
       ]
@@ -277,7 +288,8 @@
         {
           "name": "MockRequest.get_full_url",
           "kind": "function",
-          "start": 54,
+          "def_line": 54,
+          "extent_start": 54,
           "end": 66
         }
       ],
@@ -285,7 +297,8 @@
         {
           "name": "to_native_string",
           "kind": "function",
-          "start": 773,
+          "def_line": 773,
+          "extent_start": 773,
           "end": 786
         }
       ]
@@ -309,13 +322,15 @@
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 418,
+          "def_line": 418,
+          "extent_start": 418,
           "end": 475
         },
         {
           "name": "PreparedRequest.prepare_content_length",
           "kind": "function",
-          "start": 477,
+          "def_line": 477,
+          "extent_start": 477,
           "end": 489
         }
       ]
@@ -339,13 +354,15 @@
         {
           "name": "BaseAdapter.send",
           "kind": "function",
-          "start": 57,
+          "def_line": 57,
+          "extent_start": 57,
           "end": 58
         },
         {
           "name": "BaseAdapter.close",
           "kind": "function",
-          "start": 60,
+          "def_line": 60,
+          "extent_start": 60,
           "end": 61
         }
       ]
@@ -373,25 +390,29 @@
         {
           "name": "VendorAlias",
           "kind": "class",
-          "start": 28,
+          "def_line": 28,
+          "extent_start": 28,
           "end": 104
         },
         {
           "name": "VendorAlias.__init__",
           "kind": "function",
-          "start": 30,
+          "def_line": 30,
+          "extent_start": 30,
           "end": 36
         },
         {
           "name": "VendorAlias.find_module",
           "kind": "function",
-          "start": 38,
+          "def_line": 38,
+          "extent_start": 38,
           "end": 40
         },
         {
           "name": "VendorAlias.load_module",
           "kind": "function",
-          "start": 42,
+          "def_line": 42,
+          "extent_start": 42,
           "end": 104
         }
       ]
@@ -415,7 +436,8 @@
         {
           "name": "RequestsCookieJar.update",
           "kind": "function",
-          "start": 301,
+          "def_line": 301,
+          "extent_start": 301,
           "end": 307
         }
       ],
@@ -423,7 +445,8 @@
         {
           "name": "PreparedRequest.copy",
           "kind": "function",
-          "start": 318,
+          "def_line": 318,
+          "extent_start": 318,
           "end": 326
         }
       ]
@@ -453,25 +476,29 @@
         {
           "name": "Request",
           "kind": "class",
-          "start": 183,
+          "def_line": 183,
+          "extent_start": 183,
           "end": 259
         },
         {
           "name": "Request.__init__",
           "kind": "function",
-          "start": 207,
+          "def_line": 207,
+          "extent_start": 207,
           "end": 239
         },
         {
           "name": "PreparedRequest.prepare",
           "kind": "function",
-          "start": 296,
+          "def_line": 296,
+          "extent_start": 296,
           "end": 310
         },
         {
           "name": "PreparedRequest.prepare_body",
           "kind": "function",
-          "start": 405,
+          "def_line": 405,
+          "extent_start": 405,
           "end": 458
         }
       ],
@@ -479,7 +506,8 @@
         {
           "name": "Session.request",
           "kind": "function",
-          "start": 377,
+          "def_line": 377,
+          "extent_start": 377,
           "end": 455
         }
       ]
@@ -509,7 +537,8 @@
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 314,
+          "def_line": 314,
+          "extent_start": 314,
           "end": 423
         }
       ],
@@ -517,7 +546,8 @@
         {
           "name": "request",
           "kind": "function",
-          "start": 17,
+          "def_line": 17,
+          "extent_start": 17,
           "end": 44
         }
       ],
@@ -525,13 +555,15 @@
         {
           "name": "Timeout",
           "kind": "class",
-          "start": 46,
+          "def_line": 46,
+          "extent_start": 46,
           "end": 51
         },
         {
           "name": "ConnectTimeout",
           "kind": "class",
-          "start": 54,
+          "def_line": 54,
+          "extent_start": 54,
           "end": 58
         }
       ],
@@ -539,38 +571,9 @@
         {
           "name": "Session.request",
           "kind": "function",
-          "start": 376,
+          "def_line": 376,
+          "extent_start": 376,
           "end": 450
-        }
-      ]
-    }
-  },
-  {
-    "repo": "requests",
-    "commit": "b4a7906bca61f94a5b7a0e177b0d85b3ee11604f",
-    "parent": "7a09e727e392d03201a09a432bae87db5c514504",
-    "subject": "Add Session method to merge environment settings with per-request settings",
-    "entry": "Session",
-    "ground_truth": [
-      "requests/sessions.py::Session.request",
-      "requests/sessions.py::Session"
-    ],
-    "discover": [
-      "requests/sessions.py::Session.request"
-    ],
-    "by_file": {
-      "requests/sessions.py": [
-        {
-          "name": "Session.request",
-          "kind": "function",
-          "start": 376,
-          "end": 470
-        },
-        {
-          "name": "Session",
-          "kind": "class",
-          "start": 260,
-          "end": 646
         }
       ]
     }
@@ -599,31 +602,36 @@
         {
           "name": "IteratorProxy",
           "kind": "class",
-          "start": 16,
+          "def_line": 16,
+          "extent_start": 16,
           "end": 34
         },
         {
           "name": "IteratorProxy.__init__",
           "kind": "function",
-          "start": 18,
+          "def_line": 18,
+          "extent_start": 18,
           "end": 20
         },
         {
           "name": "IteratorProxy.__iter__",
           "kind": "function",
-          "start": 22,
+          "def_line": 22,
+          "extent_start": 22,
           "end": 23
         },
         {
           "name": "IteratorProxy.__len__",
           "kind": "function",
-          "start": 25,
+          "def_line": 25,
+          "extent_start": 25,
           "end": 31
         },
         {
           "name": "IteratorProxy.read",
           "kind": "function",
-          "start": 33,
+          "def_line": 33,
+          "extent_start": 33,
           "end": 34
         }
       ]
@@ -647,7 +655,8 @@
         {
           "name": "HTTPAdapter.send",
           "kind": "function",
-          "start": 294,
+          "def_line": 294,
+          "extent_start": 294,
           "end": 393
         }
       ],
@@ -655,7 +664,8 @@
         {
           "name": "Session.send",
           "kind": "function",
-          "start": 529,
+          "def_line": 529,
+          "extent_start": 529,
           "end": 595
         }
       ]
@@ -681,52 +691,23 @@
         {
           "name": "CaseInsensitiveDict.__repr__",
           "kind": "function",
-          "start": 108,
+          "def_line": 108,
+          "extent_start": 108,
           "end": 109
         },
         {
           "name": "CaseInsensitiveDict",
           "kind": "class",
-          "start": 37,
+          "def_line": 37,
+          "extent_start": 37,
           "end": 112
         },
         {
           "name": "CaseInsensitiveDict.__str__",
           "kind": "function",
-          "start": 111,
+          "def_line": 111,
+          "extent_start": 111,
           "end": 112
-        }
-      ]
-    }
-  },
-  {
-    "repo": "requests",
-    "commit": "0caa2432123bab2d991e635ce558226d019d7bc7",
-    "parent": "4ecd74693f65821a96180af2859c13560bf84560",
-    "subject": "New Response property, .is_redirect.",
-    "entry": "Response",
-    "ground_truth": [
-      "requests/models.py::Response",
-      "requests/sessions.py::SessionRedirectMixin.resolve_redirects"
-    ],
-    "discover": [
-      "requests/sessions.py::SessionRedirectMixin.resolve_redirects"
-    ],
-    "by_file": {
-      "requests/models.py": [
-        {
-          "name": "Response",
-          "kind": "class",
-          "start": 493,
-          "end": 783
-        }
-      ],
-      "requests/sessions.py": [
-        {
-          "name": "SessionRedirectMixin.resolve_redirects",
-          "kind": "function",
-          "start": 86,
-          "end": 187
         }
       ]
     }
@@ -749,14 +730,93 @@
         {
           "name": "is_ipv4_network",
           "kind": "function",
-          "start": 440,
+          "def_line": 440,
+          "extent_start": 440,
           "end": 449
         },
         {
           "name": "get_environ_proxies",
           "kind": "function",
-          "start": 452,
+          "def_line": 452,
+          "extent_start": 452,
           "end": 488
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "1adba3c9e94a7408584d0d819da6aa47b34ed0bd",
+    "parent": "30018e604c0f89a0dad7d8b7e6f2a227916ee8c9",
+    "subject": "modified 'merge_cookies' and update tests. made sessions.py to use that method when merging cookies.",
+    "entry": "merge_cookies",
+    "ground_truth": [
+      "requests/cookies.py::merge_cookies",
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "discover": [
+      "requests/sessions.py::Session.prepare_request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "merge_cookies",
+          "kind": "function",
+          "def_line": 426,
+          "extent_start": 426,
+          "end": 441
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.prepare_request",
+          "kind": "function",
+          "def_line": 233,
+          "extent_start": 233,
+          "end": 271
+        }
+      ]
+    }
+  },
+  {
+    "repo": "requests",
+    "commit": "012f0334ce43fe23044fc58e4246a804db88650d",
+    "parent": "d22eaf96e2a1c64bc29579a072f67d2a9c758ef8",
+    "subject": "added param to cookiejar_from_dict instead of creating new method.",
+    "entry": "cookiejar_from_dict",
+    "ground_truth": [
+      "requests/cookies.py::cookiejar_from_dict",
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "discover": [
+      "requests/cookies.py::merge_session_cookies",
+      "requests/sessions.py::Session.request"
+    ],
+    "by_file": {
+      "requests/cookies.py": [
+        {
+          "name": "cookiejar_from_dict",
+          "kind": "function",
+          "def_line": 395,
+          "extent_start": 395,
+          "end": 406
+        },
+        {
+          "name": "merge_session_cookies",
+          "kind": "function",
+          "def_line": 409,
+          "extent_start": 409,
+          "end": 422
+        }
+      ],
+      "requests/sessions.py": [
+        {
+          "name": "Session.request",
+          "kind": "function",
+          "def_line": 268,
+          "extent_start": 268,
+          "end": 362
         }
       ]
     }

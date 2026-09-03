@@ -26,7 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from evaluate import repo_for  # noqa: E402
-from tasks import changed_old_lines, symbol_table  # noqa: E402
+from tasks import changed_old_lines, enclosing, symbol_table  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 
@@ -48,9 +48,27 @@ def main() -> int:
         for path, syms in task["by_file"].items():
             src = subprocess.run(["git", "show", f"{task['parent']}:{path}"],
                                  cwd=repo, capture_output=True).stdout
-            table = {s["name"]: s for s in symbol_table(src, path)}
-            touched = set(mods.get(path, [])) | set(ins.get(path, []))
+            all_syms = symbol_table(src, path)
+            table = {s["name"]: s for s in all_syms}
             gt = {s["name"] for s in syms}
+
+            # Modified lines are unambiguously touched. Insertion anchors are
+            # not: `@@ -N,0` inserts AFTER line N, so an anchor at a symbol's
+            # last line sits on the boundary and belongs to neither side. The
+            # contract is stated here independently rather than copied from the
+            # builder — a control that mirrors the implementation cannot catch
+            # the implementation being wrong.
+            touched = set(mods.get(path, []))
+            for anchor in ins.get(path, []):
+                before = enclosing(all_syms, anchor)
+                if before is not None and before == enclosing(all_syms, anchor + 1):
+                    touched.add(anchor)
+
+            # Two names can bind one function (`res.set = res.header = fn`,
+            # `var proto = module.exports = {}`). They share an extent exactly;
+            # the ground truth records one, and the other is not a second symbol.
+            gt_extents = {(table[n]["extent_start"], table[n]["end"])
+                          for n in gt if n in table}
 
             for s in syms:
                 got = table.get(s["name"])
@@ -68,10 +86,13 @@ def main() -> int:
                 # A class legitimately spans a changed method; not a violation.
                 if any(m.startswith(name + ".") for m in gt):
                     continue
+                if (s["extent_start"], s["end"]) in gt_extents:
+                    continue                      # an alias of a ground-truth symbol
                 if any(s["extent_start"] <= ln <= s["end"] for ln in touched):
                     row[3] += 1
                     failures.append(
-                        f"NEG {task['repo']}/{task['commit'][:8]} {path} {name}")
+                        f"NEG {task['repo']}/{task['commit'][:8]} {path} {name}"
+                        f"  (extent {s['extent_start']}-{s['end']})")
                 else:
                     row[2] += 1
 

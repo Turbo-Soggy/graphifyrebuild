@@ -1,0 +1,24 @@
+selected 20 tasks; skipped {'no_gt': 206, 'single_symbol': 477, 'no_entry': 144, 'revert': 14, 'duplicate_entry': 1}
+requests/3816cfa1ab  E=SupportsItems                  |G|=4 |D|=3  Parameterize SupportsItems to handle Mapping
+requests/aa1461b68a  E=HTTPAdapter._get_connection    |G|=3 |D|=2  Move _get_connection to get_connection_with_
+requests/99b3b49241  E=SessionRedirectMixin.rebuild_proxies |G|=3 |D|=2  Refactor rebuild_proxies to allow proxy reso
+requests/db575eeedc  E=Response.json                  |G|=2 |D|=1  Fix inconsistent exception type in response.
+requests/bd10047244  E=Response.content               |G|=3 |D|=2  #4965 fix: Accessing response.content twice 
+requests/bf4a813304  E=information                    |G|=2 |D|=1  rename information/info
+requests/c3367d1854  E=PreparedRequest.send           |G|=2 |D|=1  remove Request.send(session)
+requests/f002b73026  E=to_native_string               |G|=2 |D|=1  Move to_native_string to _internal_utils.py 
+requests/31b35ab838  E=PreparedRequest.prepare_content_length |G|=2 |D|=1  removing redundant logic from prepare_conten
+requests/9e9d2c6521  E=BaseAdapter.send               |G|=2 |D|=1  Make BaseAdapter describe the mandatory adap
+requests/3e3fc7683c  E=VendorAlias                    |G|=4 |D|=3  Remove VendorAlias meta_path hook
+requests/36093e69c7  E=PreparedRequest.copy           |G|=2 |D|=1  Copy a PreparedRequest's CookieJar reliably
+requests/8ed941fa69  E=PreparedRequest.prepare_body   |G|=5 |D|=4  Fix a couple of issues I noticed
+requests/dfa41afd43  E=Timeout                        |G|=5 |D|=4  Document Timeout behaviour
+requests/7815953cb4  E=IteratorProxy                  |G|=5 |D|=4  remove unused IteratorProxy
+requests/59c8d81381  E=Session.send                   |G|=2 |D|=1  Read content in Session.send instead of Adap
+requests/c15a8f8a3d  E=CaseInsensitiveDict            |G|=3 |D|=2  CaseInsensitiveDict now looks like a normal 
+requests/1d42d9d274  E=is_ipv4_network                |G|=2 |D|=1  function is_ipv4_network renamed more detail
+requests/1adba3c9e9  E=merge_cookies                  |G|=2 |D|=1  modified 'merge_cookies' and update tests. m
+requests/012f0334ce  E=cookiejar_from_dict            |G|=3 |D|=2  added param to cookiejar_from_dict instead o
+
+wrote bench/agentctx/tasks-requests.json
+requests exit=0
