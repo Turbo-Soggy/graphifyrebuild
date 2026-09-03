@@ -116,7 +116,11 @@ edge's relation and confidence), and:
 - `stale_files` — files the pack touched whose content hash no longer matches
   graphify's `manifest.json`;
 - per-symbol `origin` (extractor vs supplement) and, on `tests` edges, the
-  confidence label that separates coverage-measured from name-guessed.
+  confidence label that separates coverage-measured from name-guessed;
+- `review_checklist` — every call site of the seed and every sibling member of
+  its owner, each flagged whether the pack showed it. The fix eval's graph-arm
+  misses were "stopped one symbol short" with the symbol already on screen, so
+  the pack now restates them as a list to work through before finishing.
 
 `refresh` closes the edit loop: incremental graphify update of the edited files
 (default: every file whose manifest hash changed), then re-application of the

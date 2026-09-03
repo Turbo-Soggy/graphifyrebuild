@@ -233,16 +233,59 @@ def node_env(tree: Path) -> bool:
     return (tree / "node_modules").exists()
 
 
+def _self_link(tree: Path) -> str:
+    """A NODE_PATH dir with `<package name>` junctioned to the tree itself.
+
+    Express's tests `require('express')`, which resolves through node_modules
+    -- and node_modules is now a shared cache that must not contain a copy of
+    any one tree. NODE_PATH is consulted after node_modules, so a per-tree
+    directory holding a junction named after the package makes the tree under
+    test the one that gets required, without touching the cache.
+    """
+    npath = tree / ".fixeval_node_path"
+    try:
+        name = json.loads((tree / "package.json").read_text(encoding="utf-8")).get("name") or "express"
+    except Exception:
+        name = "express"
+    link = npath / name
+    if not link.exists():
+        npath.mkdir(exist_ok=True)
+        subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(tree)],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    return str(npath)
+
+
+SHARED_MOCHA = VENVS / "node-mocha" / "node_modules" / "mocha" / "bin" / "mocha.js"
+
+
+def _mocha_cmd(tree: Path) -> list[str]:
+    """The tree's own mocha when it can run on this Node, else a shared mocha 10.
+
+    Express 3.x/4.x (2012-2015) pin mocha 1.x/2.x, which crash under Node 24.
+    Their tests only need describe/it/should/supertest, all of which mocha 10
+    runs unchanged, so the runner is swapped and the tree's own test deps stay.
+    """
+    own = tree / "node_modules" / "mocha" / "package.json"
+    try:
+        major = int(str(json.loads(own.read_text(encoding="utf-8")).get("version", "0")).split(".")[0])
+    except Exception:
+        major = 0
+    if major >= 4 or not SHARED_MOCHA.exists():
+        return ["npx", "mocha"]
+    return ["node", str(SHARED_MOCHA)]
+
+
 def _mocha(tree: Path, files: list[str], extra: list[str]) -> dict:
+    env = dict(os.environ, NODE_PATH=_self_link(tree))
     try:
         flags = ["--reporter", "json", "--timeout", "20000"]
         if "--no-exit" in extra:
             extra = [x for x in extra if x != "--no-exit"]
         else:
             flags.append("--exit")
-        r = subprocess.run(["npx", "mocha", *flags, *extra, *files], cwd=str(tree),
+        r = subprocess.run([*_mocha_cmd(tree), *flags, *extra, *files], cwd=str(tree),
                            capture_output=True, text=True, encoding="utf-8", errors="replace",
-                           shell=True, timeout=600)
+                           shell=True, timeout=600, env=env)
     except subprocess.TimeoutExpired:
         return {"tests": {}, "exit": 124, "tail": "mocha timed out after 600s"}
     text = r.stdout
@@ -298,7 +341,15 @@ def fresh_tree(t: dict, dest: Path) -> Path:
         nm = dest / "node_modules"
         if nm.exists():
             os.rmdir(nm) if os.path.islink(nm) or _is_junction(nm) else shutil.rmtree(nm, ignore_errors=True)
+        for sub in (dest / ".fixeval_node_path",):
+            if sub.exists():
+                for j in sub.iterdir():
+                    if _is_junction(j):
+                        os.rmdir(j)
         shutil.rmtree(dest, ignore_errors=True)
+    if dest.exists():
+        # something (an earlier pass, an editor) still holds it: side-step
+        dest = dest.with_name(f"{dest.name}-{time.time_ns() % 100000}")
     shutil.copytree(wt, dest, ignore=shutil.ignore_patterns(
         ".git", "graphify-out", "node_modules", "__pycache__", ".pytest_cache", "*.egg-info"))
     # node_modules is provided by node_env() as a junction into the shared cache
@@ -325,7 +376,7 @@ def apply_patch(tree: Path, patch: str) -> bool:
 def edited_files(before: Path, after: Path) -> list[str]:
     out = []
     for p in after.rglob("*"):
-        if not p.is_file() or any(s in p.parts for s in (".git", "node_modules", "__pycache__", ".pytest_cache")):
+        if not p.is_file() or any(s in p.parts for s in (".git", "node_modules", "__pycache__", ".pytest_cache", ".fixeval_node_path")):
             continue
         rel = p.relative_to(after)
         q = before / rel
