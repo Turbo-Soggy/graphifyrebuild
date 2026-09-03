@@ -212,7 +212,10 @@ def _clean_key(text: str) -> str | None:
         text = text[1:-1].strip()
     if not text or text.startswith("[") or text[0].isdigit():
         return None                       # computed or numeric key
-    if any(c in text for c in " \t\n(){}"):
+    # A space survives: {'my key': function(){}} is not an identifier,
+    # but it is a name a reader can locate, and the gap list exists to say
+    # "something is here". Only unreadable names are dropped.
+    if any(c in text for c in "\t\n(){}"):
         return None
     return text
 
@@ -229,8 +232,7 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
     # tree-sitter does NOT raise on malformed input — it returns a tree with
     # ERROR nodes. Without this check, every binary or garbage file fell through
     # to "no definition begins at line N", a message that asserts a cause.
-    if tree.root_node.has_error and not tree.root_node.named_children:
-        return None, PARSE_FAILED
+    had_error = tree.root_node.has_error
 
     wanted = _DEF_TYPES[lang]
     out: list[Symbol] = []
@@ -279,6 +281,27 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
                 names.insert(0, nm)
         return [(n, val) for n in names]
 
+    def object_binding(node):
+        """(name, object_node) when a node binds an OBJECT LITERAL to a name.
+
+        Members of `const obj = { handler: function(){} }` are reported as
+        `obj.handler` rather than a bare `handler`: the leaf alone collides with
+        every other `handler` in the module, and this is the shape
+        `module.exports = { ... }` takes throughout Node code.
+        """
+        if lang == "python" or node.type not in _JS_BINDERS:
+            return None
+        val = node.child_by_field_name("value") or node.child_by_field_name("right")
+        if val is None or val.type != "object":
+            return None
+        target = (node.child_by_field_name("name")
+                  or node.child_by_field_name("left")
+                  or node.child_by_field_name("key"))
+        if target is None:
+            return None
+        nm = _clean_key(target.text.decode("utf-8", "replace"))
+        return (nm, val) if nm else None
+
     def walk(node, prefix: tuple[str, ...]) -> None:
         for child in node.children:
             if child.type in wanted:
@@ -291,6 +314,11 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
                         else "function")
                 emit(_outermost(child), child, qual, kind, child)
                 walk(child, qual)
+                continue
+
+            obj = object_binding(child)
+            if obj is not None:
+                walk(obj[1], (*prefix, obj[0]))
                 continue
 
             bound = bound_targets(child)
@@ -306,6 +334,11 @@ def _definitions(source: bytes, rel_path: str, with_source: bool):
             walk(child, prefix)
 
     walk(tree.root_node, ())
+    # Errors alone are not fatal — real files often parse with recoverable
+    # errors and still yield every definition. Errors AND nothing found is the
+    # signal that the parse, not the file's contents, is why there is no answer.
+    if had_error and not out:
+        return None, PARSE_FAILED
     return out, None
 
 

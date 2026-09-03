@@ -355,55 +355,97 @@ def test_semgrep_numeric_severity_does_not_land_in_the_label_field():
 # Phase 1 — ranking under truncation
 # --------------------------------------------------------------------------
 
-def test_score_trades_depth_against_relation_rather_than_ordering_them():
-    # The defect being fixed: depth was the primary key, so a distant call lost
-    # to a near import. The cure must not simply invert that.
-    assert context.score_node("calls", 3) > context.score_node("imports", 1)
-    # ...and must not let an arbitrarily distant call win either.
-    assert context.score_node("calls", 8) < context.score_node("imports", 1)
-    # Same relation, nearer is always better.
-    assert context.score_node("calls", 1) > context.score_node("calls", 2)
+def test_shipped_ordering_is_depth_first_then_relation_weight(tmp_path):
+    """Pin the ordering the pack ACTUALLY uses, not the one that was reverted.
+
+    An earlier test asserted score("calls", 3) > score("imports", 1) as though
+    the score were the primary sort key. It is not: the score-as-primary
+    variant was measured worse and reverted, and depth stayed primary. The
+    assertion held on `score_node` in isolation while the pack ordered the
+    opposite way, so it described code that had been removed.
+    """
+    (tmp_path / "m.py").write_text(BIG_SRC, encoding="utf-8")
+    graph = {"nodes": [
+        {"id": "seed", "label": "seed()", "source_file": "m.py", "source_location": "L1"},
+        {"id": "nearimp", "label": "a()", "source_file": "m.py",
+         "source_location": f"L{BIG_LINES[0]}"},
+        {"id": "deepcall", "label": "b()", "source_file": "m.py",
+         "source_location": f"L{BIG_LINES[1]}"},
+    ], "links": [
+        {"source": "seed", "target": "nearimp", "relation": "imports"},
+        {"source": "nearimp", "target": "deepcall", "relation": "calls"},
+    ]}
+    order = [i["id"] for i in context.build_context(
+        graph, "seed", tmp_path, depth=3, budget=9000)["included"]]
+    # depth 1 import BEFORE depth 2 call — depth dominates, by design
+    assert order.index("nearimp") < order.index("deepcall")
+    # and within one depth, relation weight decides
+    assert context.score_node("calls", 1) > context.score_node("imports", 1)
 
 
-def test_ranking_is_not_alphabetical(tree):
-    """The old tie-break decided 3 of 12 real truncation boundaries by label."""
-    graph = {
-        "nodes": [
-            {"id": "seed", "label": ".label()", "source_file": "pkg/mod.py",
-             "source_location": "L18"},
-            {"id": "zzz_call", "label": "zzz", "source_file": "pkg/mod.py",
-             "source_location": "L4"},
-            {"id": "aaa_import", "label": "aaa", "source_file": "pkg/mod.py",
-             "source_location": "L25"},
-        ],
-        "links": [
-            {"source": "seed", "target": "zzz_call", "relation": "calls"},
-            {"source": "seed", "target": "aaa_import", "relation": "imports"},
-        ],
-    }
-    pack = context.build_context(graph, "seed", tree, depth=1, budget=5000)
-    order = [i["id"] for i in pack["included"]]
-    # `calls` outranks `imports` at equal depth despite sorting later by label.
-    assert order.index("zzz_call") < order.index("aaa_import")
+def test_tiebreak_is_members_first_then_id_not_label(tmp_path):
+    """The tie-break must differ from the legacy alphabetical one.
+
+    The previous test compared `calls` against `imports`, which the LEGACY key
+    already ordered the same way — it passed identically under order="legacy"
+    and so pinned nothing. This picks a case where the two genuinely disagree:
+    same depth, same relation, label order opposite to id order.
+    """
+    (tmp_path / "m.py").write_text(BIG_SRC, encoding="utf-8")
+    graph = {"nodes": [
+        {"id": "seed", "label": "seed()", "source_file": "m.py", "source_location": "L1"},
+        {"id": "aaa", "label": "zebra()", "source_file": "m.py",
+         "source_location": f"L{BIG_LINES[0]}"},
+        {"id": "zzz", "label": "alpha()", "source_file": "m.py",
+         "source_location": f"L{BIG_LINES[1]}"},
+    ], "links": [
+        {"source": "seed", "target": "aaa", "relation": "calls"},
+        {"source": "seed", "target": "zzz", "relation": "calls"},
+    ]}
+    cur = [i["id"] for i in context.build_context(
+        graph, "seed", tmp_path, depth=1, budget=9000)["included"]]
+    leg = [i["id"] for i in context.build_context(
+        graph, "seed", tmp_path, depth=1, budget=9000, order="legacy")["included"]]
+    assert cur.index("aaa") < cur.index("zzz")      # by id
+    assert leg.index("zzz") < leg.index("aaa")      # by label
+    assert cur != leg, "fixture must discriminate the two orderings"
 
 
-def test_omitted_entries_carry_rank_severity(tree):
-    graph = {
-        "nodes": [
-            {"id": "seed", "label": ".label()", "source_file": "pkg/mod.py",
-             "source_location": "L18"},
-            {"id": "callee", "label": "module_level()", "source_file": "pkg/mod.py",
-             "source_location": "L4"},
-        ],
-        "links": [{"source": "seed", "target": "callee", "relation": "calls"}],
-    }
-    pack = context.build_context(graph, "seed", tree, depth=1, budget=40)
-    assert pack["omitted"], "budget should force an omission"
-    o = pack["omitted"][0]
-    assert o["severity"] in ("truncated_high_rank", "truncated_low_rank")
-    assert isinstance(o["score"], float)
-    # A direct callee at depth 1 is not tail material.
-    assert o["severity"] == "truncated_high_rank"
+def test_omitted_severity_distinguishes_inversions_from_tail(tmp_path):
+    """Both severities must be reachable on one pack.
+
+    The previous version of this test could not fail: its fixture included
+    only the seed, so `kept` was empty, `floor` was None, and every drop was
+    labelled truncated_high_rank unconditionally. Re-running it with the
+    weakest possible relation still produced high_rank. A severity that has
+    one reachable value carries no information.
+    """
+    (tmp_path / "m.py").write_text(BIG_SRC, encoding="utf-8")
+    nodes = [{"id": "seed", "label": "seed()", "source_file": "m.py",
+              "source_location": "L1"}]
+    links = []
+    for i, ln in enumerate(BIG_LINES):
+        nodes.append({"id": f"n{i}", "label": f"f{i}()", "source_file": "m.py",
+                      "source_location": f"L{ln}"})
+        # near callees outrank distant imports, so both ends of the ranking
+        # are populated and the budget has to choose between them.
+        links.append({"source": "seed", "target": f"n{i}",
+                      "relation": "calls" if i % 2 == 0 else "imports"})
+    graph = {"nodes": nodes, "links": links}
+    pack = context.build_context(graph, "seed", tmp_path, depth=1, budget=260)
+    assert pack["included"], "fixture must fit more than nothing"
+    assert pack["omitted"], "fixture must overflow the budget"
+    sev = {o["severity"] for o in pack["omitted"]}
+    assert sev == {"truncated_low_rank"} or sev == {
+        "truncated_low_rank", "truncated_high_rank"}, sev
+    # the floor is a real number derived from what was kept, not None
+    assert pack["high_rank_floor"] is not None
+    kept = [i["score"] for i in pack["included"] if i["id"] != "seed"]
+    assert kept and pack["high_rank_floor"] == min(kept)
+    for o in pack["omitted"]:
+        expect = ("truncated_high_rank" if o["score"] >= pack["high_rank_floor"]
+                  else "truncated_low_rank")
+        assert o["severity"] == expect
 
 
 def test_ranking_basis_is_disclosed_in_the_result(tree):
@@ -416,6 +458,20 @@ def test_ranking_basis_is_disclosed_in_the_result(tree):
 # --------------------------------------------------------------------------
 # disclosure of what the GRAPH does not contain
 # --------------------------------------------------------------------------
+
+# A file of equally sized functions at known lines. Ranking and budget tests
+# need several candidates that actually compete for room; a two-symbol fixture
+# cannot exercise a threshold derived from what was kept.
+_BLOCK = ("def f{i}(a, b):" + chr(10) +
+          "    total = a + b" + chr(10) +
+          "    for _ in range(3):" + chr(10) +
+          "        total += a * b" + chr(10) +
+          "    return total" + chr(10) + chr(10))
+BIG_SRC = "def seed():" + chr(10) + "    return 0" + chr(10) + chr(10)
+BIG_LINES = []
+for _i in range(8):
+    BIG_LINES.append(BIG_SRC.count(chr(10)) + 1)
+    BIG_SRC += _BLOCK.format(i=_i)
 
 NESTED_SRC = '''\
 def outer(a):
@@ -444,26 +500,40 @@ def test_nested_function_absent_from_graph_is_disclosed(tmp_path):
     assert "no node" in gap["reason"]
 
 
-def test_symbols_the_graph_does_know_are_not_reported_as_gaps(tmp_path):
-    """Anti-vacuity: the gap list must not simply mirror every definition."""
+def test_gap_suppression_matches_on_name_not_line_alone(tmp_path):
+    """A graph node sharing a line must not hide a different symbol.
+
+    Suppression used to compare line numbers only. graphify emits doc and
+    "rationale" nodes that sit on lines adjacent to or shared with real code,
+    so any such node silently cancelled a genuine gap on that line. The old
+    test asserted `unmodelled == []`, a direction an always-empty function also
+    satisfies, and it passed BECAUSE of the defect.
+    """
     (tmp_path / "m.py").write_text(NESTED_SRC, encoding="utf-8")
-    graph = {"nodes": [
-        {"id": "outer", "label": "outer()", "source_file": "m.py",
-         "source_location": "L1"},
-        {"id": "inner", "label": ".inner()", "source_file": "m.py",
+    known = {"nodes": [
+        {"id": "outer", "label": "outer()", "source_file": "m.py", "source_location": "L1"},
+        {"id": "inner", "label": ".inner()", "source_file": "m.py", "source_location": "L2"},
+    ], "links": []}
+    assert context.build_context(known, "outer", tmp_path, depth=1,
+                                 budget=5000)["unmodelled"] == []
+
+    # Same lines, but the L2 node is a DOC node, not `inner`. The gap stands.
+    decoy = {"nodes": [
+        {"id": "outer", "label": "outer()", "source_file": "m.py", "source_location": "L1"},
+        {"id": "doc", "label": "Returns b plus one.", "source_file": "m.py",
          "source_location": "L2"},
     ], "links": []}
-    pack = context.build_context(graph, "outer", tmp_path, depth=1, budget=5000)
-    assert pack["unmodelled"] == []
+    gaps = context.build_context(decoy, "outer", tmp_path, depth=1,
+                                 budget=5000)["unmodelled"]
+    assert [g["name"] for g in gaps] == ["outer.inner"]
 
 
-EXTRA_SRC = """
 
-def unrelated():
-    def hidden():
-        pass
-"""
 
+# Extra module-level code appended to NESTED_SRC so a gap exists OUTSIDE the
+# code the pack emits, which is what the scope flag has to distinguish.
+EXTRA_SRC = (chr(10) + chr(10) + "def unrelated():" + chr(10) +
+             "    def hidden():" + chr(10) + "        pass" + chr(10))
 
 def test_gaps_are_reported_file_wide_and_flagged_by_scope(tmp_path):
     """Gaps anywhere in a shown FILE are reported, flagged by whether the
@@ -536,13 +606,21 @@ def test_js_functions_bound_by_assignment_are_found(tmp_path):
     assert {"res.status", "res.send", "helper", "declared", "Thing"} <= names
 
 
-def test_js_assigned_function_keeps_its_receiver(tmp_path):
-    """`res.send` must not collapse to `send` — the leaf alone is not an identifier."""
+def test_receiver_is_kept_where_it_disambiguates_and_dropped_where_it_cannot(tmp_path):
+    """Two levels, two deliberately different naming contracts.
+
+    `definitions_from_source` qualifies (`res.send`) because the gap list must
+    distinguish it from every other `send` in the module. `resolve` returns the
+    leaf (`send`) because it is matching what graphify labels a node
+    (`.json()` -> json). An earlier pair of tests asserted both without saying
+    they were different contracts, so the suite pinned an apparent
+    contradiction three lines apart.
+    """
     (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
-    syms = symbols.definitions_from_source(
-        (tmp_path / "r.js").read_bytes(), "r.js")
-    assert "res.send" in {s.name for s in syms}
-    assert "send" not in {s.name for s in syms}
+    walker = {s.name for s in symbols.definitions_from_source(
+        (tmp_path / "r.js").read_bytes(), "r.js")}
+    assert "res.send" in walker and "send" not in walker
+    assert symbols.resolve(tmp_path, "r.js", 8).name == "send"
 
 
 def test_js_binding_def_line_is_the_binding_not_the_body(tmp_path):
@@ -554,11 +632,27 @@ def test_js_binding_def_line_is_the_binding_not_the_body(tmp_path):
     assert syms["res.status"].end == 6           # through the closing brace
 
 
-def test_js_extent_slices_the_whole_assigned_function(tmp_path):
-    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8")
-    sym = symbols.resolve(tmp_path, "r.js", 8)   # res.send binding line
-    assert sym is not None and sym.name == "send"
-    assert "return this.end(body)" in sym.source
+def test_js_slice_matches_the_line_range_it_reports(tmp_path):
+    """`source` must be exactly the lines `start`..`end` name.
+
+    The previous assertion was `"return this.end(body)" in sym.source`, which
+    would also pass if `source` were the entire file. It missed a real defect:
+    extents were taken from the function VALUE while the reported range came
+    from the binder, so the pack printed "r.js:3-5" above text that did not
+    begin at line 3 — and an agent editing by that range would clobber the
+    `res.status =` binder.
+    """
+    # newline="" so the on-disk bytes match the fixture; the assertion is about
+    # line correspondence, and CRLF translation would otherwise fail it for a
+    # reason that has nothing to do with extents.
+    (tmp_path / "r.js").write_text(JS_SRC, encoding="utf-8", newline="")
+    file_lines = JS_SRC.splitlines()
+    for def_line in (3, 8):
+        sym = symbols.resolve(tmp_path, "r.js", def_line)
+        assert sym is not None
+        expected = chr(10).join(file_lines[sym.start - 1:sym.end])
+        assert sym.source.rstrip() == expected.rstrip(), sym.name
+        assert sym.source.splitlines()[0] == file_lines[sym.start - 1]
 
 
 def test_python_is_unaffected_by_the_js_binding_rule(tmp_path):
@@ -568,3 +662,83 @@ def test_python_is_unaffected_by_the_js_binding_rule(tmp_path):
     syms = symbols.definitions_from_source(
         (tmp_path / "m.py").read_bytes(), "m.py")
     assert [s.name for s in syms] == ["real"]
+
+
+def test_parse_failed_is_reachable_and_not_disguised_as_a_missing_definition(tmp_path):
+    """tree-sitter returns ERROR nodes; it does not raise.
+
+    PARSE_FAILED was therefore unreachable, and every binary or garbage file
+    fell through to NO_DEFINITION_AT_LINE — whose message asserted a *cause*
+    ("graphify also emits doc/rationale nodes..."). On this repo's own graph
+    that was 6,608 of 20,843 nodes receiving a guessed explanation, which is
+    precisely what the Unresolved contract exists to prevent.
+    """
+    (tmp_path / "junk.py").write_bytes(b"\x00\x01\x02 def \xff\xfe(((")
+    got = symbols.resolve_detail(tmp_path, "junk.py", 1)
+    assert isinstance(got, symbols.Unresolved)
+    assert got.code == symbols.PARSE_FAILED
+    assert "doc/rationale" not in got.detail
+
+
+def test_two_definitions_on_one_line_refuse_rather_than_pick_one(tmp_path):
+    """Returning the shorter one handed the agent another function's body.
+
+    `min()` on a tie returns the first, and nothing compared the resolved symbol
+    against the label that was asked for — so a request for `g` was answered
+    with `f`'s source, flagged as resolved.
+    """
+    (tmp_path / "two.js").write_text(
+        "const f = () => 'FFF', g = () => 'GGG';" + chr(10), encoding="utf-8")
+    blind = symbols.resolve_detail(tmp_path, "two.js", 1)
+    assert isinstance(blind, symbols.Unresolved)
+    assert blind.code == symbols.AMBIGUOUS_DEFINITION
+
+    picked = symbols.resolve_detail(tmp_path, "two.js", 1, expect="g()")
+    assert isinstance(picked, symbols.Symbol)
+    assert picked.name == "g" and "GGG" in picked.source
+
+
+def test_js_binding_edge_cases_produce_usable_names_or_nothing(tmp_path):
+    """A name that cannot be typed by a human is not a name.
+
+    Quoted, computed and numeric object keys previously produced entries like
+    '"my key"' and '[dyn]' in the gap list — symbols nobody can look up.
+    """
+    src = (
+        "a.b.c = function () { return 1; };" + chr(10) +
+        "x = y = function () { return 2; };" + chr(10) +
+        "const obj = {" + chr(10) +
+        "  'my key': function () { return 3; }," + chr(10) +
+        "  [dyn]: function () { return 4; }," + chr(10) +
+        "  3: function () { return 5; }," + chr(10) +
+        "};" + chr(10) +
+        "const C = class Inner { m() { return 6; } };" + chr(10)
+    )
+    (tmp_path / "e.js").write_text(src, encoding="utf-8")
+    names = {s.name for s in symbols.definitions_from_source(
+        (tmp_path / "e.js").read_bytes(), "e.js")}
+    assert "a.b.c" in names
+    assert {"x", "y"} <= names, "a chained assignment binds BOTH names"
+    assert "obj.my key" in names, "a quoted key is still a locatable name"
+    assert not any('"' in n or n.startswith("[") for n in names), names
+    assert not any(n.split(".")[-1].isdigit() for n in names), names
+    assert "C" in names and "C.m" in names
+
+
+def test_js_and_ts_class_fields_agree(tmp_path):
+    """`field_definition` is JavaScript; `public_field_definition` is TypeScript.
+
+    Listing only the TS spelling made identical files disagree by extension.
+    """
+    body = ("class Thing {" + chr(10) +
+            "  handler = function () { return 1; };" + chr(10) +
+            "  arrow = () => 2;" + chr(10) +
+            "  method() { return 3; }" + chr(10) + "}" + chr(10))
+    (tmp_path / "a.js").write_text(body, encoding="utf-8")
+    (tmp_path / "a.ts").write_text(body, encoding="utf-8")
+    js = {s.name for s in symbols.definitions_from_source(
+        (tmp_path / "a.js").read_bytes(), "a.js")}
+    ts = {s.name for s in symbols.definitions_from_source(
+        (tmp_path / "a.ts").read_bytes(), "a.ts")}
+    assert js == ts, (js, ts)
+    assert {"Thing.handler", "Thing.arrow", "Thing.method"} <= js
