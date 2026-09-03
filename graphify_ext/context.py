@@ -46,6 +46,7 @@ failure mode that produces confidently wrong fixes.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from . import blast_radius as _br
@@ -163,7 +164,7 @@ def build_context(
     per_symbol_cap: int = 80,
     max_nodes: int = 200,
     decay: float = DEFAULT_DECAY,
-    order: str = "current",
+    order: str = "mention-first",
     manifest: dict | None = None,
     index_budget: int = 0,
     index_extra_depth: int = 1,
@@ -267,6 +268,38 @@ def build_context(
                 str(n.get("label", "")),
             ),
         )
+    elif order in ("mention", "mention-first"):
+        # A candidate whose bare name occurs as an identifier in the SEED'S OWN
+        # SOURCE is a symbol the seed visibly touches, even where the extractor
+        # emitted no edge for it (dynamic dispatch, attribute access, string
+        # references). "mention" applies that within a depth; "mention-first"
+        # lets it beat depth and is the DEFAULT: on the 70-task corpus at
+        # d2/6k/reserve-300 it moved bodies recall 0.629 -> 0.636 and named
+        # recall 0.723 -> 0.749, one task improved, none regressed, tokens
+        # unchanged (bench/agentctx/baseline-dyn300-mention-first.json vs
+        # baseline-supplement-index-dyn300.json). order="current" reproduces
+        # the previous default for A/B.
+        seed_node = by_id.get(seed, {})
+        got_seed = symbols.resolve_node_detail(root, seed_node) if seed_node else None
+        seed_idents = (set(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", got_seed.source))
+                       if isinstance(got_seed, symbols.Symbol) else set())
+
+        def _mentioned(n: dict) -> int:
+            leaf = str(n.get("label", "")).strip().lstrip(".").rstrip("()")
+            return 0 if leaf and leaf in seed_idents else 1
+
+        if order == "mention-first":
+            key = lambda n: (0 if str(n["id"]) == seed else 1, _mentioned(n),
+                             int(n.get("blast_depth", 0)), -scores[str(n["id"])],
+                             0 if str(n.get("label", "")).startswith(".") else 1,
+                             str(n["id"]))
+        else:
+            key = lambda n: (0 if str(n["id"]) == seed else 1,
+                             int(n.get("blast_depth", 0)), _mentioned(n),
+                             -scores[str(n["id"])],
+                             0 if str(n.get("label", "")).startswith(".") else 1,
+                             str(n["id"]))
+        ranked = sorted(radius["nodes"], key=key)
     else:
         ranked = sorted(
             radius["nodes"],
@@ -577,7 +610,9 @@ def build_context(
         "direction": direction,
         "budget": budget,
         "decay": decay,
-        "ranking": "depth, then relation_weight * decay**depth within depth",
+        "ranking": ("mentioned-in-seed first, then depth, then relation_weight * "
+                    "decay**depth" if order == "mention-first" else
+                    "depth, then relation_weight * decay**depth within depth"),
         "high_rank_floor": floor,
         "tokens_used": used,
         "token_method": _token_method(),

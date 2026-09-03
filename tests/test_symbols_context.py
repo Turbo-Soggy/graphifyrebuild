@@ -378,7 +378,7 @@ def test_shipped_ordering_is_depth_first_then_relation_weight(tmp_path):
         {"source": "nearimp", "target": "deepcall", "relation": "calls"},
     ]}
     order = [i["id"] for i in context.build_context(
-        graph, "seed", tmp_path, depth=3, budget=9000)["included"]]
+        graph, "seed", tmp_path, depth=3, budget=9000, order="current")["included"]]
     # depth 1 import BEFORE depth 2 call — depth dominates, by design
     assert order.index("nearimp") < order.index("deepcall")
     # and within one depth, relation weight decides
@@ -405,7 +405,7 @@ def test_tiebreak_is_members_first_then_id_not_label(tmp_path):
         {"source": "seed", "target": "zzz", "relation": "calls"},
     ]}
     cur = [i["id"] for i in context.build_context(
-        graph, "seed", tmp_path, depth=1, budget=9000)["included"]]
+        graph, "seed", tmp_path, depth=1, budget=9000, order="current")["included"]]
     leg = [i["id"] for i in context.build_context(
         graph, "seed", tmp_path, depth=1, budget=9000, order="legacy")["included"]]
     assert cur.index("aaa") < cur.index("zzz")      # by id
@@ -462,8 +462,11 @@ def test_omitted_severity_distinguishes_inversions_from_tail(tmp_path):
 
 
 def test_ranking_basis_is_disclosed_in_the_result(tree):
-    pack = context.build_context(_graph(), "seed", tree, depth=1, budget=5000)
+    pack = context.build_context(_graph(), "seed", tree, depth=1, budget=5000,
+                                 order="current")
     assert pack["ranking"].startswith("depth, then relation_weight")
+    shipped = context.build_context(_graph(), "seed", tree, depth=1, budget=5000)
+    assert shipped["ranking"].startswith("mentioned-in-seed first")
     assert pack["decay"] == context.DEFAULT_DECAY
     assert all("score" in i for i in pack["included"])
 

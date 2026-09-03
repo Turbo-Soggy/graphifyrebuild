@@ -517,6 +517,26 @@ only setting that names 0.094 more of the ground truth while regressing no
 task's bodies. Larger reserves buy more names at the cost of bodies on a few
 tasks; the CLI and MCP expose the knob.
 
+### Ordering, revisited with a signal the graph does not carry
+
+Phase 1 concluded that reordering moved recall by 0.000 everywhere it was
+measured. That held for every key derived from graph structure. A key derived
+from the **seed's source** is different: a candidate whose bare name occurs as
+an identifier in the seed body is something the seed touches, edge or no edge.
+Measured against the shipped defaults (d2 / 6k / dynamic reserve 300), same
+tokens:
+
+| order | bodies recall | named recall | regressed / improved |
+|---|---|---|---|
+| depth, then relation (previous default) | 0.629 | 0.723 | - |
+| mention within depth | 0.636 | 0.738 | 0 / 1 |
+| **mention first, then depth** (shipped) | **0.636** | **0.749** | **0 / 1** |
+
+One task (`flask/c2810ffd`, 0.5 -> 1.0) and 0.026 more of the ground truth
+named; n is 70 and the effect is one task, so this is "measured not worse and
+slightly better", not a claim of a large lever. `order="current"` is kept for
+A/B.
+
 ### Also shipped in the second pass
 
 - `related_tests`: test-path nodes linked (by any non-structural edge) to

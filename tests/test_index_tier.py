@@ -187,3 +187,27 @@ def test_dynamic_index_spends_what_the_bodies_left_over(tmp_path):
     assert dyn["tokens_used"] <= 1400 and fixed["tokens_used"] <= 1400
     # the body tier is identical: the reserve is what bounds bodies in both modes
     assert [i["id"] for i in dyn["included"]] == [i["id"] for i in fixed["included"]]
+
+
+def test_mention_first_promotes_symbols_the_seed_names(tmp_path):
+    """A depth-2 symbol whose name appears in the seed's source outranks a
+    depth-1 symbol the seed never mentions. Under order="current" depth wins."""
+    src = ("def seed():\n    return deep_helper()\n\n\n"
+           "def near():\n    return 1\n\n\n"
+           "def deep_helper():\n    return 2\n")
+    (tmp_path / "m.py").write_text(src, encoding="utf-8")
+    graph = {"nodes": [
+        {"id": "seed", "label": "seed()", "source_file": "m.py", "source_location": "L1"},
+        {"id": "near", "label": "near()", "source_file": "m.py", "source_location": "L5"},
+        {"id": "deep", "label": "deep_helper()", "source_file": "m.py", "source_location": "L9"},
+    ], "links": [
+        {"source": "seed", "target": "near", "relation": "calls"},
+        {"source": "near", "target": "deep", "relation": "calls"},   # deep is depth 2
+    ]}
+    shipped = [i["id"] for i in context.build_context(
+        graph, "seed", tmp_path, depth=2, budget=6000, relations=_RELS)["included"]]
+    current = [i["id"] for i in context.build_context(
+        graph, "seed", tmp_path, depth=2, budget=6000, relations=_RELS,
+        order="current")["included"]]
+    assert shipped.index("deep") < shipped.index("near")
+    assert current.index("near") < current.index("deep")

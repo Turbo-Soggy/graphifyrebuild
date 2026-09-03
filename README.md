@@ -25,15 +25,15 @@ on, `max_nodes` 800**, the `default` config in `bench/agentctx/regress.py`;
 recall is over the symbols the agent had to *discover*, precision over
 everything returned. Re-derived on 2026-09-04 by `bench/agentctx/compare_configs.py`.
 
-| | stock graph (`default`) | + `supplement` | + class summaries | + index tier (reserve 300) |
-|---|---|---|---|---|
-| tasks scoreable (entry symbol has a node) | 53 of 70 | **68 of 70** | 68 | 68 |
-| symbols shown **as source**, mean recall | 0.512 (n=53) | 0.622 (n=68) | 0.629 | 0.629 |
-| symbols shown as source **or named in the index** | - | - | - | **0.723** |
-| mean precision (bodies) | 0.158 | 0.118 | 0.118 | 0.118 |
-| tasks regressed vs previous column | | **0** | **0** | **0** |
-| tasks improved / newly scoreable vs previous | | 7 / 15 | 1 / 0 | 0 / 0 (named: many) |
-| mean tokens used of 6,000 | - | 4,418 | 4,418 | 4,811 |
+| | stock graph (`default`) | + `supplement` | + class summaries | + index tier (reserve 300) | + mentioned-in-seed first (**shipped**) |
+|---|---|---|---|---|---|
+| tasks scoreable (entry symbol has a node) | 53 of 70 | **68 of 70** | 68 | 68 | 68 |
+| symbols shown **as source**, mean recall | 0.512 (n=53) | 0.622 (n=68) | 0.629 | 0.629 | **0.636** |
+| symbols shown as source **or named in the index** | - | - | - | 0.723 | **0.749** |
+| mean precision (bodies) | 0.158 | 0.118 | 0.118 | 0.118 | 0.118 |
+| tasks regressed vs previous column | | **0** | **0** | **0** | **0** |
+| tasks improved / newly scoreable vs previous | | 7 / 15 | 1 / 0 | 0 / 0 (named: many) | 1 / 0 |
+| mean tokens used of 6,000 | - | 4,418 | 4,418 | 4,811 | 4,811 |
 
 Each column changes exactly one thing against the one before it, at the same
 total budget. Per-task detail, which matters more than the means, is in the
@@ -47,6 +47,9 @@ summed. Of the 175 ground-truth symbols, every one the graph has a node for is
 by upstream design; disclosed as `unmodelled`) and symbols beyond three hops or
 outside the budget.
 
+The last column ranks a candidate whose name appears as an identifier in the
+seed's own source ahead of everything else: a symbol the seed visibly touches
+even where the extractor emitted no edge (dynamic dispatch, attribute access).
 The index reserve was fitted, not asserted: a fixed 1,200-token share reached
 0.782 named recall but cost one task its bodies (bodies 0.629 to 0.614); a
 dynamic reserve of 300 that also spends what the bodies leave unused regressed
@@ -176,9 +179,9 @@ git clone https://github.com/pallets/flask     bench/agentctx/repo-flask
 git clone https://github.com/expressjs/express bench/agentctx/repo-express
 python bench/agentctx/build_all.py 4                 # 70 worktrees + graphs, ~2 min
 python bench/agentctx/regress.py --config default    # must print "no per-task change"
-python bench/agentctx/regress.py --config supplement-index-dyn300   # the shipped defaults
-python bench/agentctx/compare_configs.py bench/agentctx/baseline-supplement.json bench/agentctx/baseline-supplement-index-dyn300.json
-python bench/agentctx/diagnose.py --config supplement-index-dyn300 --only-zero   # why a task missed, per symbol
+python bench/agentctx/regress.py --config dyn300-mention-first   # the shipped defaults
+python bench/agentctx/compare_configs.py bench/agentctx/baseline-supplement-index-dyn300.json bench/agentctx/baseline-dyn300-mention-first.json
+python bench/agentctx/diagnose.py --config dyn300-mention-first --only-zero   # why a task missed, per symbol
 ```
 
 Any change to ranking, containment, edge generation or the supplement must be

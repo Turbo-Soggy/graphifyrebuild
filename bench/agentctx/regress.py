@@ -85,6 +85,13 @@ for _ib in (600, 2000, 3000):
 CONFIGS["supplement-index"]["index_dynamic"] = False
 # Dynamic variant: `index_budget` is only a reserve; the index also gets what
 # the bodies left unspent. Same total budget.
+# `dyn300-mention-first` IS the shipped default (context.build_context defaults:
+# order="mention-first", index reserve 300 dynamic, containment on).
+for _ord in ("mention", "mention-first"):
+    CONFIGS[f"dyn300-{_ord}"] = dict(
+        depth=2, budget=6000, max_nodes=800, direction="both",
+        relations=_CONTAINMENT, order=_ord, supplement=True, index_budget=300,
+        index_dynamic=True)
 for _ib in (300, 600, 1200):
     CONFIGS[f"supplement-index-dyn{_ib}"] = dict(
         depth=2, budget=6000, max_nodes=800, direction="both",
