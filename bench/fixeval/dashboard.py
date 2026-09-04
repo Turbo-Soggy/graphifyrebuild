@@ -181,9 +181,42 @@ class H(BaseHTTPRequestHandler):
         pass
 
 
+def render_snapshot() -> str:
+    """Theme-aware static snapshot for hosting off-machine (claude.ai artifact):
+    same data as the live page, no auto-refresh, no document wrapper."""
+    page = render()
+    body = page[page.index("<body>") + 6: page.index("</body>")]
+    body = body.replace("auto-refresh 15 s", "snapshot; republished by Claude as the run progresses")
+    css = """
+<title>Fix-Eval Run Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f5f6f3;--fg:#1c232d;--dim:#5f6b7a;--line:#d9dde3;--track:#e6e9ee;--accent:#3b7dd8;--ok:#2e8b57;--fail:#b3413a;--part:#b8862b;--broke:#9c3a78;--pend:#c9ced6;--pendfg:#7a828e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11161c;--fg:#e4e8ee;--dim:#8d99a8;--line:#242c37;--track:#1e2531;--accent:#5b9cf0;--ok:#2f8f5a;--fail:#a8423b;--part:#a67f2a;--broke:#8e3a70;--pend:#1e2531;--pendfg:#6b7482}}
+:root[data-theme="dark"]{--bg:#11161c;--fg:#e4e8ee;--dim:#8d99a8;--line:#242c37;--track:#1e2531;--accent:#5b9cf0;--ok:#2f8f5a;--fail:#a8423b;--part:#a67f2a;--broke:#8e3a70;--pend:#1e2531;--pendfg:#6b7482}
+body{font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif;margin:0;padding:24px 28px;background:var(--bg);color:var(--fg)}
+h1{font-size:20px;font-weight:600;margin:0 0 4px;text-wrap:balance} h2{font-size:12px;margin:24px 0 8px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:500}
+.dim{color:var(--dim)} .big{font-size:34px;font-weight:600;font-variant-numeric:tabular-nums} .kpis{display:flex;gap:32px;flex-wrap:wrap;margin:14px 0 6px}
+.kpi small{display:block;color:var(--dim)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums} td,th{padding:5px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--dim);font-weight:500} td.k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+.bar{width:200px;max-width:100%;height:8px;background:var(--track);border-radius:4px;overflow:hidden} .bar div{height:100%;background:var(--accent)}
+.c{display:inline-block;min-width:26px;text-align:center;padding:1px 6px;margin-right:4px;border-radius:4px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:#fff}
+.ok{background:var(--ok)} .fail{background:var(--fail)} .partial{background:var(--part)} .broke{background:var(--broke)} .pending{background:var(--pend);color:var(--pendfg)}
+ul{margin:4px 0;padding-left:18px} .grid2{display:grid;grid-template-columns:1fr 1fr;gap:32px} .wrap{overflow-x:auto}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+</style>"""
+    return css + '<div class="wrap">' + body + "</div>"
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8765)
+    ap.add_argument("--snapshot", help="write a theme-aware static snapshot to this path and exit")
     args = ap.parse_args()
+    if args.snapshot:
+        Path(args.snapshot).write_text(render_snapshot(), encoding="utf-8")
+        print(f"snapshot -> {args.snapshot}")
+        raise SystemExit(0)
     print(f"dashboard on http://127.0.0.1:{args.port}")
     HTTPServer(("127.0.0.1", args.port), H).serve_forever()
