@@ -46,7 +46,8 @@ def load():
         if last_run:
             parts = last_run.split()
             age = time.time() - log.stat().st_mtime
-            running.append((parts[0], parts[1], log.name, age))
+            if age < 1800:                 # a log idle for 30 min is a dead stream, not a run
+                running.append((parts[0], parts[1], log.name, age))
     return tasks, rows, running
 
 
@@ -55,8 +56,8 @@ def render() -> str:
     keys = sorted(t["key"] for t in tasks)
     total_cells = len(keys) * len(ARMS) * len(REPS)
     cells = {}
-    for r in rows:
-        cells[(r["key"], r["arm"], int(r.get("rep", 0)))] = r
+    for r in rows:                       # first recording of a cell wins (parallel-worker duplicates)
+        cells.setdefault((r["key"], r["arm"], int(r.get("rep", 0))), r)
     done = len(cells)
     walls = [r["agent"].get("wall_s") for r in rows if r.get("agent", {}).get("wall_s")]
     mean_wall = statistics.mean(walls) if walls else 160

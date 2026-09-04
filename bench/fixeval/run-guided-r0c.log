@@ -1,0 +1,29 @@
+express/1e2951a8       graph-guided rep0 already done
+express/2a0c35a1       graph-guided rep0 already done
+express/4d1ee23f       graph-guided rep0 already done
+express/59e205a5       graph-guided rep0 already done
+express/71540147       graph-guided rep0 already done
+express/723b5451       graph-guided rep0 already done
+express/76eaa326       graph-guided rep0 already done
+express/7f26cfca       graph-guided rep0 already done
+express/a01326ad       graph-guided rep0 already done
+express/bad55f79       graph-guided rep0 already done
+express/cec0c06a       graph-guided rep0 already done
+express/f41d09a3       graph-guided rep0 already done
+express/f8b954bc       graph-guided rep0 already done
+flask/1e5dd430         graph-guided rep0 already done
+flask/39f93632         graph-guided agent running ...
+flask/39f93632         graph-guided resolved=True f2p=1/1 broken=0 turns=31 cost=$0.6758219999999999 edits=['src/flask/app.py', 'src/flask/helpers.py']
+flask/4eb5e945         graph-guided agent running ...
+flask/4eb5e945         graph-guided resolved=True f2p=1/1 broken=0 turns=8 cost=$0.24386780000000002 edits=['src/flask/config.py']
+flask/892ae955         graph-guided agent running ...
+flask/892ae955         graph-guided resolved=True f2p=1/1 broken=0 turns=4 cost=$0.1263084 edits=['src/flask/json/__init__.py']
+flask/96c97dec         graph-guided rep0 already done
+flask/9822a035         graph-guided rep0 already done
+flask/daf1510a         graph-guided rep0 already done
+requests/99b3b492      graph-guided agent running ...
+requests/99b3b492      graph-guided resolved=True f2p=1/1 broken=0 turns=16 cost=$0.3484582 edits=['requests/sessions.py', 'requests/utils.py']
+requests/bd100472      graph-guided agent running ...
+requests/bd100472      graph-guided resolved=False f2p=6/7 broken=0 turns=16 cost=$0.43320939999999997 edits=['requests/models.py']
+requests/db575eee      graph-guided agent running ...
+requests/db575eee      graph-guided resolved=True f2p=1/1 broken=0 turns=21 cost=$0.4873408 edits=['requests/compat.py', 'requests/exceptions.py', 'requests/models.py']

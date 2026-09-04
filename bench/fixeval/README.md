@@ -28,59 +28,72 @@ For a fix commit `C` with parent `P`:
 3.11 (2022-era Flask calls `pkgutil.get_loader`, which 3.12 turns into a
 RuntimeError); Express runs under Node 24 with mocha.
 
-## Verifiable tasks: 6 of 70
+## Verifiable tasks: 23
 
-| repo | with test changes | verifiable | why the rest dropped |
+Mined 3,000 commits per repo (`bench/agentctx/wide-*.json`, 208 candidates)
+on top of the frozen 70, and kept only tasks with a test that fails before the
+fix and passes with it.
+
+| repo | candidates with test changes | verifiable | why the rest dropped |
 |---|---|---|---|
-| flask | 8 | 3 | 4 have test diffs that pass without the fix (refactors, removed asserts); 1 is a typing check, not a pytest file |
-| requests | 5 | 2 | 3 are pre-2021 suites whose vendored `six` breaks on Python 3.11+ |
-| express | 21 | 1 | selection stopped after 1 verified task: `npm install` per historical commit took 10-40 minutes each and one mocha run hung; the remaining 20 are untried, not failed |
+| flask | 50 | 7 | test diffs that pass without the fix (refactors, removed asserts), one typing check |
+| requests | 51 | 3 | 36 refactor-only test diffs, 6 Python-2-era suites, 2 environment failures |
+| express | 141 | 13 | 47 no test change; 36 2012-2013 trees whose dependencies no longer install; 12 mocha 1.x trees that crash under Node 24 |
 
-## Results (2026-09-04, model `sonnet`)
+Environments: shared per-era venvs (Python 3.9 for requests before 2021, 3.11
+for everything else), `node_modules` cached per dependency set, a shared
+mocha 10 for Express trees older than mocha 4, the tree self-linked on
+`NODE_PATH`.
 
-| task | graph | nograph | turns (g/n) | cost (g/n) | files edited (g/n) |
-|---|---|---|---|---|---|
-| express/59e205a5 | RESOLVED | RESOLVED | 31/32 | $0.79/$0.40 | 3/3 |
-| flask/96c97dec | RESOLVED | RESOLVED | 20/21 | $0.37/$0.22 | 3/3 |
-| flask/9822a035 | failed | failed | 18/31 | $0.58/$0.73 | 2/2 |
-| flask/daf1510a | failed (1 of 6 tests) | failed (0 of 6, **no edit made**) | 29/31 | $0.80/$0.55 | 2/0 |
-| requests/99b3b492 | failed | RESOLVED | 10/31 | $0.21/$0.53 | 2/2 |
-| requests/db575eee | RESOLVED | RESOLVED | 22/21 | $0.54/$0.28 | 3/4 |
-| **total** | **3 / 6** | **4 / 6** | 21.7 / 27.8 mean | $3.29 / $2.72 | |
+## Results (2026-09-04, model `sonnet`, 23 tasks x 3 arms x 2 repetitions = 138 runs, $58)
+
+| arm | runs resolved | tasks resolved in **both** reps | in **any** rep | mean fraction of fail-to-pass tests passing | mean turns | mean cost | runs that broke a passing test |
+|---|---|---|---|---|---|---|---|
+| no graph | **25/46 (54%)** | 11/23 | 14/23 | 0.628 | 19.9 | $0.37 | 1 |
+| graph pack | 21/46 (46%) | 9/23 | 12/23 | 0.610 | 18.2 | $0.43 | 3 |
+| graph pack + "before you stop" checklist | **25/46 (54%)** | 11/23 | 14/23 | **0.666** | 19.4 | $0.44 | 2 |
+
+Repeatability: each arm flips on exactly 3 of 23 tasks between its two
+repetitions, so a one-repetition comparison of two arms is noise up to about
+three tasks. Two repetitions are the minimum at which these rows mean
+anything, and they still do not separate the top two.
+
+Per-task table: `python run.py report`. Raw rows: `results.jsonl` (one JSON
+line per run, with the agent's turns, cost, edited files and per-test outcome).
 
 ## Reading it honestly
 
-- **n = 6, one run per cell, one model.** Nothing here separates the arms
-  statistically; a single task flipping either way changes the headline. This
-  is a pipeline that works end to end and a first data point, not a verdict.
-- **The pack did not raise the resolve rate.** 3 of 6 with it, 4 of 6 without.
-  The one task the graph arm lost (`requests/99b3b492`) is instructive: the
-  agent refactored `rebuild_proxies` exactly as the pack framed it, declared
-  itself done at turn 10, and never touched the *call site* in
-  `Session.request` that the fix actually needed. The no-graph agent hit the
-  30-turn cap and found it. Context that looks complete can end exploration
-  early; that is the failure mode the disclosure fields exist for, and it
-  happened anyway.
-- **The pack changed how the budget was spent.** Mean turns 21.7 vs 27.8; on
-  `flask/daf1510a` the no-graph agent used 31 turns and edited nothing, while
-  the graph agent implemented the named method (1 of 6 tests) but not the two
-  sibling methods and the blueprint mirrors the tests also required. Both
-  arms were undercut by the same thing: the commit message names one symbol
-  and the fix spans several.
-- **Cost per run was higher with the pack** ($0.55 vs $0.45 mean), because the
-  pack is ~6k tokens of prompt every turn; it bought fewer turns, not fewer
-  dollars, at this task size.
-- **Problem statements are commit subjects**, often one line ("refactor
-  stream_with_context for async views"). Both arms failed that task. A real
-  issue text would change both arms; it would not obviously favour either.
+- **The pack on its own did not help; with the checklist it matched no-graph.**
+  46% vs 54% vs 54% on 46 runs each. The four-run gap between `graph` and the
+  other two is inside the three-task repetition noise, so the defensible
+  statement is: no arm is better than another at this size, and the plain pack
+  is the one that is *not* ahead.
+- **Where the pack does something no-graph cannot:** `express/f41d09a3`, a
+  12-test refactor across the router, went 11/12 and 10/12 with the pack and
+  0/12 without, twice each. On big multi-symbol changes the pack's map of
+  neighbours is the difference between getting most of it and getting none.
+- **Where it hurts:** the pack shortens exploration (18.2 turns vs 19.9) and
+  the agent stops sooner. `express/bad55f79` and `express/7f26cfca` were
+  solved without the pack and not with it; the graph agent edited the shown
+  symbol and did not look further. The checklist recovers exactly that and
+  costs about a turn per run.
+- **Over-editing is real but rare:** 3 graph runs and 2 guided runs broke
+  previously passing tests, versus 1 without the graph. The first wording of
+  the checklist broke 18 tests on one run; the shipped wording did not repeat
+  that.
+- **Cost:** the pack is about 6k tokens of prompt on every turn, so it costs
+  more per run ($0.43 to $0.44 vs $0.37) while using fewer turns. On these
+  small libraries the token cost of showing the code exceeds the turn cost of
+  finding it. That ratio should invert on larger codebases, and this corpus
+  cannot show it.
+- **Problem statements are commit subjects.** All arms fail identically on
+  the underspecified ones (`flask/9822a035`, `express/1e2951a8`,
+  `express/cec0c06a`); no context fixes a one-line spec.
 
 ## What would make this evaluation worth quoting
 
-- More verifiable tasks: Express needs the `npm install` done once per
-  dependency set rather than per commit; requests needs a 3.9 interpreter for
-  its 2016-2019 suites; a corpus mined for commits that *reference an issue*
-  would give real problem statements.
-- Repeats per cell (the agent is stochastic) and a second model.
-- A third arm: the pack *plus* the instruction to also run `search` over every
-  symbol the commit message names, since the two graph-arm misses were both
-  "stopped one symbol short".
+- Larger codebases. Every repo here fits in an agent's head with grep in 20
+  turns; the pack's value proposition is codebases where it does not.
+- Real problem statements (issues, not commit subjects) and a second model.
+- More repetitions: at 3 flips per 23 tasks per arm, separating a 5-point
+  difference needs roughly four repetitions.

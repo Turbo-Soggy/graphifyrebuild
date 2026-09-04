@@ -552,19 +552,24 @@ A/B.
 - Method leaf names resolve as seeds (`parse` finds `.parse()`); id/path
   substrings rank below label matches in `search`.
 
-## End-to-end fix evaluation — **FIRST RUN 2026-09-04, not yet quotable**
+## End-to-end fix evaluation — **23 tasks x 3 arms x 2 reps, 2026-09-04**
 
 The retrieval metrics above are proxies. `bench/fixeval/` measures the target
-directly: a headless agent fixes the pre-fix tree from the commit message, with
-and without the pack; the maintainers' test diff decides. 6 of 70 tasks were
-verifiable; with the pack 3 of 6 resolved, without it 4 of 6; mean turns 21.7
-vs 27.8; mean cost $0.55 vs $0.45. **One run per cell, n=6: this says nothing
-about which arm is better.** It does show two mechanisms worth designing
-against: the pack makes the agent commit to an edit sooner (good on one task,
-where the no-graph agent never edited), and it can make the agent stop one
-symbol short (the lost task: named function refactored, call site untouched).
-Everything needed to make the number quotable is listed in
-`bench/fixeval/README.md`; the harness is the deliverable of this pass.
+directly. Result at n=23, two repetitions per cell, model `sonnet`:
+no-graph 25/46 runs resolved, graph pack 21/46, pack + review checklist 25/46;
+mean fail-to-pass fraction 0.628 / 0.610 / 0.666; turns 19.9 / 18.2 / 19.4;
+cost $0.37 / $0.43 / $0.44. Each arm flips on 3 of 23 tasks between reps, so
+the top two are not separated and the plain pack is the one not ahead.
+
+What this changes in the roadmap: the "sufficient for autonomous remediation"
+claim stays unmade, now on evidence rather than caution. The pack's measured
+effects are (a) earlier commitment: fewer turns, and two grep-solvable tasks
+lost by stopping at the shown symbol; and (b) coverage on the largest
+multi-symbol change in the set (11/12 vs 0/12). The `review_checklist` shipped
+in the pack answers (a) and restored parity. The corpus's limit is its size:
+every repo is small enough for grep in 20 turns, which is the regime where a
+graph has least to add. The next measurement worth paying for is a large
+codebase, not more repetitions here.
 
 ## Joern as taint engine — **VALIDATED 2026-09-04**
 

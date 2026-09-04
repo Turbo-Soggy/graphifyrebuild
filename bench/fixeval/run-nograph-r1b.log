@@ -1,0 +1,27 @@
+express/1e2951a8       nograph      rep1 already done
+express/2a0c35a1       nograph      rep1 already done
+express/4d1ee23f       nograph      rep1 already done
+express/59e205a5       nograph      rep1 already done
+express/71540147       nograph      rep1 already done
+express/723b5451       nograph      rep1 already done
+express/76eaa326       nograph      rep1 already done
+express/7f26cfca       nograph      rep1 already done
+express/a01326ad       nograph      rep1 already done
+express/bad55f79       nograph      rep1 already done
+express/cec0c06a       nograph      rep1 already done
+express/f41d09a3       nograph      rep1 already done
+express/f8b954bc       nograph      rep1 already done
+flask/1e5dd430         nograph      rep1 already done
+flask/39f93632         nograph      rep1 already done
+flask/4eb5e945         nograph      rep1 already done
+flask/892ae955         nograph      rep1 already done
+flask/96c97dec         nograph      rep1 already done
+flask/9822a035         nograph      rep1 already done
+flask/daf1510a         nograph  agent running ...
+flask/daf1510a         nograph  resolved=False f2p=0/6 broken=0 turns=31 cost=$0.4451476 edits=[]
+requests/99b3b492      nograph  agent running ...
+requests/99b3b492      nograph  resolved=True f2p=1/1 broken=0 turns=25 cost=$0.6502317999999999 edits=['requests/sessions.py']
+requests/bd100472      nograph  agent running ...
+requests/bd100472      nograph  resolved=False f2p=6/7 broken=0 turns=13 cost=$0.28934960000000004 edits=['requests/models.py']
+requests/db575eee      nograph  agent running ...
+requests/db575eee      nograph  resolved=True f2p=1/1 broken=0 turns=27 cost=$0.6339754000000001 edits=['requests/__init__.py', 'requests/compat.py', 'requests/exceptions.py', 'requests/models.py']

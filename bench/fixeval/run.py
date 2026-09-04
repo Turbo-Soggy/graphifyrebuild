@@ -609,7 +609,17 @@ def run(args) -> int:
 
 
 def report(args) -> int:
-    rows = [json.loads(l) for l in RESULTS.read_text(encoding="utf-8").splitlines() if l.strip()]
+    raw = [json.loads(l) for l in RESULTS.read_text(encoding="utf-8").splitlines() if l.strip()]
+    # one row per (task, arm, rep): parallel workers can record a cell twice
+    # when their "already done" sets were loaded before the other finished;
+    # the FIRST recording is the cell, later ones are dropped here.
+    seen, rows = set(), []
+    for r in raw:
+        k = (r["key"], r["arm"], int(r.get("rep", 0)))
+        if k not in seen:
+            seen.add(k); rows.append(r)
+    if len(raw) != len(rows):
+        print(f"({len(raw) - len(rows)} duplicate cell recording(s) ignored)")
     arms = [a for a in ("graph", "graph-guided", "nograph") if any(r["arm"] == a for r in rows)]
     by: dict[str, dict] = {}
     for r in rows:                     # latest rep wins the cell display; reps aggregate below
