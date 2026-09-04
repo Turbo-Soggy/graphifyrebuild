@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fixeval-dashboard",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["bench/fixeval/dashboard.py", "--port", "8765"],
+      "port": 8765
+    }
+  ]
+}
