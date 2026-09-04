@@ -1,0 +1,58 @@
+flask/a411a243         skip: fix changed no test file
+flask/c77a5203         skip: fix changed no test file
+flask/eca5fd1d         skip: fix changed no test file
+flask/daf1510a         OK: 6 fail-to-pass, 86 pass-to-pass, 0 excluded as environment failures
+
+8 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/9822a035         OK: 1 fail-to-pass, 34 pass-to-pass, 0 excluded as environment failures
+
+9 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/d718ecf6         skip: fix changed no test file
+flask/72c85e80         skip: fix changed no test file
+flask/4256fc63         skip: fix changed no test file
+flask/2a33c178         skip: suite did not run -- "rom werkzeug.urls import url_quote\nE   ImportError: cannot import name 'url_quote' from 'werkzeug.urls' (C:\\projects\\graphifyrebuild\\bench\\fixeval\\venvs\\flask-2023\\Lib\\site-packages\\werkzeug\\urls.py)"
+flask/5d8e3565         skip: no test goes fail->pass with the real fix (52 pass, 0 fail in both, 0 pending)
+flask/095651be         skip: fix changed no test file
+flask/58f3536a         skip: fix changed no test file
+flask/c2810ffd         skip: fix changed no test file
+flask/9e686d93         skip: fix changed no test file
+flask/5544d094         skip: no test goes fail->pass with the real fix (52 pass, 1 fail in both, 0 pending)
+flask/c9e000b9         skip: no test goes fail->pass with the real fix (51 pass, 2 fail in both, 0 pending)
+flask/45174bf9         skip: fix changed no test file
+flask/96c97dec         OK: 4 fail-to-pass, 192 pass-to-pass, 0 excluded as environment failures
+
+10 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/3351a867         skip: suite did not run -- 'no tests ran in 0.01s'
+flask/a406c297         skip: fix changed no test file
+flask/39f93632         OK: 1 fail-to-pass, 34 pass-to-pass, 0 excluded as environment failures
+
+11 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/1e5dd430         OK: 1 fail-to-pass, 137 pass-to-pass, 0 excluded as environment failures
+
+12 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/4eb5e945         OK: 1 fail-to-pass, 17 pass-to-pass, 1 excluded as environment failures
+
+13 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/1be65b1b         skip: fix changed no test file
+flask/b1a00ebc         skip: fix changed no test file
+flask/2bd7aed1         skip: fix changed no test file
+flask/892ae955         OK: 1 fail-to-pass, 8 pass-to-pass, 23 excluded as environment failures
+
+14 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+flask/9a2adfba         skip: fix changed no test file
+flask/67b0b7e3         skip: fix changed no test file
+flask/2889da67         skip: no test goes fail->pass with the real fix (0 pass, 6 fail in both, 0 pending)
+flask/cb13128c         skip: fix changed no test file
+flask/85b430a3         skip: fix changed no test file
+flask/f92e820b         skip: no test goes fail->pass with the real fix (11 pass, 38 fail in both, 0 pending)
+flask/00f5a3e5         skip: no test goes fail->pass with the real fix (0 pass, 5 fail in both, 0 pending)
+flask/ef52e3e4         skip: fix changed no test file
+flask/70296747         skip: fix changed no test file
+flask/9f7c602a         skip: fix changed no test file
+flask/fdba0d25         skip: fix changed no test file
+flask/c43edfc7         skip: suite did not run -- "tsdangerous import json as _json\nE   ImportError: cannot import name 'json' from 'itsdangerous' (C:\\projects\\graphifyrebuild\\bench\\fixeval\\venvs\\flask-2020\\Lib\\site-packages\\itsdangerous\\__init__.py)"
+flask/aac0f585         skip: fix changed no test file
+flask/df470aec         skip: suite did not run -- "in <module>\n    from jinja2 import escape\nE   ImportError: cannot import name 'escape' from 'jinja2' (C:\\projects\\graphifyrebuild\\bench\\fixeval\\venvs\\flask-2019\\Lib\\site-packages\\jinja2\\__init__.py)"
+flask/1ff98a2d         skip: suite did not run -- "in <module>\n    from jinja2 import escape\nE   ImportError: cannot import name 'escape' from 'jinja2' (C:\\projects\\graphifyrebuild\\bench\\fixeval\\venvs\\flask-2019\\Lib\\site-packages\\jinja2\\__init__.py)"
+
+14 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json

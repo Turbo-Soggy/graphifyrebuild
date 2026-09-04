@@ -1,0 +1,54 @@
+requests/3816cfa1      skip: fix changed no test file
+requests/aa1461b6      skip: fix changed no test file
+requests/99b3b492      OK: 1 fail-to-pass, 281 pass-to-pass, 1 excluded as environment failures
+
+12 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+requests/db575eee      OK: 1 fail-to-pass, 280 pass-to-pass, 1 excluded as environment failures
+
+13 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+requests/bd100472      OK: 7 fail-to-pass, 9 pass-to-pass, 0 excluded as environment failures
+
+14 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
+requests/bf4a8133      skip: fix changed no test file
+requests/c3367d18      skip: fix changed no test file
+requests/f002b730      skip: fix changed no test file
+requests/31b35ab8      skip: no test goes fail->pass with the real fix (195 pass, 2 fail in both, 0 pending)
+requests/9e9d2c65      skip: fix changed no test file
+requests/3e3fc768      skip: fix changed no test file
+requests/36093e69      skip: fix changed no test file
+requests/8ed941fa      skip: fix changed no test file
+requests/dfa41afd      skip: fix changed no test file
+requests/7815953c      skip: fix changed no test file
+requests/59c8d813      skip: fix changed no test file
+requests/c15a8f8a      skip: fix changed no test file
+requests/1d42d9d2      skip: python-2-era suite
+requests/1adba3c9      skip: python-2-era suite
+requests/012f0334      skip: fix changed no test file
+requests/0ab7a52f      skip: python-2-era suite
+requests/9edba838      skip: fix changed no test file
+requests/98114245      skip: python-2-era suite
+requests/36dcce1a      skip: fix changed no test file
+requests/6963b849      skip: fix changed no test file
+requests/120a2f38      skip: fix changed no test file
+requests/c41932e1      skip: fix changed no test file
+requests/c4f9340f      skip: python-2-era suite
+requests/3f86e22a      skip: fix changed no test file
+requests/f3393fb2      skip: fix changed no test file
+requests/def20cdb      skip: fix changed no test file
+requests/f25827c5      skip: fix changed no test file
+requests/324336e7      skip: fix changed no test file
+requests/d2329481      skip: fix changed no test file
+requests/b8298b07      skip: fix changed no test file
+requests/cf54f603      skip: fix changed no test file
+requests/495646bb      skip: fix changed no test file
+requests/9c6ffc53      skip: fix changed no test file
+requests/f80984f3      skip: fix changed no test file
+requests/45049532      skip: fix changed no test file
+requests/20e0ee49      skip: fix changed no test file
+requests/aa04cc9b      skip: python-2-era suite
+requests/6a966523      skip: fix changed no test file
+requests/86cc274c      skip: fix changed no test file
+requests/3d1444b8      skip: fix changed no test file
+requests/bbd58b92      skip: fix changed no test file
+
+14 verifiable task(s) -> C:\projects\graphifyrebuild\bench\fixeval\tasks.json
